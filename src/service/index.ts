@@ -36,7 +36,7 @@ async function deleteTaskById(id: number) {
   }
 }
 
-async function updateTaskId({id, task}: {id: number; task: string}) {
+async function updateTaskById({id, task}: {id: number; task: string}) {
   try {
     const response = await axios.post(`${serverURL}/api/v1/task/${id}`, {
       name: task,
@@ -48,9 +48,20 @@ async function updateTaskId({id, task}: {id: number; task: string}) {
   }
 }
 
+async function toggleTaskById(id: number) {
+  try {
+    const response = await axios.post(`${serverURL}/api/v1/task/${id}/toggle`)
+
+    return response.data as {message: string}
+  } catch (error) {
+    return null
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
   deleteTaskById,
-  updateTaskId,
+  updateTaskById,
+  toggleTaskById,
 }

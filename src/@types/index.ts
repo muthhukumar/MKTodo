@@ -3,4 +3,5 @@ export type TTask = {
   name: string
   completed: boolean
   completed_on: string
+  created_at: string
 }

@@ -1,0 +1,44 @@
+.dialog-overlay {
+  background-color: rgba(0, 0, 0, 0.5); /* 50% transparency */
+  position: fixed;
+  inset: 0;
+}
+
+.dialog-content {
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 500px;
+  margin: 100px auto;
+  position: fixed;
+  top: 45%;
+  left: 45%;
+  transform: translate(-45%, -45%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.dialog-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.dialog-description {
+  margin: 10px 0;
+}
+
+.dialog-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dialog-trigger {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
