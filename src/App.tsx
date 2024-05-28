@@ -1,7 +1,7 @@
 import "./App.css"
 import "./tailwind.css"
 import "./css-reset.css"
-import "./model.css"
+import "./modal.css"
 
 import {Tasks, Sidebar} from "./components"
 

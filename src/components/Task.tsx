@@ -7,12 +7,10 @@ import {FaRegCircle} from "react-icons/fa6"
 import {FaRegCircleCheck} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
 import clsx from "clsx"
+import {useTasks} from "../context"
 
 interface TaskProps extends TTask {
-  onDelete: (id: number) => void
-  onUpdate: () => void
   onClick: (task: TTask) => void
-  onToggle: (id: number) => void
 }
 
 export default function Task(props: TaskProps) {
@@ -26,13 +24,15 @@ export default function Task(props: TaskProps) {
   useOutsideAlerter(inputRef, {onClickOutside: () => setShowInput(false), ignore: []})
   useOutsideAlerter(divRef, {onClickOutside: () => setHighlight(false), ignore: []})
 
+  const {sync, toggleTask} = useTasks()
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     try {
       await API.updateTaskById({id: props.id, task})
 
-      setTimeout(props.onUpdate, 1000)
+      setTimeout(sync, 1000)
     } catch {
       setTask(props.name)
 
@@ -60,7 +60,8 @@ export default function Task(props: TaskProps) {
       <TaskToggleIcon
         completed={props.completed}
         onClick={e => {
-          props.onToggle(props.id)
+          toggleTask(props.id)
+
           e.stopPropagation()
         }}
       />

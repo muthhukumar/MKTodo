@@ -2,15 +2,16 @@ import * as React from "react"
 
 import {MdOutlineArrowForwardIos, MdOutlineDeleteForever} from "react-icons/md"
 import {TTask} from "../@types"
-import {API} from "../service"
 import {timeAgo} from "../utils/date"
 import Task, {TaskToggleIcon} from "./Task"
 import * as Dialog from "@radix-ui/react-dialog"
 import {useOutsideAlerter} from "../utils/hooks"
+import {useTasks} from "../context"
 
 export default function Tasks() {
   const [task, setTask] = React.useState("")
-  const [tasks, setTasks] = React.useState<Array<TTask>>([])
+  const {tasks, createTask} = useTasks()
+
   const [showSidebar, setShowSidebar] = React.useState<{show: boolean; taskId: TTask["id"] | null}>(
     {
       show: false,
@@ -18,54 +19,14 @@ export default function Tasks() {
     },
   )
 
-  async function fetchData() {
-    try {
-      const tasks = await API.getTasks()
-
-      setTasks(tasks)
-    } catch (error) {
-      console.log("failed to get tasks")
-    }
-  }
-
-  React.useEffect(() => {
-    fetchData()
-  }, [])
-
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     if (!task) return
 
-    try {
-      await API.createTask({task})
-
-      setTimeout(fetchData, 0)
-
+    createTask(task, () => {
       setTask("")
-    } catch (error) {
-      console.log("failed to create task")
-    }
-  }
-
-  async function onDelete(id: number) {
-    try {
-      await API.deleteTaskById(id)
-
-      setTimeout(fetchData, 0)
-    } catch (error) {
-      console.log("failed to delete task")
-    }
-  }
-
-  async function onToggle(id: number) {
-    try {
-      await API.toggleTaskById(id)
-
-      setTimeout(fetchData, 0)
-    } catch (error) {
-      console.log("failed to toggle task")
-    }
+    })
   }
 
   const selectedTask = tasks.find(t => t.id === showSidebar.taskId)
@@ -84,9 +45,6 @@ export default function Tasks() {
               <Task
                 key={t.id}
                 {...t}
-                onToggle={onToggle}
-                onDelete={onDelete}
-                onUpdate={fetchData}
                 onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
               />
             ))}
@@ -108,8 +66,6 @@ export default function Tasks() {
         <Drawer
           {...selectedTask}
           onDismiss={() => setShowSidebar({taskId: null, show: false})}
-          onToggle={onToggle}
-          onDelete={onDelete}
           ignoreRef={divRef}
         />
       )}
@@ -124,18 +80,17 @@ function Drawer({
   created_at,
   id,
   onDismiss,
-  onDelete,
-  onToggle,
   ignoreRef,
 }: TTask & {
   onDismiss: () => void
-  onDelete: (id: number) => void
-  onToggle: (id: number) => void
   ignoreRef: React.RefObject<HTMLDivElement>
 }) {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)
-  useOutsideAlerter(containerRef, {onClickOutside: onDismiss, ignore: [ignoreRef]})
+  const modalRef = React.useRef<HTMLDivElement>(null)
+  useOutsideAlerter(containerRef, {onClickOutside: onDismiss, ignore: [ignoreRef, modalRef]})
+
+  const {toggleTask, deleteTask} = useTasks()
 
   return (
     <div
@@ -144,7 +99,7 @@ function Drawer({
     >
       <div className="h-[8vh] flex items-center">
         <div className="mt-3 flex items-center">
-          <TaskToggleIcon completed={completed} onClick={() => onToggle(id)} />
+          <TaskToggleIcon completed={completed} onClick={() => toggleTask(id)} />
           <p>{name}</p>
         </div>
       </div>
@@ -160,8 +115,9 @@ function Drawer({
       <DeleteTaskModel
         name={name}
         id={id}
+        modalRef={modalRef}
         onDelete={id => {
-          onDelete(id)
+          deleteTask(id)
           setShowDeleteModal(false)
         }}
         open={showDeleteModal}
@@ -177,12 +133,14 @@ function DeleteTaskModel({
   onDelete,
   onDismiss,
   open,
+  modalRef,
 }: {
   open: boolean
   onDismiss: () => void
   name: string
   id: number
   onDelete: (id: number) => void
+  modalRef: React.RefObject<HTMLDivElement>
 }) {
   return (
     <Dialog.Root open={open} onOpenChange={onDismiss}>
@@ -192,9 +150,13 @@ function DeleteTaskModel({
           <Dialog.Title className="dialog-title text-center">Delete Task</Dialog.Title>
           <Dialog.Description className="font-bold dialog-description">{name}</Dialog.Description>
           <p className="text-sm mb-4">You won't be able to undo this action.</p>
-          <div className="flex justify-center items-center gap-3">
+          <div ref={modalRef} className="flex justify-center items-center gap-3">
             <Dialog.Close className="dialog-close">Cancel</Dialog.Close>
-            <button className="border rounded-md px-3 py-1" onClick={() => onDelete(id)}>
+            <button
+              className="border rounded-md px-3 py-1"
+              type="button"
+              onClick={() => onDelete(id)}
+            >
               Delete Task
             </button>
           </div>
