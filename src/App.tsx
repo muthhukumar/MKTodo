@@ -3,12 +3,14 @@ import "./tailwind.css"
 import "./css-reset.css"
 import "./modal.css"
 
-import {Tasks, Sidebar} from "./components"
+import {Tasks, Sidebar, DesktopOnly} from "./components"
 
 function App() {
   return (
     <div className="h-screen flex">
-      <Sidebar />
+      <DesktopOnly>
+        <Sidebar />
+      </DesktopOnly>
       <Tasks />
     </div>
   )
