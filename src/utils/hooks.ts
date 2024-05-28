@@ -4,25 +4,20 @@ export function useOutsideAlerter(
   ref: React.RefObject<any>,
   {
     onClickOutside,
-    ignore,
+    ignore = [],
   }: {
     onClickOutside: () => void
-
-    ignore: Array<React.RefObject<any>>
+    ignore?: Array<React.RefObject<any>>
   },
 ) {
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        if (ignore.length <= 0) {
-          onClickOutside()
-          return
-        }
-
-        if (!ignore.every(iRef => iRef.current.contains(event.target))) {
-          onClickOutside()
-          return
-        }
+      if (
+        ref.current &&
+        !ref.current.contains(event.target) &&
+        !ignore.some(iRef => iRef.current && iRef.current.contains(event.target))
+      ) {
+        onClickOutside()
       }
     }
 
@@ -30,7 +25,7 @@ export function useOutsideAlerter(
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [ref])
+  }, [ref, onClickOutside, ignore])
 }
 
 export function useSize() {

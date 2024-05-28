@@ -5,8 +5,9 @@ import {TTask} from "../@types"
 import {timeAgo} from "../utils/date"
 import Task, {TaskToggleIcon} from "./Task"
 import * as Dialog from "@radix-ui/react-dialog"
-import {useOutsideAlerter} from "../utils/hooks"
+import {useOutsideAlerter, useSize} from "../utils/hooks"
 import {useTasks} from "../context"
+import clsx from "clsx"
 
 export default function Tasks() {
   const [task, setTask] = React.useState("")
@@ -36,7 +37,7 @@ export default function Tasks() {
   return (
     <div className="flex bg-zinc-700 w-full">
       <div className="w-full max-h-[100vh] overflow-y-scroll relative">
-        <div className="pl-5">
+        <div className="px-3">
           <div className="h-[8vh] flex items-center">
             <h1 className="text-2xl font-bold mt-4">Tasks</h1>
           </div>
@@ -50,12 +51,12 @@ export default function Tasks() {
             ))}
             <div className="min-h-[8vh]" />
           </div>
-          <div className="absolute bottom-0 left-0 right-0 px-5 py-3 bg-zinc-700">
+          <div className={clsx("absolute bottom-0 left-0 right-0 p-3 bg-zinc-700")}>
             <form onSubmit={onSubmit} className="w-full">
               <input
                 value={task}
                 onChange={e => setTask(e.target.value)}
-                className="w-full bg-zinc-900 text-white rounded-md px-3 py-2"
+                className="w-full bg-zinc-900 text-white rounded-md px-2 py-3"
                 placeholder="Add a Task"
               />
             </form>
