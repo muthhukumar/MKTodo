@@ -5,13 +5,13 @@ import {TTask} from "../@types"
 import {timeAgo} from "../utils/date"
 import Task, {TaskToggleIcon} from "./Task"
 import * as Dialog from "@radix-ui/react-dialog"
-import {useOutsideAlerter, useSize} from "../utils/hooks"
+import {useOutsideAlerter} from "../utils/hooks"
 import {useTasks} from "../context"
 import clsx from "clsx"
 
 export default function Tasks() {
   const [task, setTask] = React.useState("")
-  const {tasks, createTask} = useTasks()
+  const {tasks, createTask, toggleTaskImportance} = useTasks()
 
   const [showSidebar, setShowSidebar] = React.useState<{show: boolean; taskId: TTask["id"] | null}>(
     {
@@ -46,6 +46,7 @@ export default function Tasks() {
               <Task
                 key={t.id}
                 {...t}
+                onToggleImportance={toggleTaskImportance}
                 onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
               />
             ))}
@@ -91,11 +92,11 @@ function Drawer({
   const modalRef = React.useRef<HTMLDivElement>(null)
   useOutsideAlerter(containerRef, {onClickOutside: onDismiss, ignore: [ignoreRef, modalRef]})
 
-  const {toggleTask, deleteTask} = useTasks()
+  const {toggleTaskCompleted: toggleTask, deleteTask} = useTasks()
 
   return (
     <div
-      className="slide-in fixed right-0 h-screen max-w-xs z-10 min-w-72 max-h-[100vh] py-3 px-3 bg-zinc-800"
+      className="border-l border-zinc-700 slide-in fixed right-0 h-screen max-w-xs z-10 min-w-72 max-h-[100vh] py-3 px-3 bg-zinc-800"
       ref={containerRef}
     >
       <div className="h-[8vh] flex items-center">

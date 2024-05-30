@@ -3,6 +3,8 @@ import {TTask} from "../@types"
 import {API} from "../service"
 import {useOutsideAlerter} from "../utils/hooks"
 
+import {FaRegStar} from "react-icons/fa"
+import {FaStar} from "react-icons/fa"
 import {FaRegCircle} from "react-icons/fa6"
 import {FaRegCircleCheck} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
@@ -11,6 +13,7 @@ import {useTasks} from "../context"
 
 interface TaskProps extends TTask {
   onClick: (task: TTask) => void
+  onToggleImportance: (id: number) => void
 }
 
 export default function Task(props: TaskProps) {
@@ -24,7 +27,7 @@ export default function Task(props: TaskProps) {
   useOutsideAlerter(inputRef, {onClickOutside: () => setShowInput(false), ignore: []})
   useOutsideAlerter(divRef, {onClickOutside: () => setHighlight(false), ignore: []})
 
-  const {sync, toggleTask} = useTasks()
+  const {sync, toggleTaskCompleted: toggleTask} = useTasks()
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -85,6 +88,16 @@ export default function Task(props: TaskProps) {
           />
         </form>
       )}
+      <button
+        className="inline-block ml-auto"
+        onClick={e => {
+          props.onToggleImportance(props.id)
+
+          e.stopPropagation()
+        }}
+      >
+        {!props.is_important ? <FaRegStar size={20} /> : <FaStar size={20} />}
+      </button>
     </div>
   )
 }

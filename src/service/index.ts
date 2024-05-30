@@ -48,9 +48,19 @@ async function updateTaskById({id, task}: {id: number; task: string}) {
   }
 }
 
-async function toggleTaskById(id: number) {
+async function toggleTaskCompletedById(id: number) {
   try {
-    const response = await axios.post(`${serverURL}/api/v1/task/${id}/toggle`)
+    const response = await axios.post(`${serverURL}/api/v1/task/${id}/completed/toggle`)
+
+    return response.data as {message: string}
+  } catch (error) {
+    return null
+  }
+}
+
+async function toggleTaskImportanceById(id: number) {
+  try {
+    const response = await axios.post(`${serverURL}/api/v1/task/${id}/important/toggle`)
 
     return response.data as {message: string}
   } catch (error) {
@@ -63,5 +73,6 @@ export const API = {
   createTask,
   deleteTaskById,
   updateTaskById,
-  toggleTaskById,
+  toggleTaskCompletedById,
+  toggleTaskImportanceById,
 }

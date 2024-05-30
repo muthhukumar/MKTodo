@@ -11,7 +11,8 @@ interface TasksContext {
   sync: () => void
   createTask: (task: string, onSuccess: () => void) => void
   deleteTask: (id: number) => void
-  toggleTask: (id: number) => void
+  toggleTaskCompleted: (id: number) => void
+  toggleTaskImportance: (id: number) => void
 }
 
 const TasksContext = React.createContext<TasksContext>({
@@ -20,7 +21,8 @@ const TasksContext = React.createContext<TasksContext>({
   sync: () => undefined,
   createTask: () => undefined,
   deleteTask: () => undefined,
-  toggleTask: () => undefined,
+  toggleTaskCompleted: () => undefined,
+  toggleTaskImportance: () => undefined,
 })
 
 export default function TasksProvider({children}: {children: React.ReactNode}) {
@@ -65,11 +67,21 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
 
   async function toggleTask(id: number) {
     try {
-      await API.toggleTaskById(id)
+      await API.toggleTaskCompletedById(id)
 
       setTimeout(sync, 0)
     } catch (error) {
       console.log("failed to toggle task")
+    }
+  }
+
+  async function toggleTaskImportance(id: number) {
+    try {
+      await API.toggleTaskImportanceById(id)
+
+      setTimeout(sync, 0)
+    } catch (error) {
+      console.log("failed to toggle task importance")
     }
   }
 
@@ -85,7 +97,8 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
         syncStatus,
         createTask,
         deleteTask,
-        toggleTask,
+        toggleTaskCompleted: toggleTask,
+        toggleTaskImportance,
       }}
     >
       {children}
