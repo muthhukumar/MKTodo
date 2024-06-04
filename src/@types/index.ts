@@ -5,4 +5,5 @@ export type TTask = {
   completed_on: string
   created_at: string
   is_important: string
+  marked_today: string
 }

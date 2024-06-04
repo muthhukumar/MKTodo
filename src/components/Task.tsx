@@ -10,10 +10,12 @@ import {FaRegCircleCheck} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
 import clsx from "clsx"
 import {useTasks} from "../context"
+import {MdSunny} from "react-icons/md"
 
 interface TaskProps extends TTask {
   onClick: (task: TTask) => void
   onToggleImportance: (id: number) => void
+  onToggleAddToMyDay: (id: number) => void
 }
 
 export default function Task(props: TaskProps) {
@@ -88,16 +90,30 @@ export default function Task(props: TaskProps) {
           />
         </form>
       )}
-      <button
-        className="inline-block ml-auto"
-        onClick={e => {
-          props.onToggleImportance(props.id)
+      <div className="flex items-center gap-3 w-fit ml-auto">
+        <button
+          className={clsx(
+            "border-zinc-400 border rounded-full px-3 py-1 flex items-center gap-1 text-sm",
+          )}
+          onClick={e => {
+            props.onToggleAddToMyDay(props.id)
 
-          e.stopPropagation()
-        }}
-      >
-        {!props.is_important ? <FaRegStar size={20} /> : <FaStar size={20} />}
-      </button>
+            e.stopPropagation()
+          }}
+        >
+          <MdSunny size={12} />
+          <span>{props.marked_today ? "Added to my day" : "Add to my day"}</span>
+        </button>
+        <button
+          onClick={e => {
+            props.onToggleImportance(props.id)
+
+            e.stopPropagation()
+          }}
+        >
+          {!props.is_important ? <FaRegStar size={20} /> : <FaStar size={20} />}
+        </button>
+      </div>
     </div>
   )
 }

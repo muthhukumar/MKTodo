@@ -17,7 +17,7 @@ const config: Env = {
   },
   prod: {
     url: {
-      SERVER_URL: "http://localhost:3000",
+      SERVER_URL: "http://192.168.1.4:3001",
     },
   },
 }

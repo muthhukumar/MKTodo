@@ -68,6 +68,16 @@ async function toggleTaskImportanceById(id: number) {
   }
 }
 
+async function toggleTaskAddToMyDayById(id: number) {
+  try {
+    const response = await axios.post(`${serverURL}/api/v1/task/${id}/add-to-my-day/toggle`)
+
+    return response.data as {message: string}
+  } catch (error) {
+    return null
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -75,4 +85,5 @@ export const API = {
   updateTaskById,
   toggleTaskCompletedById,
   toggleTaskImportanceById,
+  toggleTaskAddToMyDayById,
 }

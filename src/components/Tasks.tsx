@@ -11,7 +11,7 @@ import clsx from "clsx"
 
 export default function Tasks() {
   const [task, setTask] = React.useState("")
-  const {tasks, createTask, toggleTaskImportance} = useTasks()
+  const {tasks, createTask, toggleTaskImportance, toggleTaskAddToMyDay} = useTasks()
 
   const [showSidebar, setShowSidebar] = React.useState<{show: boolean; taskId: TTask["id"] | null}>(
     {
@@ -46,6 +46,7 @@ export default function Tasks() {
               <Task
                 key={t.id}
                 {...t}
+                onToggleAddToMyDay={toggleTaskAddToMyDay}
                 onToggleImportance={toggleTaskImportance}
                 onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
               />

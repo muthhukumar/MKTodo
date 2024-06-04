@@ -13,6 +13,7 @@ interface TasksContext {
   deleteTask: (id: number) => void
   toggleTaskCompleted: (id: number) => void
   toggleTaskImportance: (id: number) => void
+  toggleTaskAddToMyDay: (id: number) => void
 }
 
 const TasksContext = React.createContext<TasksContext>({
@@ -23,6 +24,7 @@ const TasksContext = React.createContext<TasksContext>({
   deleteTask: () => undefined,
   toggleTaskCompleted: () => undefined,
   toggleTaskImportance: () => undefined,
+  toggleTaskAddToMyDay: () => undefined,
 })
 
 export default function TasksProvider({children}: {children: React.ReactNode}) {
@@ -85,6 +87,16 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
     }
   }
 
+  async function toggleTaskAddToMyDay(id: number) {
+    try {
+      await API.toggleTaskAddToMyDayById(id)
+
+      setTimeout(sync, 0)
+    } catch (error) {
+      console.log("failed to toggle task add to my day")
+    }
+  }
+
   React.useEffect(() => {
     sync()
   }, [])
@@ -99,6 +111,7 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
         deleteTask,
         toggleTaskCompleted: toggleTask,
         toggleTaskImportance,
+        toggleTaskAddToMyDay,
       }}
     >
       {children}
