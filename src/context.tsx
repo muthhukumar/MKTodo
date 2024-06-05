@@ -1,6 +1,8 @@
 import * as React from "react"
 import {TTask} from "./@types"
 import {API} from "./service"
+import {useReRenderOnPopState} from "./utils/hooks"
+import {getFilter} from "./utils/api"
 
 interface TasksContext {
   tasks: Array<TTask>
@@ -14,6 +16,8 @@ interface TasksContext {
   toggleTaskCompleted: (id: number) => void
   toggleTaskImportance: (id: number) => void
   toggleTaskAddToMyDay: (id: number) => void
+  query: string
+  setQuery: (value: string) => void
 }
 
 const TasksContext = React.createContext<TasksContext>({
@@ -25,15 +29,20 @@ const TasksContext = React.createContext<TasksContext>({
   toggleTaskCompleted: () => undefined,
   toggleTaskImportance: () => undefined,
   toggleTaskAddToMyDay: () => undefined,
+  query: "",
+  setQuery: () => undefined,
 })
 
 export default function TasksProvider({children}: {children: React.ReactNode}) {
   const [tasks, setTasks] = React.useState<Array<TTask>>([])
   const [syncStatus, setSyncStatus] = React.useState<TasksContext["syncStatus"]>(null)
+  const [query, setQuery] = React.useState("")
+
+  useReRenderOnPopState(sync)
 
   async function sync() {
     try {
-      const tasks = await API.getTasks()
+      const tasks = await API.getTasks(getFilter())
 
       setTasks(tasks)
 
@@ -112,6 +121,8 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
         toggleTaskCompleted: toggleTask,
         toggleTaskImportance,
         toggleTaskAddToMyDay,
+        query,
+        setQuery,
       }}
     >
       {children}

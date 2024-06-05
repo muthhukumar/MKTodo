@@ -3,7 +3,7 @@ import "./tailwind.css"
 import "./css-reset.css"
 import "./modal.css"
 
-import {Tasks, Sidebar, DesktopOnly} from "./components"
+import {Tasks, Sidebar, DesktopOnly, Router} from "./components"
 
 function App() {
   return (
@@ -11,7 +11,22 @@ function App() {
       <DesktopOnly>
         <Sidebar />
       </DesktopOnly>
-      <Tasks />
+      <Router
+        routes={[
+          {
+            path: "/",
+            component: () => <Tasks />,
+          },
+          {
+            path: "/important",
+            component: () => <Tasks />,
+          },
+          {
+            path: "/my-day",
+            component: () => <Tasks />,
+          },
+        ]}
+      />
     </div>
   )
 }

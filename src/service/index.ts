@@ -4,13 +4,13 @@ import axios from "./axios"
 
 const serverURL = config.url.SERVER_URL
 
-async function getTasks() {
+async function getTasks(filter: "my-day" | "important" | null) {
   try {
-    const response = await axios.get(`${serverURL}/api/v1/tasks`)
+    const response = await axios.get(`${serverURL}/api/v1/tasks`, {params: {filter}})
 
     return response.data.data as Array<TTask>
   } catch (error) {
-    return []
+    return Promise.reject("Failed")
   }
 }
 
@@ -22,7 +22,7 @@ async function createTask({task}: {task: string}) {
 
     return response.data as {message: string}
   } catch (error) {
-    return null
+    return Promise.reject("Failed")
   }
 }
 
@@ -32,7 +32,7 @@ async function deleteTaskById(id: number) {
 
     return response.data as {message: string}
   } catch (error) {
-    return null
+    return Promise.reject("Failed")
   }
 }
 
@@ -44,7 +44,7 @@ async function updateTaskById({id, task}: {id: number; task: string}) {
 
     return response.data as {message: string}
   } catch (error) {
-    return null
+    return Promise.reject("Failed")
   }
 }
 
@@ -54,7 +54,7 @@ async function toggleTaskCompletedById(id: number) {
 
     return response.data as {message: string}
   } catch (error) {
-    return null
+    return Promise.reject("Failed")
   }
 }
 
@@ -64,7 +64,7 @@ async function toggleTaskImportanceById(id: number) {
 
     return response.data as {message: string}
   } catch (error) {
-    return null
+    return Promise.reject("Failed")
   }
 }
 
@@ -74,7 +74,7 @@ async function toggleTaskAddToMyDayById(id: number) {
 
     return response.data as {message: string}
   } catch (error) {
-    return null
+    return Promise.reject("Failed")
   }
 }
 

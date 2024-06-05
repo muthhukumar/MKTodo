@@ -11,6 +11,7 @@ import {twMerge} from "tailwind-merge"
 import clsx from "clsx"
 import {useTasks} from "../context"
 import {MdSunny} from "react-icons/md"
+import {isDateSameAsToday} from "../utils/date"
 
 interface TaskProps extends TTask {
   onClick: (task: TTask) => void
@@ -52,9 +53,9 @@ export default function Task(props: TaskProps) {
       ref={divRef}
       key={props.id}
       className={twMerge(
-        "flex items-center text-white rounded-md bg-zinc-800 px-4 py-3",
+        "flex items-center text-white rounded-md bg-zinc-900 px-4 py-2",
         clsx({
-          "bg-zinc-900": highlight,
+          "bg-zinc-800": highlight,
         }),
       )}
       onClick={() => {
@@ -93,7 +94,7 @@ export default function Task(props: TaskProps) {
       <div className="flex items-center gap-3 w-fit ml-auto">
         <button
           className={clsx(
-            "border-zinc-400 border rounded-full px-3 py-1 flex items-center gap-1 text-sm",
+            "border-zinc-400 border rounded-full px-3 flex items-center gap-1 text-xs py-1",
           )}
           onClick={e => {
             props.onToggleAddToMyDay(props.id)
@@ -102,7 +103,7 @@ export default function Task(props: TaskProps) {
           }}
         >
           <MdSunny size={12} />
-          <span>{props.marked_today ? "Added to my day" : "Add to my day"}</span>
+          <span>{isDateSameAsToday(props.marked_today) ? "Added to my day" : "Add to my day"}</span>
         </button>
         <button
           onClick={e => {

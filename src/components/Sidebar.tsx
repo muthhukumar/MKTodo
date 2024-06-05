@@ -5,10 +5,26 @@ import {MdOutlineWbSunny} from "react-icons/md"
 import {CiStar} from "react-icons/ci"
 import {IconType} from "react-icons"
 import {TbHomeCheck} from "react-icons/tb"
+import {useReRenderOnPopState} from "../utils/hooks"
 
-function IconLink({Icon, title}: {Icon: IconType; title: string}) {
+function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
+  useReRenderOnPopState()
+
+  function navigateTo() {
+    window.history.pushState(null, "", path)
+    window.dispatchEvent(new Event("popstate"))
+  }
+
   return (
-    <div className="flex items-center hover:bg-zinc-800 px-2 py-2 rounded-md">
+    <div
+      className={clsx(
+        "hover:cursor-pointer flex items-center hover:bg-zinc-800 px-2 py-2 rounded-md",
+        {
+          "bg-zinc-800": window.location.pathname === path,
+        },
+      )}
+      onClick={navigateTo}
+    >
       <div className="flex-[0.1]">
         <Icon size={20} />
       </div>
@@ -20,14 +36,21 @@ function IconLink({Icon, title}: {Icon: IconType; title: string}) {
 }
 
 export default function Sidebar() {
+  const {query, setQuery} = useTasks()
+
   return (
     <div className="h-screen relative w-1/4 max-w-md py-8">
       <div className="px-3">
-        <input className="rounded-md py-1 px-2 w-full" placeholder="Search" />
+        <input
+          className="rounded-md py-1 px-2 w-full"
+          placeholder="Search"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+        />
         <div className="flex-col flex gap-2 mt-5">
-          <IconLink Icon={MdOutlineWbSunny} title="My Day" />
-          <IconLink Icon={CiStar} title="Important" />
-          <IconLink Icon={TbHomeCheck} title="Tasks" />
+          <IconLink Icon={MdOutlineWbSunny} title="My Day" path="/my-day" />
+          <IconLink Icon={CiStar} title="Important" path="/important" />
+          <IconLink Icon={TbHomeCheck} title="Tasks" path="/" />
         </div>
 
         <LastSynced />

@@ -35,7 +35,7 @@ export default function Tasks() {
   const divRef = React.useRef<HTMLDivElement>(null)
 
   return (
-    <div className="flex bg-zinc-700 w-full">
+    <div className="flex bg-zinc-800 w-full">
       <div className="w-full max-h-[100vh] overflow-y-scroll relative">
         <div className="px-3">
           <div className="h-[8vh] flex items-center">
@@ -53,7 +53,7 @@ export default function Tasks() {
             ))}
             <div className="min-h-[8vh]" />
           </div>
-          <div className={clsx("absolute bottom-0 left-0 right-0 p-3 bg-zinc-700")}>
+          <div className={clsx("absolute bottom-0 left-0 right-0 p-3 bg-zinc-800")}>
             <form onSubmit={onSubmit} className="w-full">
               <input
                 value={task}
