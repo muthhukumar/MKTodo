@@ -36,12 +36,15 @@ export default function Tasks() {
 
   return (
     <div className="flex bg-zinc-800 w-full">
-      <div className="w-full max-h-[100vh] overflow-y-scroll relative">
+      <div className="w-full max-h-[100vh] relative">
         <div className="px-3">
           <div className="h-[8vh] flex items-center">
             <h1 className="text-2xl font-bold mt-4">Tasks</h1>
           </div>
-          <div className="flex flex-col gap-[2px] overflow-y-scroll h-[92vh]" ref={divRef}>
+          <div
+            className="flex flex-col gap-[2px] custom-scrollbar overflow-y-scroll h-[92vh]"
+            ref={divRef}
+          >
             {tasks.map(t => (
               <Task
                 key={t.id}
