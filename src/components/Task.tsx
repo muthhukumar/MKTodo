@@ -94,7 +94,7 @@ export default function Task(props: TaskProps) {
       <div className="flex items-center gap-3 w-fit ml-auto">
         <button
           className={clsx(
-            "border-zinc-400 border rounded-full px-3 flex items-center gap-1 text-xs py-1",
+            "border-zinc-700 text-zinc-400 border rounded-full px-3 flex items-center gap-2 text-xs py-1",
           )}
           onClick={e => {
             props.onToggleAddToMyDay(props.id)
@@ -112,7 +112,11 @@ export default function Task(props: TaskProps) {
             e.stopPropagation()
           }}
         >
-          {!props.is_important ? <FaRegStar size={20} /> : <FaStar size={20} />}
+          {!props.is_important ? (
+            <FaRegStar size={20} className="text-zinc-700" />
+          ) : (
+            <FaStar size={20} className="text-zinc-400" />
+          )}
         </button>
       </div>
     </div>

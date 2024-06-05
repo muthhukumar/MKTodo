@@ -3,6 +3,7 @@ import {TTask} from "./@types"
 import {API} from "./service"
 import {useReRenderOnPopState} from "./utils/hooks"
 import {getFilter} from "./utils/api"
+import {useAsyncFilteredTasks} from "./utils/tasks/hooks"
 
 interface TasksContext {
   tasks: Array<TTask>
@@ -39,6 +40,8 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
   const [query, setQuery] = React.useState("")
 
   useReRenderOnPopState(sync)
+
+  const filteredTasks = useAsyncFilteredTasks(query, tasks)
 
   async function sync() {
     try {
@@ -113,7 +116,7 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
   return (
     <TasksContext.Provider
       value={{
-        tasks,
+        tasks: filteredTasks,
         sync,
         syncStatus,
         createTask,

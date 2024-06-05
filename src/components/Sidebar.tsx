@@ -41,12 +41,20 @@ export default function Sidebar() {
   return (
     <div className="h-screen relative w-1/4 max-w-md py-8">
       <div className="px-3">
-        <input
-          className="rounded-md py-1 px-2 w-full"
-          placeholder="Search"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-        />
+        <div className="flex items-center gap-3">
+          <input
+            className="text-sm rounded-md py-1 px-2 w-full border border-zinc-700"
+            placeholder="Search"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+          />
+          <button
+            className="px-2 py-[2px] border-zinc-700 border rounded-full text-xs"
+            onClick={() => setQuery("")}
+          >
+            clear
+          </button>
+        </div>
         <div className="flex-col flex gap-2 mt-5">
           <IconLink Icon={MdOutlineWbSunny} title="My Day" path="/my-day" />
           <IconLink Icon={CiStar} title="Important" path="/important" />
@@ -67,7 +75,7 @@ function LastSynced() {
   return (
     <div className="absolute bottom-1 left-0 right-0 my-2 text-sm">
       <p
-        className={clsx("text-center", {
+        className={clsx("text-zinc-400 text-center", {
           "text-red-600": !syncStatus.success,
         })}
       >
