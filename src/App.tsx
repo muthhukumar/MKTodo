@@ -25,6 +25,10 @@ function App() {
             path: "/my-day",
             component: () => <Tasks />,
           },
+          {
+            path: "/planned",
+            component: () => <Tasks />,
+          },
         ]}
       />
     </div>

@@ -6,8 +6,11 @@ import {CiStar} from "react-icons/ci"
 import {IconType} from "react-icons"
 import {TbHomeCheck} from "react-icons/tb"
 import {useReRenderOnPopState} from "../utils/hooks"
+import {CiCalendarDate} from "react-icons/ci"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
+  const {tasks} = useTasks()
+
   useReRenderOnPopState()
 
   function navigateTo() {
@@ -15,12 +18,14 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
     window.dispatchEvent(new Event("popstate"))
   }
 
+  const isActivePath = window.location.pathname === path
+
   return (
     <div
       className={clsx(
-        "hover:cursor-pointer flex items-center hover:bg-zinc-800 px-2 py-2 rounded-md",
+        "relative hover:cursor-pointer flex items-center hover:bg-zinc-800 px-2 py-2 rounded-md",
         {
-          "bg-zinc-800": window.location.pathname === path,
+          "bg-zinc-800": isActivePath,
         },
       )}
       onClick={navigateTo}
@@ -31,6 +36,9 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
       <div className="flex-[0.9]">
         <p className="text-sm">{title}</p>
       </div>
+      {isActivePath && (
+        <span className={clsx("delayed-element text-xs absolute right-3")}>{tasks.length}</span>
+      )}
     </div>
   )
 }
@@ -58,6 +66,7 @@ export default function Sidebar() {
         <div className="flex-col flex gap-2 mt-5">
           <IconLink Icon={MdOutlineWbSunny} title="My Day" path="/my-day" />
           <IconLink Icon={CiStar} title="Important" path="/important" />
+          <IconLink Icon={CiCalendarDate} title="Planned" path="/planned" />
           <IconLink Icon={TbHomeCheck} title="Tasks" path="/" />
         </div>
 

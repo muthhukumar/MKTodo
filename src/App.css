@@ -53,3 +53,15 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
+
+.delayed-element {
+  opacity: 0;
+  animation: appear 0.3s ease forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes appear {
+  to {
+    opacity: 1;
+  }
+}
