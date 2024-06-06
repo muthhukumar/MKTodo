@@ -42,7 +42,7 @@ export default function Tasks() {
             <h1 className="text-2xl font-bold mt-4">Tasks</h1>
           </div>
           <div
-            className="flex flex-col gap-[2px] custom-scrollbar overflow-y-scroll h-[92vh]"
+            className="flex flex-col gap-[2px] custom-scrollbar scroll-smooth overflow-y-scroll h-[92vh]"
             ref={divRef}
           >
             {tasks.map(t => (

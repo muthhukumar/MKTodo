@@ -55,7 +55,7 @@ export default function Task(props: TaskProps) {
       className={twMerge(
         "flex items-center text-white rounded-md bg-zinc-900 px-4 py-2",
         clsx({
-          "bg-zinc-800": highlight,
+          "bg-zinc-700": highlight,
         }),
       )}
       onClick={() => {

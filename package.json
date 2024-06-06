@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "build:mac": "yarn tauri build --target x86_64-apple-darwin",
+    "build:android": "yarn tauri android build --apk"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",

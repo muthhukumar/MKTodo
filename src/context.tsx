@@ -59,11 +59,11 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
     if (!task) return
 
     try {
+      onSuccess()
+
       await API.createTask({task})
 
       setTimeout(sync, 0)
-
-      onSuccess()
     } catch (error) {
       console.log("failed to create task")
     }
