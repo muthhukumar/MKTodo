@@ -3,15 +3,13 @@ import {TTask} from "../@types"
 import {API} from "../service"
 import {useOutsideAlerter} from "../utils/hooks"
 
+import {FaCircleCheck} from "react-icons/fa6"
 import {FaRegStar} from "react-icons/fa"
 import {FaStar} from "react-icons/fa"
 import {FaRegCircle} from "react-icons/fa6"
-import {FaRegCircleCheck} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
 import clsx from "clsx"
 import {useTasks} from "../context"
-import {MdSunny} from "react-icons/md"
-import {isDateSameAsToday} from "../utils/date"
 
 interface TaskProps extends TTask {
   onClick: (task: TTask) => void
@@ -53,7 +51,7 @@ export default function Task(props: TaskProps) {
       ref={divRef}
       key={props.id}
       className={twMerge(
-        "flex items-center text-white rounded-md bg-zinc-900 px-4 py-2",
+        "flex items-center text-white rounded-md bg-light-black px-4 py-2",
         clsx({
           "bg-zinc-700": highlight,
         }),
@@ -91,20 +89,7 @@ export default function Task(props: TaskProps) {
           />
         </form>
       )}
-      <div className="flex items-center gap-3 w-fit ml-auto">
-        <button
-          className={clsx(
-            "border-zinc-700 text-zinc-400 border rounded-full px-3 flex items-center gap-2 text-xs py-1",
-          )}
-          onClick={e => {
-            props.onToggleAddToMyDay(props.id)
-
-            e.stopPropagation()
-          }}
-        >
-          <MdSunny size={12} />
-          <span>{isDateSameAsToday(props.marked_today) ? "Added to my day" : "Add to my day"}</span>
-        </button>
+      <div className="flex items-center w-fit ml-auto">
         <button
           onClick={e => {
             props.onToggleImportance(props.id)
@@ -135,7 +120,7 @@ export function TaskToggleIcon({
       {!completed ? (
         <FaRegCircle size={18} className="text-zinc-400 mr-5" />
       ) : (
-        <FaRegCircleCheck size={18} className="text-zinc-400 mr-5" />
+        <FaCircleCheck size={18} className="text-zinc-400 mr-5" />
       )}
     </button>
   )

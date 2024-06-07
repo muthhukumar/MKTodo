@@ -8,6 +8,8 @@ import {TbHomeCheck} from "react-icons/tb"
 import {useDelayedLoading, useReRenderOnPopState} from "../utils/hooks"
 import {CiCalendarDate} from "react-icons/ci"
 import Spinner from "./Spinner"
+import {RiCloseCircleFill} from "react-icons/ri"
+import {IoSearchOutline} from "react-icons/io5"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const {tasks} = useTasks()
@@ -24,9 +26,9 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
   return (
     <div
       className={clsx(
-        "relative hover:cursor-pointer flex items-center hover:bg-zinc-800 px-2 py-2 rounded-md",
+        "relative hover:cursor-pointer flex items-center hover:bg-highlight-black px-1 py-1 rounded-md",
         {
-          "bg-zinc-800": isActivePath,
+          "bg-highlight-black": isActivePath,
         },
       )}
       onClick={navigateTo}
@@ -48,20 +50,18 @@ export default function Sidebar() {
   const {query, setQuery} = useTasks()
 
   return (
-    <div className="h-screen relative w-1/4 max-w-md py-8">
+    <div className="h-screen relative w-1/4 max-w-md py-8 bg-mid-black border-r-2 border-blak">
       <div className="px-3">
-        <div className="flex items-center gap-3">
+        <div className="focus-within:ring-2 focus-within:ring-blue-500 px-1 flex items-center gap-3 border border-zinc-700 rounded-md  bg-light-black">
+          <IoSearchOutline size={22} />
           <input
-            className="text-sm rounded-md py-1 px-2 w-full border border-zinc-700"
+            className="outline-none text-sm rounded-md py-1 w-full bg-light-black"
             placeholder="Search"
             value={query}
             onChange={e => setQuery(e.target.value)}
           />
-          <button
-            className="px-2 py-[2px] border-zinc-700 border rounded-full text-xs"
-            onClick={() => setQuery("")}
-          >
-            clear
+          <button onClick={() => setQuery("")}>
+            <RiCloseCircleFill size={22} />
           </button>
         </div>
         <div className="flex-col flex gap-2 mt-5">
