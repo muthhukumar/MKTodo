@@ -113,7 +113,7 @@ function Drawer({
         <button onClick={onDismiss}>
           <MdOutlineArrowForwardIos size={18} />
         </button>
-        <p className="text-xs">Created {timeAgo(created_at)} ago</p>
+        <p className="text-xs">Created {timeAgo(created_at)}</p>
         <button>
           <MdOutlineDeleteForever size={20} onClick={() => setShowDeleteModal(true)} />
         </button>

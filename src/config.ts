@@ -17,7 +17,7 @@ const config: Env = {
   },
   prod: {
     url: {
-      SERVER_URL: "http://192.168.1.4:3001",
+      SERVER_URL: "https://todo-server-zbor.onrender.com",
     },
   },
 }

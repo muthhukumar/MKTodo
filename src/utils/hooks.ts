@@ -66,3 +66,28 @@ export function useReRenderOnPopState(callback?: () => void) {
     }
   }, [])
 }
+
+export function useDelayedLoading({waitFor, loading}: {waitFor: number; loading: boolean}) {
+  const [delayedLoading, setDelayedLoading] = React.useState<boolean | null>(null)
+
+  React.useEffect(() => {
+    let timeout: number | null = null
+
+    if (!loading) {
+      timeout && clearTimeout(timeout)
+      setDelayedLoading(false)
+
+      return
+    }
+
+    timeout = setTimeout(() => {
+      setDelayedLoading(true)
+    }, waitFor)
+
+    return () => {
+      timeout && clearTimeout(timeout)
+    }
+  }, [loading, waitFor])
+
+  return delayedLoading
+}

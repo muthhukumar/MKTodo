@@ -6,6 +6,8 @@ import {getFilter} from "./utils/api"
 import {useAsyncFilteredTasks} from "./utils/tasks/hooks"
 
 interface TasksContext {
+  loading: boolean
+  setLoading: (value: boolean) => void
   tasks: Array<TTask>
   syncStatus: {
     lastSyncedAt: string | Date
@@ -22,6 +24,8 @@ interface TasksContext {
 }
 
 const TasksContext = React.createContext<TasksContext>({
+  loading: false,
+  setLoading: () => undefined,
   tasks: [],
   syncStatus: null,
   sync: () => undefined,
@@ -36,6 +40,7 @@ const TasksContext = React.createContext<TasksContext>({
 
 export default function TasksProvider({children}: {children: React.ReactNode}) {
   const [tasks, setTasks] = React.useState<Array<TTask>>([])
+  const [loading, setLoading] = React.useState(false)
   const [syncStatus, setSyncStatus] = React.useState<TasksContext["syncStatus"]>(null)
   const [query, setQuery] = React.useState("")
 
@@ -44,6 +49,7 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
   const filteredTasks = useAsyncFilteredTasks(query, tasks)
 
   async function sync() {
+    setLoading(true)
     try {
       const tasks = await API.getTasks(getFilter())
 
@@ -52,6 +58,8 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
       setSyncStatus({lastSyncedAt: new Date(), success: true})
     } catch (error) {
       setSyncStatus({lastSyncedAt: new Date(), success: false})
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -116,6 +124,8 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
   return (
     <TasksContext.Provider
       value={{
+        loading,
+        setLoading,
         tasks: filteredTasks,
         sync,
         syncStatus,

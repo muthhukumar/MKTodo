@@ -5,8 +5,9 @@ import {MdOutlineWbSunny} from "react-icons/md"
 import {CiStar} from "react-icons/ci"
 import {IconType} from "react-icons"
 import {TbHomeCheck} from "react-icons/tb"
-import {useReRenderOnPopState} from "../utils/hooks"
+import {useDelayedLoading, useReRenderOnPopState} from "../utils/hooks"
 import {CiCalendarDate} from "react-icons/ci"
+import Spinner from "./Spinner"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const {tasks} = useTasks()
@@ -77,19 +78,24 @@ export default function Sidebar() {
 }
 
 function LastSynced() {
-  const {syncStatus} = useTasks()
+  const {syncStatus, loading} = useTasks()
+  const isLoading = useDelayedLoading({waitFor: 600, loading})
 
   if (!syncStatus) return
 
   return (
     <div className="absolute bottom-1 left-0 right-0 my-2 text-sm">
-      <p
-        className={clsx("text-zinc-400 text-center", {
-          "text-red-600": !syncStatus.success,
-        })}
-      >
-        Last synced {timeAgo(syncStatus.lastSyncedAt)}
-      </p>
+      {!isLoading ? (
+        <p
+          className={clsx("text-zinc-400 text-center", {
+            "text-red-600": !syncStatus.success,
+          })}
+        >
+          Last synced {timeAgo(syncStatus.lastSyncedAt)}
+        </p>
+      ) : (
+        <Spinner />
+      )}
     </div>
   )
 }
