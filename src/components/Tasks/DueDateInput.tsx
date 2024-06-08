@@ -6,8 +6,8 @@ import {IoCalendarOutline, IoCalendarClearOutline} from "react-icons/io5"
 import {LuCalendarRange} from "react-icons/lu"
 import {MdClose} from "react-icons/md"
 
-import {getTodayDate, getDayFromDate, getTomorrowDate, getComingMondayDate} from "../../utils/date"
-import {getDueDateDisplayStr} from "../../utils/tasks"
+import {getTodayDate, getDayFromDate, getTomorrowDate, getComingMondayDate} from "~/utils/date"
+import {getDueDateDisplayStr} from "~/utils/tasks"
 
 interface DueDateInputProps {
   onSelect: (date: string) => void

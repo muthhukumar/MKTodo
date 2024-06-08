@@ -1,7 +1,6 @@
-import {DueDateFilters} from "./../../@types/index"
+import type {DueDateFilters, TTask} from "~/@types"
 import * as React from "react"
 
-import {TTask} from "../../@types"
 import FilterWorker from "./filterTasksWorker?worker"
 
 export type AsyncTasksFilter = Parameters<typeof useAsyncFilteredTasks>[0]

@@ -1,7 +1,7 @@
 import React from "react"
-import {TTask} from "../../@types"
-import {API} from "../../service"
-import {useOutsideAlerter} from "../../utils/hooks"
+import {TTask} from "~/@types"
+import {API} from "~/service"
+import {useOutsideAlerter} from "~/utils/hooks"
 
 import {FaCircleCheck} from "react-icons/fa6"
 import {FaRegStar} from "react-icons/fa"
@@ -9,7 +9,7 @@ import {FaStar} from "react-icons/fa"
 import {FaRegCircle} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
 import clsx from "clsx"
-import {useTasks} from "../../context"
+import {useTasks} from "~/context"
 
 interface TaskProps extends TTask {
   onClick: (task: TTask) => void

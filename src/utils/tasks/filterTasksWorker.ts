@@ -1,4 +1,4 @@
-import {DueDateFilters, TTask} from "../../@types"
+import {DueDateFilters, TTask} from "~/@types"
 import {
   areDatesSame,
   getTodayDate,
@@ -6,7 +6,7 @@ import {
   isDateBeforeToday,
   isDatePastThisWeek,
   isDateWithinThisWeek,
-} from "../date"
+} from "~/utils/date"
 import {AsyncTasksFilter} from "./hooks"
 
 self.onmessage = function (event) {

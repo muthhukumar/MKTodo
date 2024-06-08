@@ -1,8 +1,8 @@
 import * as React from "react"
 
-import {DueDateFilters as DueDateFiltersType, TTask} from "../../@types"
+import {DueDateFilters as DueDateFiltersType, TTask} from "~/@types"
 import Task from "./Task"
-import {useTasks} from "../../context"
+import {useTasks} from "~/context"
 import clsx from "clsx"
 import {FaPlus} from "react-icons/fa6"
 import Drawer from "./Drawer"

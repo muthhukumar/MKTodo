@@ -1,5 +1,5 @@
-import {TTask} from "../@types"
-import config from "../config"
+import {TTask} from "~/@types"
+import config from "~/config"
 import axios from "./axios"
 
 const serverURL = config.url.SERVER_URL

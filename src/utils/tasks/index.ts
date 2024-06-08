@@ -1,4 +1,4 @@
-import {isDateSameAsToday, areDatesSame, getTomorrowDate, formatDueDate} from "../date"
+import {isDateSameAsToday, areDatesSame, getTomorrowDate, formatDueDate} from "~/utils/date"
 
 export function getDueDateDisplayStr(dueDate: string) {
   if (isDateSameAsToday(dueDate)) {

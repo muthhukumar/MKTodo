@@ -1,9 +1,10 @@
 import * as React from "react"
-import {DueDateFilters, TTask} from "./@types"
-import {API} from "./service"
-import {useReRenderOnPopState} from "./utils/hooks"
-import {getFilter} from "./utils/api"
-import {useAsyncFilteredTasks} from "./utils/tasks/hooks"
+
+import {DueDateFilters, TTask} from "~/@types"
+import {API} from "~/service"
+import {useReRenderOnPopState} from "~/utils/hooks"
+import {getFilter} from "~/utils/api"
+import {useAsyncFilteredTasks} from "~/utils/tasks/hooks"
 
 interface TasksContext {
   loading: boolean
