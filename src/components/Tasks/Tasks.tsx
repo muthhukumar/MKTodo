@@ -1,15 +1,29 @@
 import * as React from "react"
 
-import {TTask} from "../../@types"
+import {DueDateFilters as DueDateFiltersType, TTask} from "../../@types"
 import Task from "./Task"
 import {useTasks} from "../../context"
 import clsx from "clsx"
 import {FaPlus} from "react-icons/fa6"
 import Drawer from "./Drawer"
 
-export default function Tasks() {
+interface TasksProps {
+  showFilters?: boolean
+  title?: string
+}
+
+export default function Tasks(props: TasksProps) {
+  const {showFilters, title} = props
+
   const [task, setTask] = React.useState("")
-  const {tasks, createTask, toggleTaskImportance, toggleTaskAddToMyDay} = useTasks()
+  const {
+    tasks,
+    createTask,
+    toggleTaskImportance,
+    toggleTaskAddToMyDay,
+    dueDateFilter,
+    setDueDateFilter,
+  } = useTasks()
 
   const [showSidebar, setShowSidebar] = React.useState<{show: boolean; taskId: TTask["id"] | null}>(
     {
@@ -17,6 +31,10 @@ export default function Tasks() {
       taskId: null,
     },
   )
+
+  React.useEffect(() => {
+    props.showFilters && setDueDateFilter("all-planned")
+  }, [props.showFilters])
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -36,11 +54,16 @@ export default function Tasks() {
     <div className="flex bg-dark-black w-full">
       <div className="w-full max-h-[100vh] relative">
         <div className="px-3">
-          <div className="h-[8vh] flex items-center">
-            <h1 className="text-2xl font-bold mt-4">Tasks</h1>
+          <div className="flex items-center mt-5 mb-1">
+            <h1 className="text-2xl font-bold">{title ? title : "Tasks"}</h1>
           </div>
+          {showFilters && (
+            <div>
+              <DueDateFilters dueDateFilter={dueDateFilter} onFilter={setDueDateFilter} />
+            </div>
+          )}
           <div
-            className="flex flex-col gap-[2px] custom-scrollbar scroll-smooth overflow-y-scroll h-[92vh]"
+            className="mt-4 flex flex-col gap-[2px] custom-scrollbar scroll-smooth overflow-y-scroll h-[90vh]"
             ref={divRef}
           >
             {tasks.map(t => (
@@ -77,6 +100,38 @@ export default function Tasks() {
           ignoreRef={divRef}
         />
       )}
+    </div>
+  )
+}
+
+const filters = [
+  {id: 1, filter: "all-planned", name: "All Planned"},
+  {id: 2, filter: "overdue", name: "Overdue"},
+  {id: 3, filter: "today", name: "Today"},
+  {id: 4, filter: "tomorrow", name: "Tomorrow"},
+  {id: 5, filter: "this-week", name: "This Week"},
+  {id: 6, filter: "later", name: "Later"},
+] as const
+
+interface DueDateFiltersProps {
+  onFilter: (filter: DueDateFiltersType) => void
+  dueDateFilter: DueDateFiltersType | null
+}
+
+function DueDateFilters(props: DueDateFiltersProps) {
+  return (
+    <div className="flex items-center gap-2">
+      {filters.map(f => (
+        <button
+          key={f.id}
+          onClick={() => props.onFilter(f.filter)}
+          className={clsx("hover:bg-light-black rounded-md px-3 py-[2px] text-sm", {
+            "bg-light-black": props.dueDateFilter === f.filter,
+          })}
+        >
+          {f.name}
+        </button>
+      ))}
     </div>
   )
 }

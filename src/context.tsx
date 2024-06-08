@@ -1,5 +1,5 @@
 import * as React from "react"
-import {TTask} from "./@types"
+import {DueDateFilters, TTask} from "./@types"
 import {API} from "./service"
 import {useReRenderOnPopState} from "./utils/hooks"
 import {getFilter} from "./utils/api"
@@ -22,6 +22,8 @@ interface TasksContext {
   query: string
   setQuery: (value: string) => void
   updateTaskDueDate: (id: number, dueDate: string) => void
+  dueDateFilter: DueDateFilters | null
+  setDueDateFilter: (value: DueDateFilters) => void
 }
 
 const TasksContext = React.createContext<TasksContext>({
@@ -38,6 +40,8 @@ const TasksContext = React.createContext<TasksContext>({
   query: "",
   setQuery: () => undefined,
   updateTaskDueDate: () => undefined,
+  dueDateFilter: null,
+  setDueDateFilter: () => undefined,
 })
 
 export default function TasksProvider({children}: {children: React.ReactNode}) {
@@ -45,10 +49,14 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
   const [loading, setLoading] = React.useState(false)
   const [syncStatus, setSyncStatus] = React.useState<TasksContext["syncStatus"]>(null)
   const [query, setQuery] = React.useState("")
+  const [dueDateFilter, setDueDateFilter] = React.useState<DueDateFilters | null>(null)
 
-  useReRenderOnPopState(sync)
+  useReRenderOnPopState(() => {
+    sync()
+    setDueDateFilter(null)
+  })
 
-  const filteredTasks = useAsyncFilteredTasks(query, tasks)
+  const filteredTasks = useAsyncFilteredTasks({query, tasks, dueDateFilter})
 
   async function sync() {
     setLoading(true)
@@ -149,6 +157,8 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
         query,
         setQuery,
         updateTaskDueDate,
+        dueDateFilter,
+        setDueDateFilter,
       }}
     >
       {children}

@@ -8,3 +8,11 @@ export type TTask = {
   marked_today: string
   due_date: string
 }
+
+export type DueDateFilters =
+  | "all-planned"
+  | "overdue"
+  | "today"
+  | "tomorrow"
+  | "this-week"
+  | "later"

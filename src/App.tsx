@@ -27,7 +27,7 @@ function App() {
           },
           {
             path: "/planned",
-            component: () => <Tasks />,
+            component: () => <Tasks title="Planned" showFilters />,
           },
         ]}
       />

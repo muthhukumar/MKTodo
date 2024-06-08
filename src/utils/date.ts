@@ -45,3 +45,24 @@ export function areDatesSame(date1: Date | string, date2: Date | string) {
 export function formatDueDate(date: Date | string): string {
   return moment(date).format("ddd D MMMM")
 }
+
+export function isDateBeforeToday(date: Date | string): boolean {
+  return moment(date).isBefore(moment(), "day")
+}
+
+export function isDateWithinThisWeek(date: Date | string): boolean {
+  const startOfWeek = moment().startOf("week")
+  const endOfWeek = moment().endOf("week")
+
+  const inputDate = moment(date)
+
+  return inputDate.isSameOrAfter(startOfWeek, "day") && inputDate.isSameOrBefore(endOfWeek, "day")
+}
+
+export function isDatePastThisWeek(date: Date | string): boolean {
+  const inputDate = moment(date)
+
+  const endOfWeek = moment().endOf("week")
+
+  return inputDate.isAfter(endOfWeek)
+}
