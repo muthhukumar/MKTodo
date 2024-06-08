@@ -78,6 +78,18 @@ async function toggleTaskAddToMyDayById(id: number) {
   }
 }
 
+async function updateTaskDueDateById(id: number, dueDate: string) {
+  try {
+    const response = await axios.post(`${serverURL}/api/v1/task/${id}/add/due-date`, {
+      due_date: dueDate,
+    })
+
+    return response.data as {message: string}
+  } catch (error) {
+    return Promise.reject("Failed")
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -86,4 +98,5 @@ export const API = {
   toggleTaskCompletedById,
   toggleTaskImportanceById,
   toggleTaskAddToMyDayById,
+  updateTaskDueDateById,
 }

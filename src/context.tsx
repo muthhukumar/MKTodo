@@ -21,6 +21,7 @@ interface TasksContext {
   toggleTaskAddToMyDay: (id: number) => void
   query: string
   setQuery: (value: string) => void
+  updateTaskDueDate: (id: number, dueDate: string) => void
 }
 
 const TasksContext = React.createContext<TasksContext>({
@@ -36,6 +37,7 @@ const TasksContext = React.createContext<TasksContext>({
   toggleTaskAddToMyDay: () => undefined,
   query: "",
   setQuery: () => undefined,
+  updateTaskDueDate: () => undefined,
 })
 
 export default function TasksProvider({children}: {children: React.ReactNode}) {
@@ -117,6 +119,16 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
     }
   }
 
+  async function updateTaskDueDate(id: number, dueDate: string) {
+    try {
+      await API.updateTaskDueDateById(id, dueDate)
+
+      setTimeout(sync, 0)
+    } catch (error) {
+      console.log("Failed to update task due date")
+    }
+  }
+
   React.useEffect(() => {
     sync()
   }, [])
@@ -136,6 +148,7 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
         toggleTaskAddToMyDay,
         query,
         setQuery,
+        updateTaskDueDate,
       }}
     >
       {children}

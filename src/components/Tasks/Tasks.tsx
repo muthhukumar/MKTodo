@@ -1,19 +1,21 @@
 import * as React from "react"
 
 import {MdClose, MdOutlineArrowForwardIos, MdOutlineDeleteForever, MdSunny} from "react-icons/md"
-import {TTask} from "../@types"
+import {TTask} from "../../@types"
 import {
+  areDatesSame,
+  formatDueDate,
   getComingMondayDate,
   getDayFromDate,
   getTodayDate,
   getTomorrowDate,
   isDateSameAsToday,
   timeAgo,
-} from "../utils/date"
+} from "../../utils/date"
 import Task, {TaskToggleIcon} from "./Task"
 import * as Dialog from "@radix-ui/react-dialog"
-import {useOutsideAlerter} from "../utils/hooks"
-import {useTasks} from "../context"
+import {useOutsideAlerter} from "../../utils/hooks"
+import {useTasks} from "../../context"
 import clsx from "clsx"
 import {FaPlus} from "react-icons/fa6"
 import {BsCalendar4Event} from "react-icons/bs"
@@ -24,9 +26,21 @@ import {IoCalendarClearOutline} from "react-icons/io5"
 
 import type {IconType} from "react-icons"
 
-function DueDateInput({onSelect}: {onSelect: (date: string) => void}) {
+function getDueDateDisplayStr(dueDate: string) {
+  if (isDateSameAsToday(dueDate)) {
+    return "Today"
+  }
+
+  if (areDatesSame(dueDate, getTomorrowDate())) {
+    return "Tomorrow"
+  }
+
+  return formatDueDate(dueDate)
+}
+
+function DueDateInput({onSelect, dueDate}: {onSelect: (date: string) => void; dueDate: string}) {
   const [show, setShow] = React.useState(false)
-  const [date, setDate] = React.useState(getTodayDate())
+  const [date, setDate] = React.useState("")
 
   function Item({
     title,
@@ -65,15 +79,31 @@ function DueDateInput({onSelect}: {onSelect: (date: string) => void}) {
 
   return (
     <div>
-      <button
-        className="px-2 flex my-3 items-center gap-3 text-zinc-400"
-        onClick={() => {
-          setShow(state => !state)
-        }}
-      >
-        <IoCalendarOutline />
-        <span>Due Date</span>
-      </button>
+      <div className="flex items-center">
+        <button
+          className="w-full px-2 text-sm flex my-3 items-center gap-3 text-zinc-400"
+          onClick={() => {
+            setShow(state => !state)
+          }}
+        >
+          <IoCalendarOutline />
+          {dueDate ? <span>Due {getDueDateDisplayStr(dueDate)}</span> : <span>Add Due Date</span>}
+        </button>
+
+        {dueDate && (
+          <button
+            onClick={e => {
+              e.stopPropagation()
+
+              setShow(false)
+              onSelect("")
+            }}
+            className="ml-auto"
+          >
+            <MdClose size={15} className="" />
+          </button>
+        )}
+      </div>
       {show && (
         <div className="border border-zinc-700 rounded-md bg-dark-black p-1">
           <Item
@@ -109,8 +139,6 @@ function DueDateInput({onSelect}: {onSelect: (date: string) => void}) {
                   className="rounded-md bg-blue-500 px-2"
                   onClick={() => {
                     setShow(false)
-
-                    if (!date) return
 
                     onSelect(date)
                   }}
@@ -219,6 +247,7 @@ function Drawer({
   onDismiss,
   ignoreRef,
   marked_today,
+  due_date,
 }: TTask & {
   onDismiss: () => void
   ignoreRef: React.RefObject<HTMLDivElement>
@@ -228,7 +257,12 @@ function Drawer({
   const modalRef = React.useRef<HTMLDivElement>(null)
   useOutsideAlerter(containerRef, {onClickOutside: onDismiss, ignore: [ignoreRef, modalRef]})
 
-  const {toggleTaskCompleted: toggleTask, deleteTask, toggleTaskAddToMyDay} = useTasks()
+  const {
+    toggleTaskCompleted: toggleTask,
+    deleteTask,
+    toggleTaskAddToMyDay,
+    updateTaskDueDate,
+  } = useTasks()
 
   return (
     <div
@@ -242,7 +276,7 @@ function Drawer({
         </div>
       </div>
       <AddToMyDay id={id} marked_today={marked_today} onToggleAddToMyDay={toggleTaskAddToMyDay} />
-      <DueDateInput onSelect={date => console.log(getDayFromDate(date), date)} />
+      <DueDateInput onSelect={dueDate => updateTaskDueDate(id, dueDate)} dueDate={due_date} />
 
       <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
         <button onClick={onDismiss}>

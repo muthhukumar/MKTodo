@@ -6,4 +6,5 @@ export type TTask = {
   created_at: string
   is_important: string
   marked_today: string
+  due_date: string
 }

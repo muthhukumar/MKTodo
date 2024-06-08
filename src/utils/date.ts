@@ -37,3 +37,11 @@ export function getComingMondayDate(): string {
 export function getDayFromDate(date: string): string {
   return moment(date).format("ddd")
 }
+
+export function areDatesSame(date1: Date | string, date2: Date | string) {
+  return moment(date1).isSame(moment(date2), "day")
+}
+
+export function formatDueDate(date: Date | string): string {
+  return moment(date).format("ddd D MMMM")
+}
