@@ -71,7 +71,7 @@ export function useDelayedLoading({waitFor, loading}: {waitFor: number; loading:
   const [delayedLoading, setDelayedLoading] = React.useState<boolean | null>(null)
 
   React.useEffect(() => {
-    let timeout: number | null = null
+    let timeout: NodeJS.Timeout | null = null
 
     if (!loading) {
       timeout && clearTimeout(timeout)

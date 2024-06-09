@@ -69,27 +69,29 @@ export default function Task(props: TaskProps) {
           e.stopPropagation()
         }}
       />
-      {!showInput ? (
-        <p
-          key={props.id}
-          className="text-white"
-          onClick={() => {
-            setShowInput(state => !state)
-          }}
-        >
-          {task}
-        </p>
-      ) : (
-        <form onSubmit={onSubmit} className="mr-1">
-          <input
-            ref={inputRef}
-            className="bg-zinc-900"
-            value={task}
-            onChange={e => setTask(e.target.value)}
-          />
-        </form>
-      )}
-      <div className="flex items-center w-fit ml-auto">
+      <div className="flex-1 px-2">
+        {!showInput ? (
+          <p
+            key={props.id}
+            className="text-white"
+            onClick={() => {
+              setShowInput(state => !state)
+            }}
+          >
+            {task}
+          </p>
+        ) : (
+          <form onSubmit={onSubmit} className="mr-1">
+            <input
+              ref={inputRef}
+              className="bg-zinc-900"
+              value={task}
+              onChange={e => setTask(e.target.value)}
+            />
+          </form>
+        )}
+      </div>
+      <div className="flex items-center ml-auto w-[24px]">
         <button
           onClick={e => {
             props.onToggleImportance(props.id)
@@ -116,7 +118,7 @@ export function TaskToggleIcon({
   onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }) {
   return (
-    <button onClick={onClick}>
+    <button onClick={onClick} className="w-[24px]">
       {!completed ? (
         <FaRegCircle size={18} className="text-zinc-400 mr-5" />
       ) : (
