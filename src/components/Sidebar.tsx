@@ -10,6 +10,7 @@ import {CiCalendarDate} from "react-icons/ci"
 import Spinner from "./Spinner"
 import {RiCloseCircleFill} from "react-icons/ri"
 import {IoSearchOutline} from "react-icons/io5"
+import {APIStore} from "~/utils/tauri-store"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const {tasks} = useTasks()
@@ -47,7 +48,17 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
 }
 
 export default function Sidebar() {
-  const {query, setQuery} = useTasks()
+  const {query, setQuery, reset} = useTasks()
+
+  async function chooseDifferentServer() {
+    try {
+      await APIStore.reset()
+
+      reset()
+    } catch (error) {
+      console.log("failed to choose different server", error)
+    }
+  }
 
   return (
     <div className="h-screen relative w-1/4 max-w-md py-8 bg-mid-black border-r-2 border-blak">
@@ -70,6 +81,12 @@ export default function Sidebar() {
           <IconLink Icon={CiCalendarDate} title="Planned" path="/planned" />
           <IconLink Icon={TbHomeCheck} title="Tasks" path="/" />
         </div>
+        <button
+          className="border border-light-black rounded-md px-3 py-2 w-full mt-5"
+          onClick={chooseDifferentServer}
+        >
+          Choose different server
+        </button>
 
         <LastSynced />
       </div>

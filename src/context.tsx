@@ -25,6 +25,7 @@ interface TasksContext {
   updateTaskDueDate: (id: number, dueDate: string) => void
   dueDateFilter: DueDateFilters | null
   setDueDateFilter: (value: DueDateFilters) => void
+  reset: () => void
 }
 
 const TasksContext = React.createContext<TasksContext>({
@@ -43,6 +44,7 @@ const TasksContext = React.createContext<TasksContext>({
   updateTaskDueDate: () => undefined,
   dueDateFilter: null,
   setDueDateFilter: () => undefined,
+  reset: () => undefined,
 })
 
 export default function TasksProvider({children}: {children: React.ReactNode}) {
@@ -58,6 +60,14 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
   })
 
   const filteredTasks = useAsyncFilteredTasks({query, tasks, dueDateFilter})
+
+  function reset() {
+    setTasks([])
+    setLoading(false)
+    setSyncStatus(null)
+    setQuery("")
+    setDueDateFilter(null)
+  }
 
   async function sync() {
     setLoading(true)
@@ -160,6 +170,7 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
         updateTaskDueDate,
         dueDateFilter,
         setDueDateFilter,
+        reset,
       }}
     >
       {children}

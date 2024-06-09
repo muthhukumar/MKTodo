@@ -1,12 +1,11 @@
 import {TTask} from "~/@types"
-import config from "~/config"
 import axios from "./axios"
 
-const serverURL = config.url.SERVER_URL
+// const serverURL = config.url.SERVER_URL
 
 async function getTasks(filter: "my-day" | "important" | null) {
   try {
-    const response = await axios.get(`${serverURL}/api/v1/tasks`, {params: {filter}})
+    const response = await axios.get(`/api/v1/tasks`, {params: {filter}})
 
     return response.data.data as Array<TTask>
   } catch (error) {
@@ -16,7 +15,7 @@ async function getTasks(filter: "my-day" | "important" | null) {
 
 async function createTask({task}: {task: string}) {
   try {
-    const response = await axios.post(`${serverURL}/api/v1/task/create`, {
+    const response = await axios.post(`/api/v1/task/create`, {
       name: task,
     })
 
@@ -28,7 +27,7 @@ async function createTask({task}: {task: string}) {
 
 async function deleteTaskById(id: number) {
   try {
-    const response = await axios.delete(`${serverURL}/api/v1/task/${id}`)
+    const response = await axios.delete(`/api/v1/task/${id}`)
 
     return response.data as {message: string}
   } catch (error) {
@@ -38,7 +37,7 @@ async function deleteTaskById(id: number) {
 
 async function updateTaskById({id, task}: {id: number; task: string}) {
   try {
-    const response = await axios.post(`${serverURL}/api/v1/task/${id}`, {
+    const response = await axios.post(`/api/v1/task/${id}`, {
       name: task,
     })
 
@@ -50,7 +49,7 @@ async function updateTaskById({id, task}: {id: number; task: string}) {
 
 async function toggleTaskCompletedById(id: number) {
   try {
-    const response = await axios.post(`${serverURL}/api/v1/task/${id}/completed/toggle`)
+    const response = await axios.post(`/api/v1/task/${id}/completed/toggle`)
 
     return response.data as {message: string}
   } catch (error) {
@@ -60,7 +59,7 @@ async function toggleTaskCompletedById(id: number) {
 
 async function toggleTaskImportanceById(id: number) {
   try {
-    const response = await axios.post(`${serverURL}/api/v1/task/${id}/important/toggle`)
+    const response = await axios.post(`/api/v1/task/${id}/important/toggle`)
 
     return response.data as {message: string}
   } catch (error) {
@@ -70,7 +69,7 @@ async function toggleTaskImportanceById(id: number) {
 
 async function toggleTaskAddToMyDayById(id: number) {
   try {
-    const response = await axios.post(`${serverURL}/api/v1/task/${id}/add-to-my-day/toggle`)
+    const response = await axios.post(`/api/v1/task/${id}/add-to-my-day/toggle`)
 
     return response.data as {message: string}
   } catch (error) {
@@ -80,7 +79,7 @@ async function toggleTaskAddToMyDayById(id: number) {
 
 async function updateTaskDueDateById(id: number, dueDate: string) {
   try {
-    const response = await axios.post(`${serverURL}/api/v1/task/${id}/add/due-date`, {
+    const response = await axios.post(`/api/v1/task/${id}/add/due-date`, {
       due_date: dueDate,
     })
 
