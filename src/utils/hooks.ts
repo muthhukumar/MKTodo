@@ -51,6 +51,7 @@ export function useSize() {
 }
 
 export function useReRenderOnPopState(callback?: () => void) {
+  // TODO - remove this in near future
   const [_, setState] = React.useState(false)
 
   React.useEffect(() => {

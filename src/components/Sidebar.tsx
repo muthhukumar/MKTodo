@@ -11,28 +11,24 @@ import Spinner from "./Spinner"
 import {RiCloseCircleFill} from "react-icons/ri"
 import {IoSearchOutline} from "react-icons/io5"
 import {APIStore} from "~/utils/tauri-store"
+import {Link, useLocation} from "@tanstack/react-router"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const {tasks} = useTasks()
 
   useReRenderOnPopState()
 
-  function navigateTo() {
-    window.history.pushState(null, "", path)
-    window.dispatchEvent(new Event("popstate"))
-  }
-
   const isActivePath = window.location.pathname === path
 
   return (
-    <div
+    <Link
+      to={path}
       className={clsx(
         "relative hover:cursor-pointer flex items-center hover:bg-highlight-black px-1 py-1 rounded-md",
         {
           "bg-highlight-black": isActivePath,
         },
       )}
-      onClick={navigateTo}
     >
       <div className="flex-[0.1]">
         <Icon size={20} />
@@ -41,9 +37,9 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
         <p className="text-sm">{title}</p>
       </div>
       {isActivePath && (
-        <span className={clsx("delayed-element text-xs absolute right-3")}>{tasks.length}</span>
+        <span className={clsx("delayed-element text-xs absolute right-3")}>{tasks?.length}</span>
       )}
-    </div>
+    </Link>
   )
 }
 
@@ -59,6 +55,8 @@ export default function Sidebar() {
       console.log("failed to choose different server", error)
     }
   }
+
+  const location = useLocation()
 
   return (
     <div className="h-screen relative w-1/4 max-w-md py-8 bg-mid-black border-r-2 border-blak">
@@ -87,6 +85,8 @@ export default function Sidebar() {
         >
           Choose different server
         </button>
+
+        <p>{location.pathname}</p>
 
         <LastSynced />
       </div>

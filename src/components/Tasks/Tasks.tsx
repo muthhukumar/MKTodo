@@ -10,6 +10,7 @@ import Drawer from "./Drawer"
 interface TasksProps {
   showFilters?: boolean
   title?: string
+  tasks?: Array<TTask>
 }
 
 export default function Tasks(props: TasksProps) {
@@ -17,13 +18,16 @@ export default function Tasks(props: TasksProps) {
 
   const [task, setTask] = React.useState("")
   const {
-    tasks,
+    // tasks,
     createTask,
     toggleTaskImportance,
     toggleTaskAddToMyDay,
     dueDateFilter,
     setDueDateFilter,
+    ...usetasksProps
   } = useTasks()
+
+  const tasks = props.tasks ? props.tasks : usetasksProps.tasks
 
   const [showSidebar, setShowSidebar] = React.useState<{show: boolean; taskId: TTask["id"] | null}>(
     {
@@ -46,7 +50,7 @@ export default function Tasks(props: TasksProps) {
     })
   }
 
-  const selectedTask = tasks.find(t => t.id === showSidebar.taskId)
+  const selectedTask = showSidebar.taskId ? tasks.find(t => t.id === showSidebar.taskId) : null
 
   const divRef = React.useRef<HTMLDivElement>(null)
 
@@ -66,7 +70,7 @@ export default function Tasks(props: TasksProps) {
             className="mt-4 flex flex-col gap-[2px] custom-scrollbar scroll-smooth overflow-y-scroll h-[90vh]"
             ref={divRef}
           >
-            {tasks.map(t => (
+            {tasks?.map(t => (
               <Task
                 key={t.id}
                 {...t}
