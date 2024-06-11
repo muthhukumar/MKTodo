@@ -1,23 +1,16 @@
 import clsx from "clsx"
 import {useTasks} from "~/context"
-import {timeAgo} from "~/utils/date"
 import {MdOutlineWbSunny} from "react-icons/md"
 import {CiStar} from "react-icons/ci"
 import {IconType} from "react-icons"
 import {TbHomeCheck} from "react-icons/tb"
-import {useDelayedLoading, useReRenderOnPopState} from "~/utils/hooks"
 import {CiCalendarDate} from "react-icons/ci"
-import Spinner from "./Spinner"
 import {RiCloseCircleFill} from "react-icons/ri"
 import {IoSearchOutline} from "react-icons/io5"
 import {APIStore} from "~/utils/tauri-store"
 import {Link, useLocation} from "@tanstack/react-router"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
-  const {tasks} = useTasks()
-
-  useReRenderOnPopState()
-
   const isActivePath = window.location.pathname === path
 
   return (
@@ -36,9 +29,10 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
       <div className="flex-[0.9]">
         <p className="text-sm">{title}</p>
       </div>
-      {isActivePath && (
+      {/* TODO - add the tasks count later here */}
+      {/* {isActivePath && (
         <span className={clsx("delayed-element text-xs absolute right-3")}>{tasks?.length}</span>
-      )}
+      )} */}
     </Link>
   )
 }
@@ -86,33 +80,33 @@ export default function Sidebar() {
           Choose different server
         </button>
 
-        <p>{location.pathname}</p>
+        <p>{location.href}</p>
 
-        <LastSynced />
+        {/* <LastSynced /> */}
       </div>
     </div>
   )
 }
 
-function LastSynced() {
-  const {syncStatus, loading} = useTasks()
-  const isLoading = useDelayedLoading({waitFor: 600, loading})
+// function LastSynced() {
+//   const {syncStatus, loading} = useTasks()
+//   const isLoading = useDelayedLoading({waitFor: 600, loading})
 
-  if (!syncStatus) return
+//   if (!syncStatus) return
 
-  return (
-    <div className="absolute bottom-1 left-0 right-0 my-2 text-sm">
-      {!isLoading ? (
-        <p
-          className={clsx("text-zinc-400 text-center", {
-            "text-red-600": !syncStatus.success,
-          })}
-        >
-          Last synced {timeAgo(syncStatus.lastSyncedAt)}
-        </p>
-      ) : (
-        <Spinner />
-      )}
-    </div>
-  )
-}
+//   return (
+//     <div className="absolute bottom-1 left-0 right-0 my-2 text-sm">
+//       {!isLoading ? (
+//         <p
+//           className={clsx("text-zinc-400 text-center", {
+//             "text-red-600": !syncStatus.success,
+//           })}
+//         >
+//           Last synced {timeAgo(syncStatus.lastSyncedAt)}
+//         </p>
+//       ) : (
+//         <Spinner />
+//       )}
+//     </div>
+//   )
+// }

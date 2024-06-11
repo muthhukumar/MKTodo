@@ -10,7 +10,7 @@ export function useAsyncFilteredTasks({
   query,
   tasks,
 }: {
-  dueDateFilter: null | DueDateFilters
+  dueDateFilter: null | DueDateFilters // Use this type from router or somewhere
   query: string
   tasks: Array<TTask>
 }) {

@@ -1,15 +1,12 @@
 import * as React from "react"
 
-import {DueDateFilters, TTask} from "~/@types"
 import {API} from "~/service"
 import {useReRenderOnPopState} from "~/utils/hooks"
 import {getFilter} from "~/utils/api"
-import {useAsyncFilteredTasks} from "~/utils/tasks/hooks"
 
 interface TasksContext {
   loading: boolean
   setLoading: (value: boolean) => void
-  tasks: Array<TTask>
   syncStatus: {
     lastSyncedAt: string | Date
     success: boolean
@@ -23,15 +20,12 @@ interface TasksContext {
   query: string
   setQuery: (value: string) => void
   updateTaskDueDate: (id: number, dueDate: string) => void
-  dueDateFilter: DueDateFilters | null
-  setDueDateFilter: (value: DueDateFilters) => void
   reset: () => void
 }
 
 const TasksContext = React.createContext<TasksContext>({
   loading: false,
   setLoading: () => undefined,
-  tasks: [],
   syncStatus: null,
   sync: () => undefined,
   createTask: () => undefined,
@@ -42,39 +36,28 @@ const TasksContext = React.createContext<TasksContext>({
   query: "",
   setQuery: () => undefined,
   updateTaskDueDate: () => undefined,
-  dueDateFilter: null,
-  setDueDateFilter: () => undefined,
   reset: () => undefined,
 })
 
 export default function TasksProvider({children}: {children: React.ReactNode}) {
-  const [tasks, setTasks] = React.useState<Array<TTask>>([])
   const [loading, setLoading] = React.useState(false)
   const [syncStatus, setSyncStatus] = React.useState<TasksContext["syncStatus"]>(null)
   const [query, setQuery] = React.useState("")
-  const [dueDateFilter, setDueDateFilter] = React.useState<DueDateFilters | null>(null)
 
   useReRenderOnPopState(() => {
     sync()
-    setDueDateFilter(null)
   })
 
-  const filteredTasks = useAsyncFilteredTasks({query, tasks, dueDateFilter})
-
   function reset() {
-    setTasks([])
     setLoading(false)
     setSyncStatus(null)
     setQuery("")
-    setDueDateFilter(null)
   }
 
   async function sync() {
     setLoading(true)
     try {
       const tasks = await API.getTasks(getFilter())
-
-      setTasks(tasks)
 
       setSyncStatus({lastSyncedAt: new Date(), success: true})
     } catch (error) {
@@ -157,7 +140,6 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
       value={{
         loading,
         setLoading,
-        tasks: filteredTasks,
         sync,
         syncStatus,
         createTask,
@@ -168,8 +150,6 @@ export default function TasksProvider({children}: {children: React.ReactNode}) {
         query,
         setQuery,
         updateTaskDueDate,
-        dueDateFilter,
-        setDueDateFilter,
         reset,
       }}
     >
