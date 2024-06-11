@@ -94,7 +94,7 @@ export default function Task(props: TaskProps) {
           <div>
             <p
               key={props.id}
-              className="text-white m-0"
+              className="text-white m-0 text-sm font-medium"
               onClick={() => {
                 setShowInput(state => !state)
               }}
