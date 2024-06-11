@@ -2,12 +2,13 @@ import {defineConfig} from "vite"
 import react from "@vitejs/plugin-react"
 import {internalIpV4} from "internal-ip"
 import path from "path"
+import {TanStackRouterVite} from "@tanstack/router-vite-plugin"
 
 const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM)
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [react()],
+  plugins: [react(), TanStackRouterVite()],
   resolve: {
     alias: {
       "~/": path.resolve(__dirname, "src") + "/",

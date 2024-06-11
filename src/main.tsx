@@ -1,12 +1,21 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import App from "./App"
-import TasksProvider from "./context"
+import App, {router} from "./App"
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <TasksProvider>
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router
+  }
+}
+
+const rootElement = document.getElementById("root")!
+
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement)
+
+  root.render(
+    <React.StrictMode>
       <App />
-    </TasksProvider>
-  </React.StrictMode>,
-)
+    </React.StrictMode>,
+  )
+}

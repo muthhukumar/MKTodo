@@ -5,11 +5,12 @@ import clsx from "clsx"
 import {MdOutlineArrowForwardIos, MdOutlineDeleteForever, MdSunny, MdClose} from "react-icons/md"
 
 import {TTask} from "~/@types"
-import {useTasks} from "~/context"
 import {timeAgo, isDateSameAsToday} from "~/utils/date"
 import {useOutsideAlerter} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
+import {API} from "~/service"
+import {useRouter} from "@tanstack/react-router"
 
 export default function Drawer({
   name,
@@ -28,14 +29,49 @@ export default function Drawer({
   const containerRef = React.useRef<HTMLDivElement>(null)
   const modalRef = React.useRef<HTMLDivElement>(null)
 
+  const router = useRouter()
+
   useOutsideAlerter(containerRef, {onClickOutside: onDismiss, ignore: [ignoreRef, modalRef]})
 
-  const {
-    toggleTaskCompleted: toggleTask,
-    deleteTask,
-    toggleTaskAddToMyDay,
-    updateTaskDueDate,
-  } = useTasks()
+  async function toggleTaskAddToMyDay(id: number) {
+    try {
+      await API.toggleTaskAddToMyDayById(id)
+
+      router.invalidate()
+    } catch (error) {
+      console.log("failed to toggle task add to my day")
+    }
+  }
+
+  async function updateTaskDueDate(id: number, dueDate: string) {
+    try {
+      await API.updateTaskDueDateById(id, dueDate)
+
+      router.invalidate()
+    } catch (error) {
+      console.log("Failed to update task due date")
+    }
+  }
+
+  async function deleteTask(id: number) {
+    try {
+      await API.deleteTaskById(id)
+
+      router.invalidate()
+    } catch (error) {
+      console.log("failed to delete task")
+    }
+  }
+
+  async function toggleTask(id: number) {
+    try {
+      await API.toggleTaskCompletedById(id)
+
+      router.invalidate()
+    } catch (error) {
+      console.log("failed to toggle task")
+    }
+  }
 
   return (
     <div

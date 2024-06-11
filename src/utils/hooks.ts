@@ -50,23 +50,6 @@ export function useSize() {
   return {windowSize, isMobile, isDesktop: !isMobile}
 }
 
-export function useReRenderOnPopState(callback?: () => void) {
-  const [_, setState] = React.useState(false)
-
-  React.useEffect(() => {
-    function handleRouteChange() {
-      setState(state => !state)
-      callback && callback()
-    }
-
-    window.addEventListener("popstate", handleRouteChange)
-
-    return () => {
-      window.removeEventListener("popstate", handleRouteChange)
-    }
-  }, [])
-}
-
 export function useDelayedLoading({waitFor, loading}: {waitFor: number; loading: boolean}) {
   const [delayedLoading, setDelayedLoading] = React.useState<boolean | null>(null)
 

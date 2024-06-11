@@ -1,29 +1,27 @@
 import * as React from "react"
 
-import {DueDateFilters as DueDateFiltersType, TTask} from "~/@types"
+import {TTask} from "~/@types"
 import Task from "./Task"
-import {useTasks} from "~/context"
 import clsx from "clsx"
 import {FaPlus} from "react-icons/fa6"
 import Drawer from "./Drawer"
+import {Link, useRouter, useSearch} from "@tanstack/react-router"
+import {API} from "~/service"
 
 interface TasksProps {
   showFilters?: boolean
   title?: string
+  tasks: Array<TTask>
 }
 
 export default function Tasks(props: TasksProps) {
   const {showFilters, title} = props
 
   const [task, setTask] = React.useState("")
-  const {
-    tasks,
-    createTask,
-    toggleTaskImportance,
-    toggleTaskAddToMyDay,
-    dueDateFilter,
-    setDueDateFilter,
-  } = useTasks()
+
+  const router = useRouter()
+
+  const tasks = props.tasks
 
   const [showSidebar, setShowSidebar] = React.useState<{show: boolean; taskId: TTask["id"] | null}>(
     {
@@ -32,21 +30,23 @@ export default function Tasks(props: TasksProps) {
     },
   )
 
-  React.useEffect(() => {
-    props.showFilters && setDueDateFilter("all-planned")
-  }, [props.showFilters])
-
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     if (!task) return
 
-    createTask(task, () => {
+    try {
+      await API.createTask({task})
+
       setTask("")
-    })
+
+      router.invalidate()
+    } catch (error) {
+      console.log("failed to create task")
+    }
   }
 
-  const selectedTask = tasks.find(t => t.id === showSidebar.taskId)
+  const selectedTask = showSidebar.taskId ? tasks.find(t => t.id === showSidebar.taskId) : null
 
   const divRef = React.useRef<HTMLDivElement>(null)
 
@@ -59,19 +59,17 @@ export default function Tasks(props: TasksProps) {
           </div>
           {showFilters && (
             <div>
-              <DueDateFilters dueDateFilter={dueDateFilter} onFilter={setDueDateFilter} />
+              <DueDateFilters />
             </div>
           )}
           <div
             className="mt-4 flex flex-col gap-[2px] custom-scrollbar scroll-smooth overflow-y-scroll h-[90vh]"
             ref={divRef}
           >
-            {tasks.map(t => (
+            {tasks?.map(t => (
               <Task
                 key={t.id}
                 {...t}
-                onToggleAddToMyDay={toggleTaskAddToMyDay}
-                onToggleImportance={toggleTaskImportance}
                 onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
               />
             ))}
@@ -113,24 +111,24 @@ const filters = [
   {id: 6, filter: "later", name: "Later"},
 ] as const
 
-interface DueDateFiltersProps {
-  onFilter: (filter: DueDateFiltersType) => void
-  dueDateFilter: DueDateFiltersType | null
-}
+function DueDateFilters() {
+  const {filter} = useSearch({from: "/_auth/planned"})
 
-function DueDateFilters(props: DueDateFiltersProps) {
   return (
     <div className="flex items-center gap-2">
       {filters.map(f => (
-        <button
+        <Link
+          to="/planned"
+          search={{
+            filter: f.filter,
+          }}
           key={f.id}
-          onClick={() => props.onFilter(f.filter)}
           className={clsx("hover:bg-light-black rounded-md px-3 py-[2px] text-sm", {
-            "bg-light-black": props.dueDateFilter === f.filter,
+            "bg-light-black": filter === f.filter,
           })}
         >
           {f.name}
-        </button>
+        </Link>
       ))}
     </div>
   )
