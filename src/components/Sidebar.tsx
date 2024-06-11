@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import {useTasks} from "~/context"
 import {MdOutlineWbSunny} from "react-icons/md"
 import {CiStar} from "react-icons/ci"
 import {IconType} from "react-icons"
@@ -8,7 +7,7 @@ import {CiCalendarDate} from "react-icons/ci"
 import {RiCloseCircleFill} from "react-icons/ri"
 import {IoSearchOutline} from "react-icons/io5"
 import {APIStore} from "~/utils/tauri-store"
-import {Link, useLocation} from "@tanstack/react-router"
+import {Link, useLocation, useNavigate} from "@tanstack/react-router"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname === path
@@ -38,19 +37,18 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
 }
 
 export default function Sidebar() {
-  const {query, setQuery, reset} = useTasks()
+  const location = useLocation()
+  const navigate = useNavigate({from: location.pathname})
 
   async function chooseDifferentServer() {
     try {
       await APIStore.reset()
 
-      reset()
+      navigate({from: location.pathname, to: "/login"})
     } catch (error) {
       console.log("failed to choose different server", error)
     }
   }
-
-  const location = useLocation()
 
   return (
     <div className="h-screen relative w-1/4 max-w-md py-8 bg-mid-black border-r-2 border-blak">
@@ -60,10 +58,18 @@ export default function Sidebar() {
           <input
             className="outline-none text-sm rounded-md py-1 w-full bg-light-black"
             placeholder="Search"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={e => {
+              navigate({
+                search: {
+                  // TODO - fix this later
+                  // @ts-ignore
+                  query: e.target.value,
+                },
+              })
+            }}
           />
-          <button onClick={() => setQuery("")}>
+          {/* TODO - clicking this is not resetting the value */}
+          <button onClick={() => navigate({to: location.pathname})}>
             <RiCloseCircleFill size={22} />
           </button>
         </div>

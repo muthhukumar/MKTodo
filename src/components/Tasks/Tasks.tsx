@@ -2,11 +2,11 @@ import * as React from "react"
 
 import {TTask} from "~/@types"
 import Task from "./Task"
-import {useTasks} from "~/context"
 import clsx from "clsx"
 import {FaPlus} from "react-icons/fa6"
 import Drawer from "./Drawer"
-import {Link, useSearch} from "@tanstack/react-router"
+import {Link, useRouter, useSearch} from "@tanstack/react-router"
+import {API} from "~/service"
 
 interface TasksProps {
   showFilters?: boolean
@@ -18,12 +18,8 @@ export default function Tasks(props: TasksProps) {
   const {showFilters, title} = props
 
   const [task, setTask] = React.useState("")
-  const {
-    // tasks,
-    createTask,
-    toggleTaskImportance,
-    toggleTaskAddToMyDay,
-  } = useTasks()
+
+  const router = useRouter()
 
   const tasks = props.tasks
 
@@ -39,9 +35,15 @@ export default function Tasks(props: TasksProps) {
 
     if (!task) return
 
-    createTask(task, () => {
+    try {
+      await API.createTask({task})
+
       setTask("")
-    })
+
+      router.invalidate()
+    } catch (error) {
+      console.log("failed to create task")
+    }
   }
 
   const selectedTask = showSidebar.taskId ? tasks.find(t => t.id === showSidebar.taskId) : null
@@ -68,8 +70,6 @@ export default function Tasks(props: TasksProps) {
               <Task
                 key={t.id}
                 {...t}
-                onToggleAddToMyDay={toggleTaskAddToMyDay}
-                onToggleImportance={toggleTaskImportance}
                 onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
               />
             ))}

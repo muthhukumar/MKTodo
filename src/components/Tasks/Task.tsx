@@ -9,12 +9,10 @@ import {FaStar} from "react-icons/fa"
 import {FaRegCircle} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
 import clsx from "clsx"
-import {useTasks} from "~/context"
+import {useRouter} from "@tanstack/react-router"
 
 interface TaskProps extends TTask {
   onClick: (task: TTask) => void
-  onToggleImportance: (id: number) => void
-  onToggleAddToMyDay: (id: number) => void
 }
 
 export default function Task(props: TaskProps) {
@@ -25,10 +23,10 @@ export default function Task(props: TaskProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const divRef = React.useRef<HTMLDivElement>(null)
 
+  const router = useRouter()
+
   useOutsideAlerter(inputRef, {onClickOutside: () => setShowInput(false), ignore: []})
   useOutsideAlerter(divRef, {onClickOutside: () => setHighlight(false), ignore: []})
-
-  const {sync, toggleTaskCompleted: toggleTask} = useTasks()
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -36,13 +34,33 @@ export default function Task(props: TaskProps) {
     try {
       await API.updateTaskById({id: props.id, task})
 
-      setTimeout(sync, 1000)
+      router.invalidate()
     } catch {
       setTask(props.name)
 
       console.log("failed to update task name")
     } finally {
       setShowInput(false)
+    }
+  }
+
+  async function toggleTaskImportance(id: number) {
+    try {
+      await API.toggleTaskImportanceById(id)
+
+      router.invalidate()
+    } catch (error) {
+      console.log("failed to toggle task importance")
+    }
+  }
+
+  async function toggleTask(id: number) {
+    try {
+      await API.toggleTaskCompletedById(id)
+
+      router.invalidate()
+    } catch (error) {
+      console.log("failed to toggle task")
     }
   }
 
@@ -94,7 +112,7 @@ export default function Task(props: TaskProps) {
       <div className="flex items-center ml-auto w-[24px]">
         <button
           onClick={e => {
-            props.onToggleImportance(props.id)
+            toggleTaskImportance(props.id)
 
             e.stopPropagation()
           }}
