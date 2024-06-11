@@ -36,7 +36,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="h-full w-full flex items-center justify-center px-3">
+    <div className="h-screen w-full flex items-center justify-center px-3">
       <form className="w-full max-w-sm mx-auto rounded-md px-3 py-2" onSubmit={onSubmit}>
         <h2 className="mt-3 font-bold text-5xl text-center">mktodo</h2>
         <div className="mt-5">

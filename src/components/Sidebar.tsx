@@ -86,7 +86,7 @@ export default function Sidebar() {
           Choose different server
         </button>
 
-        <p>{location.href}</p>
+        <p className="mt-4">{location.href}</p>
 
         {/* <LastSynced /> */}
       </div>
