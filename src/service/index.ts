@@ -1,8 +1,6 @@
 import {TTask} from "~/@types"
 import axios from "./axios"
 
-// const serverURL = config.url.SERVER_URL
-
 async function getTasks(filter: "my-day" | "important" | null) {
   try {
     const response = await axios.get(`/api/v1/tasks`, {params: {filter}})

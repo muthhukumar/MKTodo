@@ -7,6 +7,7 @@ import {FaPlus} from "react-icons/fa6"
 import Drawer from "./Drawer"
 import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {API} from "~/service"
+import {separateTasks} from "~/utils/tasks"
 
 interface TasksProps {
   showFilters?: boolean
@@ -50,6 +51,8 @@ export default function Tasks(props: TasksProps) {
 
   const divRef = React.useRef<HTMLDivElement>(null)
 
+  const {completedTasks, pendingTasks} = React.useMemo(() => separateTasks(tasks), [tasks])
+
   return (
     <div className="flex bg-dark-black w-full">
       <div className="w-full max-h-[100vh] relative">
@@ -63,10 +66,18 @@ export default function Tasks(props: TasksProps) {
             </div>
           )}
           <div
-            className="mt-4 flex flex-col gap-[2px] custom-scrollbar scroll-smooth overflow-y-scroll h-[90vh]"
+            className="mt-4 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll h-[90vh]"
             ref={divRef}
           >
-            {tasks?.map(t => (
+            {pendingTasks.map(t => (
+              <Task
+                key={t.id}
+                {...t}
+                onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
+              />
+            ))}
+            <h2 className="w-fit text-sm bg-light-black rounded-md px-2 py-1 my-2">Completed</h2>
+            {completedTasks.map(t => (
               <Task
                 key={t.id}
                 {...t}

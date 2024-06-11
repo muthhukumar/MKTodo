@@ -79,3 +79,13 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.no-scrollbar {
+  overflow: hidden; /* General overflow hidden */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Webkit-based browsers */
+}

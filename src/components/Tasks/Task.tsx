@@ -10,6 +10,8 @@ import {FaRegCircle} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
 import clsx from "clsx"
 import {useRouter} from "@tanstack/react-router"
+import {MdSunny} from "react-icons/md"
+import {isDateSameAsToday} from "~/utils/date"
 
 interface TaskProps extends TTask {
   onClick: (task: TTask) => void
@@ -89,15 +91,23 @@ export default function Task(props: TaskProps) {
       />
       <div className="flex-1 px-2">
         {!showInput ? (
-          <p
-            key={props.id}
-            className="text-white"
-            onClick={() => {
-              setShowInput(state => !state)
-            }}
-          >
-            {task}
-          </p>
+          <div>
+            <p
+              key={props.id}
+              className="text-white m-0"
+              onClick={() => {
+                setShowInput(state => !state)
+              }}
+            >
+              {task}
+            </p>
+            {isDateSameAsToday(props.marked_today) && (
+              <div className="text-xs flex items-center gap-2 text-gray-400">
+                <MdSunny size={10} />
+                <p>My Day</p>
+              </div>
+            )}
+          </div>
         ) : (
           <form onSubmit={onSubmit} className="mr-1">
             <input
@@ -118,9 +128,9 @@ export default function Task(props: TaskProps) {
           }}
         >
           {!props.is_important ? (
-            <FaRegStar size={20} className="text-zinc-700" />
+            <FaRegStar size={20} className="text-zinc-500" />
           ) : (
-            <FaStar size={20} className="text-zinc-400" />
+            <FaStar size={20} className="text-zinc-500" />
           )}
         </button>
       </div>
