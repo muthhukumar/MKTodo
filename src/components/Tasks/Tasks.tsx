@@ -18,6 +18,10 @@ interface TasksProps {
 export default function Tasks(props: TasksProps) {
   const {showFilters, title} = props
 
+  const [newTasks, setNewTasks] = React.useState<
+    Array<{name: string; status: "started" | "failed" | "retrying"}>
+  >([])
+
   const [task, setTask] = React.useState("")
 
   const router = useRouter()
@@ -31,18 +35,62 @@ export default function Tasks(props: TasksProps) {
     },
   )
 
+  async function retry(task: string) {
+    setNewTasks(state => {
+      const clone = [...state]
+
+      const idx = clone.findIndex(t => t.name === task)
+
+      clone[idx] = {...clone[idx], status: "retrying"}
+
+      return clone
+    })
+
+    try {
+      await API.createTask({task})
+
+      setNewTasks(state => state.filter(t => t.name !== task))
+
+      router.invalidate()
+    } catch (error) {
+      setNewTasks(state => {
+        const clone = [...state]
+
+        const idx = clone.findIndex(t => t.name === task)
+
+        clone[idx] = {...clone[idx], status: "failed"}
+
+        return clone
+      })
+      console.log("failed to create task")
+    }
+  }
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     if (!task) return
 
+    setTask("")
+
+    setNewTasks(state => [...state, {name: task, status: "started"}])
+
     try {
       await API.createTask({task})
 
-      setTask("")
+      setNewTasks(state => state.filter(t => t.name !== task))
 
       router.invalidate()
     } catch (error) {
+      setNewTasks(state => {
+        const clone = [...state]
+
+        const idx = clone.findIndex(t => t.name === task)
+
+        clone[idx] = {...clone[idx], status: "failed"}
+
+        return clone
+      })
       console.log("failed to create task")
     }
   }
@@ -69,6 +117,27 @@ export default function Tasks(props: TasksProps) {
             className="mt-4 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll h-[90vh]"
             ref={divRef}
           >
+            {newTasks.map(t => (
+              <div className="px-3 py-1 bg-light-black rounded-md flex items-center justify-between">
+                <p>{t.name}</p>
+                <div className="flex items-center gap-1">
+                  {t.status === "started" && <p className="ml-auto">Creating...</p>}
+                  {t.status === "failed" && (
+                    <p className="px-2 rounded-md bg-red-700 text-white">failed</p>
+                  )}
+                  {(t.status === "failed" || t.status === "retrying") && (
+                    <button
+                      className="px-2 rounded-md bg-red-400"
+                      onClick={() => retry(t.name)}
+                      disabled={t.status === "retrying"}
+                    >
+                      {t.status === "retrying" ? "retrying..." : "retry"}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+            {newTasks.length > 0 && <div className="min-h-[12px]" />}
             {pendingTasks.map(t => (
               <Task
                 key={t.id}
@@ -76,7 +145,9 @@ export default function Tasks(props: TasksProps) {
                 onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
               />
             ))}
-            <h2 className="w-fit text-sm bg-light-black rounded-md px-2 py-1 my-2">Completed</h2>
+            {completedTasks.length > 0 && (
+              <h2 className="w-fit text-sm bg-light-black rounded-md px-2 py-1 my-2">Completed</h2>
+            )}
             {completedTasks.map(t => (
               <Task
                 key={t.id}
