@@ -58,7 +58,7 @@ export default function Sidebar() {
   return (
     <div className="h-screen relative w-1/4 max-w-md py-8 bg-mid-black border-r-2 border-blak">
       <div className="px-3">
-        <div className="focus-within:ring-2 focus-within:ring-blue-500 px-1 flex items-center gap-3 border border-zinc-700 rounded-md  bg-light-black">
+        <form className="focus-within:ring-2 focus-within:ring-blue-500 px-1 flex items-center gap-3 border border-zinc-700 rounded-md  bg-light-black">
           <IoSearchOutline size={22} />
           <input
             className="outline-none text-sm rounded-md py-1 w-full bg-light-black"
@@ -68,10 +68,10 @@ export default function Sidebar() {
             }}
           />
           {/* TODO - clicking this is not resetting the value */}
-          <button onClick={() => navigate({to: location.pathname})}>
+          <button type="reset" onClick={() => navigate({to: location.pathname})}>
             <RiCloseCircleFill size={22} />
           </button>
-        </div>
+        </form>
         <div className="flex-col flex gap-2 mt-5">
           <IconLink Icon={MdOutlineWbSunny} title="My Day" path="/my-day" />
           <IconLink Icon={CiStar} title="Important" path="/important" />
