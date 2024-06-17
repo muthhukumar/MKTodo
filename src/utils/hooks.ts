@@ -74,3 +74,20 @@ export function useDelayedLoading({waitFor, loading}: {waitFor: number; loading:
 
   return delayedLoading
 }
+
+export function useDelay<T extends any>(
+  callback: (...args: Array<T>) => void,
+  delay: number = 1000,
+) {
+  let timer: NodeJS.Timeout | null
+
+  function fn(...args: Array<T>) {
+    if (timer) clearTimeout(timer)
+
+    timer = setTimeout(() => {
+      callback(...args)
+    }, delay)
+  }
+
+  return fn
+}

@@ -8,6 +8,7 @@ import {RiCloseCircleFill} from "react-icons/ri"
 import {IoSearchOutline} from "react-icons/io5"
 import {APIStore} from "~/utils/tauri-store"
 import {Link, useLocation, useNavigate} from "@tanstack/react-router"
+import {useDelay} from "~/utils/hooks"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname === path
@@ -50,6 +51,10 @@ export default function Sidebar() {
     }
   }
 
+  const search = useDelay((query: string) => {
+    navigate({search: {query}})
+  }, 1200)
+
   return (
     <div className="h-screen relative w-1/4 max-w-md py-8 bg-mid-black border-r-2 border-blak">
       <div className="px-3">
@@ -59,11 +64,7 @@ export default function Sidebar() {
             className="outline-none text-sm rounded-md py-1 w-full bg-light-black"
             placeholder="Search"
             onChange={e => {
-              navigate({
-                search: {
-                  query: e.target.value,
-                },
-              })
+              search(e.target.value)
             }}
           />
           {/* TODO - clicking this is not resetting the value */}
