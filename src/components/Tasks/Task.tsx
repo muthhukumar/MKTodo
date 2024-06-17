@@ -12,6 +12,7 @@ import clsx from "clsx"
 import {useRouter} from "@tanstack/react-router"
 import {MdSunny} from "react-icons/md"
 import {isDateSameAsToday} from "~/utils/date"
+import Loader from "../Loader"
 
 interface TaskProps extends TTask {
   onClick: (task: TTask) => void
@@ -21,6 +22,7 @@ export default function Task(props: TaskProps) {
   const [showInput, setShowInput] = React.useState(false)
   const [task, setTask] = React.useState(props.name)
   const [highlight, setHighlight] = React.useState(false)
+  const [toggling, setToggling] = React.useState(false)
 
   const inputRef = React.useRef<HTMLInputElement>(null)
   const divRef = React.useRef<HTMLDivElement>(null)
@@ -57,12 +59,16 @@ export default function Task(props: TaskProps) {
   }
 
   async function toggleTask(id: number) {
+    setToggling(true)
+
     try {
       await API.toggleTaskCompletedById(id)
 
       router.invalidate()
     } catch (error) {
       console.log("failed to toggle task")
+    } finally {
+      setToggling(false)
     }
   }
 
@@ -81,14 +87,20 @@ export default function Task(props: TaskProps) {
         setHighlight(true)
       }}
     >
-      <TaskToggleIcon
-        completed={props.completed}
-        onClick={e => {
-          toggleTask(props.id)
+      {toggling ? (
+        <div className="w-[24px]">
+          <Loader />
+        </div>
+      ) : (
+        <TaskToggleIcon
+          completed={props.completed}
+          onClick={e => {
+            toggleTask(props.id)
 
-          e.stopPropagation()
-        }}
-      />
+            e.stopPropagation()
+          }}
+        />
+      )}
       <div className="flex-1 px-2">
         {!showInput ? (
           <div>
