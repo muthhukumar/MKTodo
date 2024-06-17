@@ -128,9 +128,9 @@ export default function Task(props: TaskProps) {
           }}
         >
           {!props.is_important ? (
-            <FaRegStar size={20} className="text-zinc-500" />
+            <FaRegStar size={18} className="text-zinc-500" />
           ) : (
-            <FaStar size={20} className="text-zinc-500" />
+            <FaStar size={18} className="text-zinc-500" />
           )}
         </button>
       </div>

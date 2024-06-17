@@ -1,9 +1,11 @@
 import {TTask} from "~/@types"
 import axios from "./axios"
 
-async function getTasks(filter: "my-day" | "important" | null) {
+async function getTasks(filter: "my-day" | "important" | null, query?: string) {
   try {
-    const response = await axios.get(`/api/v1/tasks`, {params: {filter}})
+    const response = await axios.get(`/api/v1/tasks`, {
+      params: {filter, query},
+    })
 
     return response.data.data as Array<TTask>
   } catch (error) {

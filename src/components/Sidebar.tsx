@@ -61,8 +61,6 @@ export default function Sidebar() {
             onChange={e => {
               navigate({
                 search: {
-                  // TODO - fix this later
-                  // @ts-ignore
                   query: e.target.value,
                 },
               })

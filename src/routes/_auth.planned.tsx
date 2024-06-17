@@ -8,13 +8,15 @@ const plannedFilter = z.object({
   filter: z
     .enum(["all-planned", "overdue", "today", "tomorrow", "this-week", "later"])
     .catch("all-planned"),
+  query: z.string().catch(""),
 })
 
 export const Route = createFileRoute("/_auth/planned")({
   validateSearch: plannedFilter,
-  loader: async () => {
+  loaderDeps: ({search: {query}}) => ({query}),
+  loader: async ({deps: {query}}) => {
     return {
-      tasks: await API.getTasks(null),
+      tasks: await API.getTasks(null, query),
     }
   },
   component: PlannedTasks,

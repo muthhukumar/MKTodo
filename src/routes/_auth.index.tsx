@@ -1,11 +1,14 @@
 import {createFileRoute, redirect} from "@tanstack/react-router"
 import {Tasks} from "~/components"
 import {API} from "~/service"
+import {SearchQuerySchema} from "~/utils/schema"
 
 export const Route = createFileRoute("/_auth/")({
-  loader: async () => {
+  validateSearch: SearchQuerySchema,
+  loaderDeps: ({search: {query}}) => ({query}),
+  loader: async ({deps: {query}}) => {
     return {
-      tasks: await API.getTasks(null),
+      tasks: await API.getTasks(null, query),
     }
   },
   beforeLoad: ({context, location}) => {

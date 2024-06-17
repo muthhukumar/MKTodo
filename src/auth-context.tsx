@@ -7,14 +7,14 @@ type Creds = {
   host: string
 }
 
-export interface AuthContext {
+export interface AuthContextType {
   isAuthenticated: boolean
   login: (creds: Creds) => void
   logout: () => void
   creds: Creds | null
 }
 
-const AuthContext = React.createContext<AuthContext | null>(null)
+const AuthContext = React.createContext<AuthContextType | null>(null)
 
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const [creds, setCreds] = React.useState<{apiKey: string; host: string} | null>(null)

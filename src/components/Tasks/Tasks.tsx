@@ -71,21 +71,23 @@ export default function Tasks(props: TasksProps) {
 
     if (!task) return
 
+    let currentTask = task
+
     setTask("")
 
-    setNewTasks(state => [...state, {name: task, status: "started"}])
+    setNewTasks(state => [...state, {name: currentTask, status: "started"}])
 
     try {
-      await API.createTask({task})
+      await API.createTask({task: currentTask})
 
-      setNewTasks(state => state.filter(t => t.name !== task))
+      setNewTasks(state => state.filter(t => t.name !== currentTask))
 
       router.invalidate()
     } catch (error) {
       setNewTasks(state => {
         const clone = [...state]
 
-        const idx = clone.findIndex(t => t.name === task)
+        const idx = clone.findIndex(t => t.name === currentTask)
 
         clone[idx] = {...clone[idx], status: "failed"}
 
@@ -201,9 +203,7 @@ function DueDateFilters() {
       {filters.map(f => (
         <Link
           to="/planned"
-          search={{
-            filter: f.filter,
-          }}
+          search={{filter: f.filter, query: ""}}
           key={f.id}
           className={clsx("hover:bg-light-black rounded-md px-3 py-[2px] text-sm", {
             "bg-light-black": filter === f.filter,
