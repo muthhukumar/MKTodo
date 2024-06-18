@@ -1,5 +1,6 @@
 import {createFileRoute} from "@tanstack/react-router"
 import {Tasks} from "~/components"
+import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
 import {SearchQuerySchema} from "~/utils/schema"
 
@@ -11,8 +12,9 @@ export const Route = createFileRoute("/_auth/important")({
       tasks: await API.getTasks("important", query),
     }
   },
-  // TODO - render the error component here
   component: ImportantTasks,
+  errorComponent: ErrorMessage,
+  pendingComponent: LoadingScreen,
 })
 
 function ImportantTasks() {

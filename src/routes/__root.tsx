@@ -5,6 +5,7 @@ import "../modal.css"
 
 import {Outlet, createRootRouteWithContext} from "@tanstack/react-router"
 import {AuthContextType} from "~/auth-context"
+import {ErrorMessage} from "~/components/screens"
 
 interface MyRouterContext {
   auth: AuthContextType
@@ -12,6 +13,7 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
+  errorComponent: ErrorMessage,
 })
 
 function RootComponent() {

@@ -1,5 +1,6 @@
 import {createFileRoute, redirect} from "@tanstack/react-router"
 import {Tasks} from "~/components"
+import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
 import {SearchQuerySchema} from "~/utils/schema"
 
@@ -22,6 +23,8 @@ export const Route = createFileRoute("/_auth/")({
     }
   },
   component: AllTasks,
+  errorComponent: ErrorMessage,
+  pendingComponent: LoadingScreen,
 })
 
 function AllTasks() {

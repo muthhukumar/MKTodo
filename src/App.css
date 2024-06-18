@@ -135,6 +135,10 @@ body {
   right: 0;
 }
 
+.dark-loader:after {
+  background: #141414;
+}
+
 @-webkit-keyframes load3 {
   0% {
     -webkit-transform: rotate(0deg);

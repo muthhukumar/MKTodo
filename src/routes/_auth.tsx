@@ -1,5 +1,6 @@
 import {createFileRoute, Outlet, redirect} from "@tanstack/react-router"
 import {DesktopOnly, Sidebar} from "~/components"
+import {ErrorMessage} from "~/components/screens"
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: ({context, location}) => {
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/_auth")({
     }
   },
   component: Auth,
+  errorComponent: ErrorMessage,
 })
 
 function Auth() {

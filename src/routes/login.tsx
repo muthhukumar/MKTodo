@@ -2,6 +2,7 @@ import * as React from "react"
 import {createFileRoute, redirect} from "@tanstack/react-router"
 import {useAuth} from "~/auth-context"
 import {z} from "zod"
+import {ErrorMessage} from "~/components/screens"
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/login")({
     }
   },
   component: LoginForm,
+  errorComponent: ErrorMessage,
 })
 
 function LoginForm() {

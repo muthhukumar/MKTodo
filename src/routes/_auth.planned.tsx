@@ -1,6 +1,7 @@
 import {createFileRoute} from "@tanstack/react-router"
 import {z} from "zod"
 import {Tasks} from "~/components"
+import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
 import {useAsyncFilteredTasks} from "~/utils/tasks/hooks"
 
@@ -20,6 +21,8 @@ export const Route = createFileRoute("/_auth/planned")({
     }
   },
   component: PlannedTasks,
+  errorComponent: ErrorMessage,
+  pendingComponent: LoadingScreen,
 })
 
 function PlannedTasks() {
