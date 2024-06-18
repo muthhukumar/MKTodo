@@ -8,6 +8,8 @@ import Drawer from "./Drawer"
 import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {API} from "~/service"
 import {separateTasks} from "~/utils/tasks"
+import {PiHamburger} from "react-icons/pi"
+import MobileOnly from "../MobileOnly"
 
 interface TasksProps {
   showFilters?: boolean
@@ -107,8 +109,13 @@ export default function Tasks(props: TasksProps) {
     <div className="flex bg-dark-black w-full">
       <div className="w-full max-h-[100vh] relative">
         <div className="px-3">
-          <div className="flex items-center mt-5 mb-1">
+          <div className="flex items-center mt-5 mb-1 justify-between">
             <h1 className="text-2xl font-bold">{title ? title : "Tasks"}</h1>
+            <MobileOnly>
+              <Link to="/mobile-nav">
+                <PiHamburger size={20} />
+              </Link>
+            </MobileOnly>
           </div>
           {showFilters && (
             <div>
@@ -199,17 +206,20 @@ function DueDateFilters() {
   const {filter} = useSearch({from: "/_auth/planned"})
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 overflow-auto no-scrollbar">
       {filters.map(f => (
         <Link
           to="/planned"
           search={{filter: f.filter, query: ""}}
           key={f.id}
-          className={clsx("hover:bg-light-black rounded-md px-3 py-[2px] text-sm", {
-            "bg-light-black": filter === f.filter,
-          })}
+          className={clsx(
+            "inline-block w-fit hover:bg-light-black rounded-md px-3 py-[2px] text-sm no-break",
+            {
+              "bg-light-black": filter === f.filter,
+            },
+          )}
         >
-          {f.name}
+          <span>{f.name}</span>
         </Link>
       ))}
     </div>

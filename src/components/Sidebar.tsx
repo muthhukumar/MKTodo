@@ -9,6 +9,7 @@ import {IoSearchOutline} from "react-icons/io5"
 import {APIStore} from "~/utils/tauri-store"
 import {Link, useLocation, useNavigate} from "@tanstack/react-router"
 import {useDelay} from "~/utils/hooks"
+import {twMerge} from "tailwind-merge"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname === path
@@ -37,7 +38,7 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
   )
 }
 
-export default function Sidebar() {
+export default function Sidebar({className}: {className?: string}) {
   const location = useLocation()
   const navigate = useNavigate({from: location.pathname})
 
@@ -56,7 +57,12 @@ export default function Sidebar() {
   }, 1200)
 
   return (
-    <div className="h-screen relative w-1/4 max-w-md py-8 bg-mid-black border-r-2 border-blak">
+    <div
+      className={twMerge(
+        "h-screen relative w-1/4 max-w-md py-8 bg-mid-black border-r-2 border-blak",
+        className,
+      )}
+    >
       <div className="px-3">
         <form className="focus-within:ring-2 focus-within:ring-blue-500 px-1 flex items-center gap-3 border border-zinc-700 rounded-md  bg-light-black">
           <IoSearchOutline size={22} />

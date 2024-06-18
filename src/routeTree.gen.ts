@@ -16,6 +16,7 @@ import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth.index'
 import { Route as AuthPlannedImport } from './routes/_auth.planned'
 import { Route as AuthMyDayImport } from './routes/_auth.my-day'
+import { Route as AuthMobileNavImport } from './routes/_auth.mobile-nav'
 import { Route as AuthImportantImport } from './routes/_auth.important'
 
 // Create/Update Routes
@@ -42,6 +43,11 @@ const AuthPlannedRoute = AuthPlannedImport.update({
 
 const AuthMyDayRoute = AuthMyDayImport.update({
   path: '/my-day',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthMobileNavRoute = AuthMobileNavImport.update({
+  path: '/mobile-nav',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -75,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImportantImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/mobile-nav': {
+      id: '/_auth/mobile-nav'
+      path: '/mobile-nav'
+      fullPath: '/mobile-nav'
+      preLoaderRoute: typeof AuthMobileNavImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/my-day': {
       id: '/_auth/my-day'
       path: '/my-day'
@@ -104,6 +117,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   AuthRoute: AuthRoute.addChildren({
     AuthImportantRoute,
+    AuthMobileNavRoute,
     AuthMyDayRoute,
     AuthPlannedRoute,
     AuthIndexRoute,
@@ -127,6 +141,7 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_auth.tsx",
       "children": [
         "/_auth/important",
+        "/_auth/mobile-nav",
         "/_auth/my-day",
         "/_auth/planned",
         "/_auth/"
@@ -137,6 +152,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/_auth/important": {
       "filePath": "_auth.important.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/mobile-nav": {
+      "filePath": "_auth.mobile-nav.tsx",
       "parent": "/_auth"
     },
     "/_auth/my-day": {
