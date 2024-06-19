@@ -1,4 +1,4 @@
-import {createFileRoute, redirect} from "@tanstack/react-router"
+import {createFileRoute, Outlet, redirect} from "@tanstack/react-router"
 import {Tasks} from "~/components"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
@@ -30,5 +30,10 @@ export const Route = createFileRoute("/_auth/")({
 function AllTasks() {
   const {tasks} = Route.useLoaderData()
 
-  return <Tasks tasks={tasks} />
+  return (
+    <>
+      <Tasks type="index" tasks={tasks} />
+      <Outlet />
+    </>
+  )
 }

@@ -15,6 +15,7 @@ interface TasksProps {
   showFilters?: boolean
   title?: string
   tasks: Array<TTask>
+  type: "index" | "my-day" | "planned" | "important"
 }
 
 export default function Tasks(props: TasksProps) {
@@ -105,12 +106,21 @@ export default function Tasks(props: TasksProps) {
 
   const {completedTasks, pendingTasks} = React.useMemo(() => separateTasks(tasks), [tasks])
 
+  const tasksType = props.type || "index"
+
+  const to = tasksType === "index" ? `/index/$taskId` : `/${tasksType}/$taskId`
+
   return (
     <div className="flex bg-dark-black w-full">
       <div className="w-full max-h-[100vh] relative">
         <div className="px-3">
           <div className="flex items-center mt-5 mb-1 justify-between">
-            <h1 className="text-2xl font-bold">{title ? title : "Tasks"}</h1>
+            <h1 className="flex items-center gap-2 text-2xl font-bold">
+              <span>{title ? title : "Tasks"}</span>
+              <span className="font-normal text-sm px-2 py-1 rounded-md bg-light-black">
+                {completedTasks?.length}
+              </span>
+            </h1>
             <MobileOnly>
               <Link to="/mobile-nav">
                 <PiHamburger size={20} />
@@ -118,7 +128,7 @@ export default function Tasks(props: TasksProps) {
             </MobileOnly>
           </div>
           {showFilters && (
-            <div>
+            <div className="my-3">
               <DueDateFilters />
             </div>
           )}
@@ -148,21 +158,25 @@ export default function Tasks(props: TasksProps) {
             ))}
             {newTasks.length > 0 && <div className="min-h-[12px]" />}
             {pendingTasks.map(t => (
-              <Task
-                key={t.id}
-                {...t}
-                onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
-              />
+              <Link to={to} params={{taskId: String(t.id)}} key={t.id}>
+                <Task
+                  {...t}
+                  onClick={currentTask => {
+                    setShowSidebar({taskId: currentTask.id, show: true})
+                  }}
+                />
+              </Link>
             ))}
             {completedTasks.length > 0 && (
               <h2 className="w-fit text-sm bg-light-black rounded-md px-2 py-1 my-2">Completed</h2>
             )}
             {completedTasks.map(t => (
-              <Task
-                key={t.id}
-                {...t}
-                onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
-              />
+              <Link to={to} params={{taskId: String(t.id)}} key={t.id}>
+                <Task
+                  {...t}
+                  onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
+                />
+              </Link>
             ))}
             <div className="min-h-[8vh]" />
           </div>
@@ -213,7 +227,7 @@ function DueDateFilters() {
           search={{filter: f.filter, query: ""}}
           key={f.id}
           className={clsx(
-            "inline-block w-fit hover:bg-light-black rounded-md px-3 py-[2px] text-sm no-break",
+            "inline-block w-fit hover:bg-light-black rounded-md px-5 py-[4px] md:px-3 md:py-[2px] text-sm no-break",
             {
               "bg-light-black": filter === f.filter,
             },

@@ -23,7 +23,7 @@ export default function Drawer({
   due_date,
 }: TTask & {
   onDismiss: () => void
-  ignoreRef: React.RefObject<HTMLDivElement>
+  ignoreRef?: React.RefObject<HTMLDivElement>
 }) {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)

@@ -13,6 +13,16 @@ async function getTasks(filter: "my-day" | "important" | null, query?: string) {
   }
 }
 
+async function getTask(taskId: TTask["id"]) {
+  try {
+    const response = await axios.get(`/api/v1/task/${taskId}`)
+
+    return response.data.data as TTask
+  } catch (error) {
+    return Promise.reject("Failed")
+  }
+}
+
 async function createTask({task}: {task: string}) {
   try {
     const response = await axios.post(`/api/v1/task/create`, {
@@ -98,4 +108,5 @@ export const API = {
   toggleTaskImportanceById,
   toggleTaskAddToMyDayById,
   updateTaskDueDateById,
+  getTask,
 }

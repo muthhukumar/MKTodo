@@ -1,4 +1,4 @@
-import {createFileRoute} from "@tanstack/react-router"
+import {createFileRoute, Outlet} from "@tanstack/react-router"
 import {z} from "zod"
 import {Tasks} from "~/components"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
@@ -36,5 +36,10 @@ function PlannedTasks() {
     tasks,
   })
 
-  return <Tasks tasks={filteredTasks} showFilters title="Planned" />
+  return (
+    <>
+      <Tasks type="planned" tasks={filteredTasks} showFilters title="Planned" />
+      <Outlet />
+    </>
+  )
 }
