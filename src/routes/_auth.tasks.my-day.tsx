@@ -4,7 +4,7 @@ import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
 import {SearchQuerySchema} from "~/utils/schema"
 
-export const Route = createFileRoute("/_auth/my-day")({
+export const Route = createFileRoute("/_auth/tasks/my-day")({
   validateSearch: SearchQuerySchema,
   loaderDeps: ({search: {query}}) => ({query}),
   loader: async ({deps: {query}}) => {

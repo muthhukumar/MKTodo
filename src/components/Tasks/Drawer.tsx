@@ -18,20 +18,41 @@ export default function Drawer({
   created_at,
   id,
   onDismiss,
-  ignoreRef,
   marked_today,
   due_date,
 }: TTask & {
   onDismiss: () => void
   ignoreRef?: React.RefObject<HTMLDivElement>
 }) {
+  const [showInput, setShowInput] = React.useState(false)
+
+  const [task, setTask] = React.useState(name)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)
   const modalRef = React.useRef<HTMLDivElement>(null)
 
   const router = useRouter()
 
-  useOutsideAlerter(containerRef, {onClickOutside: onDismiss, ignore: [ignoreRef, modalRef]})
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  useOutsideAlerter(containerRef, {onClickOutside: onDismiss, ignore: [modalRef]})
+  useOutsideAlerter(inputRef, {onClickOutside: () => setShowInput(false), ignore: []})
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    try {
+      await API.updateTaskById({id: id, task})
+
+      router.invalidate()
+    } catch {
+      setTask(name)
+
+      console.log("failed to update task name")
+    } finally {
+      setShowInput(false)
+    }
+  }
 
   async function toggleTaskAddToMyDay(id: number) {
     try {
@@ -75,13 +96,28 @@ export default function Drawer({
 
   return (
     <div
-      className="border-l border-zinc-700 slide-in fixed right-0 h-screen max-w-xs z-10 min-w-72 max-h-[100vh] py-3 px-3 bg-dark-black"
+      className="w-full border-l border-zinc-700 slide-in fixed right-0 h-screen md:max-w-xs z-10 min-w-72 max-h-[100vh] py-3 px-3 bg-dark-black"
       ref={containerRef}
     >
-      <div className="h-[8vh] flex items-center">
-        <div className="mt-3 flex items-center">
-          <TaskToggleIcon completed={completed} onClick={() => toggleTask(id)} />
-          <p>{name}</p>
+      <div className="flex items-center w-full mb-3">
+        <div className="mt-3 flex items-center w-full">
+          <div className="flex-[0.1] flex items-center">
+            <TaskToggleIcon completed={completed} onClick={() => toggleTask(id)} />
+          </div>
+          <form onSubmit={onSubmit} className="flex-[0.9] w-full">
+            {!showInput ? (
+              <button onClick={() => setShowInput(true)}>
+                <p className="break-all">{name}</p>
+              </button>
+            ) : (
+              <input
+                ref={inputRef}
+                className="w-full"
+                value={task}
+                onChange={e => setTask(e.target.value)}
+              />
+            )}
+          </form>
         </div>
       </div>
       <AddToMyDay id={id} markedToday={marked_today} onToggleAddToMyDay={toggleTaskAddToMyDay} />

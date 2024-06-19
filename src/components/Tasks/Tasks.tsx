@@ -15,7 +15,7 @@ interface TasksProps {
   showFilters?: boolean
   title?: string
   tasks: Array<TTask>
-  type: "index" | "my-day" | "planned" | "important"
+  type: "all" | "my-day" | "planned" | "important"
 }
 
 export default function Tasks(props: TasksProps) {
@@ -106,9 +106,9 @@ export default function Tasks(props: TasksProps) {
 
   const {completedTasks, pendingTasks} = React.useMemo(() => separateTasks(tasks), [tasks])
 
-  const tasksType = props.type || "index"
+  const tasksType = props.type || "all"
 
-  const to = tasksType === "index" ? `/index/$taskId` : `/${tasksType}/$taskId`
+  const to = `/tasks/${tasksType}/$taskId`
 
   return (
     <div className="flex bg-dark-black w-full">
@@ -159,12 +159,7 @@ export default function Tasks(props: TasksProps) {
             {newTasks.length > 0 && <div className="min-h-[12px]" />}
             {pendingTasks.map(t => (
               <Link to={to} params={{taskId: String(t.id)}} key={t.id}>
-                <Task
-                  {...t}
-                  onClick={currentTask => {
-                    setShowSidebar({taskId: currentTask.id, show: true})
-                  }}
-                />
+                <Task {...t} />
               </Link>
             ))}
             {completedTasks.length > 0 && (
@@ -172,10 +167,7 @@ export default function Tasks(props: TasksProps) {
             )}
             {completedTasks.map(t => (
               <Link to={to} params={{taskId: String(t.id)}} key={t.id}>
-                <Task
-                  {...t}
-                  onClick={currentTask => setShowSidebar({taskId: currentTask.id, show: true})}
-                />
+                <Task {...t} />
               </Link>
             ))}
             <div className="min-h-[8vh]" />
@@ -217,13 +209,13 @@ const filters = [
 ] as const
 
 function DueDateFilters() {
-  const {filter} = useSearch({from: "/_auth/planned"})
+  const {filter} = useSearch({from: "/_auth/tasks/planned"})
 
   return (
     <div className="flex items-center gap-2 overflow-auto no-scrollbar">
       {filters.map(f => (
         <Link
-          to="/planned"
+          to="/tasks/planned"
           search={{filter: f.filter, query: ""}}
           key={f.id}
           className={clsx(

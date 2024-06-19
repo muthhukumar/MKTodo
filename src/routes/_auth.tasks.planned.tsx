@@ -12,7 +12,7 @@ const plannedFilter = z.object({
   query: z.string().catch(""),
 })
 
-export const Route = createFileRoute("/_auth/planned")({
+export const Route = createFileRoute("/_auth/tasks/planned")({
   validateSearch: plannedFilter,
   loaderDeps: ({search: {query}}) => ({query}),
   loader: async ({deps: {query}}) => {

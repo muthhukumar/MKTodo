@@ -1,9 +1,9 @@
-import {createFileRoute, useRouter} from "@tanstack/react-router"
+import {createFileRoute, useNavigate} from "@tanstack/react-router"
 import Drawer from "~/components/Tasks/Drawer"
 import {ErrorMessage} from "~/components/screens"
 import {API} from "~/service"
 
-export const Route = createFileRoute("/_auth/my-day/$taskId")({
+export const Route = createFileRoute("/_auth/tasks/all/$taskId")({
   loader: async ({params: {taskId}}) => {
     return {
       ...(await API.getTask(Number(taskId))),
@@ -16,9 +16,9 @@ export const Route = createFileRoute("/_auth/my-day/$taskId")({
 function TaskDetail() {
   const task = Route.useLoaderData()
 
-  const router = useRouter()
+  const navigate = useNavigate({from: "/tasks/all/$taskId"})
 
-  const goBack = () => router.history.back()
+  const goBack = () => navigate({to: "/tasks/all", search: {query: ""}})
 
   return <Drawer {...task} onDismiss={goBack} />
 }

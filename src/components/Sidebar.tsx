@@ -12,7 +12,7 @@ import {useDelay} from "~/utils/hooks"
 import {twMerge} from "tailwind-merge"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
-  const isActivePath = window.location.pathname === path
+  const isActivePath = window.location.pathname.includes(path)
 
   return (
     <Link
@@ -59,7 +59,7 @@ export default function Sidebar({className}: {className?: string}) {
   return (
     <div
       className={twMerge(
-        "h-screen relative w-1/4 max-w-md py-8 bg-mid-black border-r-2 border-blak",
+        "h-screen relative w-1/4 min-w-80 max-w-md py-8 bg-mid-black border-r-2 border-blak",
         className,
       )}
     >
@@ -79,10 +79,10 @@ export default function Sidebar({className}: {className?: string}) {
           </button>
         </form>
         <div className="flex-col flex gap-2 mt-5">
-          <IconLink Icon={MdOutlineWbSunny} title="My Day" path="/my-day" />
-          <IconLink Icon={CiStar} title="Important" path="/important" />
-          <IconLink Icon={CiCalendarDate} title="Planned" path="/planned" />
-          <IconLink Icon={TbHomeCheck} title="Tasks" path="/" />
+          <IconLink Icon={MdOutlineWbSunny} title="My Day" path="/tasks/my-day" />
+          <IconLink Icon={CiStar} title="Important" path="/tasks/important" />
+          <IconLink Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />
+          <IconLink Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
         </div>
         <button
           className="border border-light-black rounded-md px-3 py-2 w-full mt-5"

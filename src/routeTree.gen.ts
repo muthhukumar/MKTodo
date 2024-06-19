@@ -14,14 +14,15 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth.index'
-import { Route as AuthPlannedImport } from './routes/_auth.planned'
-import { Route as AuthMyDayImport } from './routes/_auth.my-day'
 import { Route as AuthMobileNavImport } from './routes/_auth.mobile-nav'
-import { Route as AuthImportantImport } from './routes/_auth.important'
-import { Route as AuthIndexTaskIdImport } from './routes/_auth.index.$taskId'
-import { Route as AuthPlannedTaskIdImport } from './routes/_auth.planned.$taskId'
-import { Route as AuthMyDayTaskIdImport } from './routes/_auth.my-day.$taskId'
-import { Route as AuthImportantTaskIdImport } from './routes/_auth.important.$taskId'
+import { Route as AuthTasksPlannedImport } from './routes/_auth.tasks.planned'
+import { Route as AuthTasksMyDayImport } from './routes/_auth.tasks.my-day'
+import { Route as AuthTasksImportantImport } from './routes/_auth.tasks.important'
+import { Route as AuthTasksAllImport } from './routes/_auth.tasks.all'
+import { Route as AuthTasksPlannedTaskIdImport } from './routes/_auth.tasks.planned.$taskId'
+import { Route as AuthTasksMyDayTaskIdImport } from './routes/_auth.tasks.my-day.$taskId'
+import { Route as AuthTasksImportantTaskIdImport } from './routes/_auth.tasks.important.$taskId'
+import { Route as AuthTasksAllTaskIdImport } from './routes/_auth.tasks.all.$taskId'
 
 // Create/Update Routes
 
@@ -40,44 +41,49 @@ const AuthIndexRoute = AuthIndexImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthPlannedRoute = AuthPlannedImport.update({
-  path: '/planned',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthMyDayRoute = AuthMyDayImport.update({
-  path: '/my-day',
-  getParentRoute: () => AuthRoute,
-} as any)
-
 const AuthMobileNavRoute = AuthMobileNavImport.update({
   path: '/mobile-nav',
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthImportantRoute = AuthImportantImport.update({
-  path: '/important',
+const AuthTasksPlannedRoute = AuthTasksPlannedImport.update({
+  path: '/tasks/planned',
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthIndexTaskIdRoute = AuthIndexTaskIdImport.update({
-  path: '/index/$taskId',
+const AuthTasksMyDayRoute = AuthTasksMyDayImport.update({
+  path: '/tasks/my-day',
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthPlannedTaskIdRoute = AuthPlannedTaskIdImport.update({
-  path: '/$taskId',
-  getParentRoute: () => AuthPlannedRoute,
+const AuthTasksImportantRoute = AuthTasksImportantImport.update({
+  path: '/tasks/important',
+  getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthMyDayTaskIdRoute = AuthMyDayTaskIdImport.update({
-  path: '/$taskId',
-  getParentRoute: () => AuthMyDayRoute,
+const AuthTasksAllRoute = AuthTasksAllImport.update({
+  path: '/tasks/all',
+  getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthImportantTaskIdRoute = AuthImportantTaskIdImport.update({
+const AuthTasksPlannedTaskIdRoute = AuthTasksPlannedTaskIdImport.update({
   path: '/$taskId',
-  getParentRoute: () => AuthImportantRoute,
+  getParentRoute: () => AuthTasksPlannedRoute,
+} as any)
+
+const AuthTasksMyDayTaskIdRoute = AuthTasksMyDayTaskIdImport.update({
+  path: '/$taskId',
+  getParentRoute: () => AuthTasksMyDayRoute,
+} as any)
+
+const AuthTasksImportantTaskIdRoute = AuthTasksImportantTaskIdImport.update({
+  path: '/$taskId',
+  getParentRoute: () => AuthTasksImportantRoute,
+} as any)
+
+const AuthTasksAllTaskIdRoute = AuthTasksAllTaskIdImport.update({
+  path: '/$taskId',
+  getParentRoute: () => AuthTasksAllRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -98,32 +104,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
-    '/_auth/important': {
-      id: '/_auth/important'
-      path: '/important'
-      fullPath: '/important'
-      preLoaderRoute: typeof AuthImportantImport
-      parentRoute: typeof AuthImport
-    }
     '/_auth/mobile-nav': {
       id: '/_auth/mobile-nav'
       path: '/mobile-nav'
       fullPath: '/mobile-nav'
       preLoaderRoute: typeof AuthMobileNavImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/my-day': {
-      id: '/_auth/my-day'
-      path: '/my-day'
-      fullPath: '/my-day'
-      preLoaderRoute: typeof AuthMyDayImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/planned': {
-      id: '/_auth/planned'
-      path: '/planned'
-      fullPath: '/planned'
-      preLoaderRoute: typeof AuthPlannedImport
       parentRoute: typeof AuthImport
     }
     '/_auth/': {
@@ -133,33 +118,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/important/$taskId': {
-      id: '/_auth/important/$taskId'
-      path: '/$taskId'
-      fullPath: '/important/$taskId'
-      preLoaderRoute: typeof AuthImportantTaskIdImport
-      parentRoute: typeof AuthImportantImport
-    }
-    '/_auth/my-day/$taskId': {
-      id: '/_auth/my-day/$taskId'
-      path: '/$taskId'
-      fullPath: '/my-day/$taskId'
-      preLoaderRoute: typeof AuthMyDayTaskIdImport
-      parentRoute: typeof AuthMyDayImport
-    }
-    '/_auth/planned/$taskId': {
-      id: '/_auth/planned/$taskId'
-      path: '/$taskId'
-      fullPath: '/planned/$taskId'
-      preLoaderRoute: typeof AuthPlannedTaskIdImport
-      parentRoute: typeof AuthPlannedImport
-    }
-    '/_auth/index/$taskId': {
-      id: '/_auth/index/$taskId'
-      path: '/index/$taskId'
-      fullPath: '/index/$taskId'
-      preLoaderRoute: typeof AuthIndexTaskIdImport
+    '/_auth/tasks/all': {
+      id: '/_auth/tasks/all'
+      path: '/tasks/all'
+      fullPath: '/tasks/all'
+      preLoaderRoute: typeof AuthTasksAllImport
       parentRoute: typeof AuthImport
+    }
+    '/_auth/tasks/important': {
+      id: '/_auth/tasks/important'
+      path: '/tasks/important'
+      fullPath: '/tasks/important'
+      preLoaderRoute: typeof AuthTasksImportantImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/tasks/my-day': {
+      id: '/_auth/tasks/my-day'
+      path: '/tasks/my-day'
+      fullPath: '/tasks/my-day'
+      preLoaderRoute: typeof AuthTasksMyDayImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/tasks/planned': {
+      id: '/_auth/tasks/planned'
+      path: '/tasks/planned'
+      fullPath: '/tasks/planned'
+      preLoaderRoute: typeof AuthTasksPlannedImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/tasks/all/$taskId': {
+      id: '/_auth/tasks/all/$taskId'
+      path: '/$taskId'
+      fullPath: '/tasks/all/$taskId'
+      preLoaderRoute: typeof AuthTasksAllTaskIdImport
+      parentRoute: typeof AuthTasksAllImport
+    }
+    '/_auth/tasks/important/$taskId': {
+      id: '/_auth/tasks/important/$taskId'
+      path: '/$taskId'
+      fullPath: '/tasks/important/$taskId'
+      preLoaderRoute: typeof AuthTasksImportantTaskIdImport
+      parentRoute: typeof AuthTasksImportantImport
+    }
+    '/_auth/tasks/my-day/$taskId': {
+      id: '/_auth/tasks/my-day/$taskId'
+      path: '/$taskId'
+      fullPath: '/tasks/my-day/$taskId'
+      preLoaderRoute: typeof AuthTasksMyDayTaskIdImport
+      parentRoute: typeof AuthTasksMyDayImport
+    }
+    '/_auth/tasks/planned/$taskId': {
+      id: '/_auth/tasks/planned/$taskId'
+      path: '/$taskId'
+      fullPath: '/tasks/planned/$taskId'
+      preLoaderRoute: typeof AuthTasksPlannedTaskIdImport
+      parentRoute: typeof AuthTasksPlannedImport
     }
   }
 }
@@ -168,14 +181,20 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   AuthRoute: AuthRoute.addChildren({
-    AuthImportantRoute: AuthImportantRoute.addChildren({
-      AuthImportantTaskIdRoute,
-    }),
     AuthMobileNavRoute,
-    AuthMyDayRoute: AuthMyDayRoute.addChildren({ AuthMyDayTaskIdRoute }),
-    AuthPlannedRoute: AuthPlannedRoute.addChildren({ AuthPlannedTaskIdRoute }),
     AuthIndexRoute,
-    AuthIndexTaskIdRoute,
+    AuthTasksAllRoute: AuthTasksAllRoute.addChildren({
+      AuthTasksAllTaskIdRoute,
+    }),
+    AuthTasksImportantRoute: AuthTasksImportantRoute.addChildren({
+      AuthTasksImportantTaskIdRoute,
+    }),
+    AuthTasksMyDayRoute: AuthTasksMyDayRoute.addChildren({
+      AuthTasksMyDayTaskIdRoute,
+    }),
+    AuthTasksPlannedRoute: AuthTasksPlannedRoute.addChildren({
+      AuthTasksPlannedTaskIdRoute,
+    }),
   }),
   LoginRoute,
 })
@@ -195,61 +214,68 @@ export const routeTree = rootRoute.addChildren({
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
-        "/_auth/important",
         "/_auth/mobile-nav",
-        "/_auth/my-day",
-        "/_auth/planned",
         "/_auth/",
-        "/_auth/index/$taskId"
+        "/_auth/tasks/all",
+        "/_auth/tasks/important",
+        "/_auth/tasks/my-day",
+        "/_auth/tasks/planned"
       ]
     },
     "/login": {
       "filePath": "login.tsx"
     },
-    "/_auth/important": {
-      "filePath": "_auth.important.tsx",
-      "parent": "/_auth",
-      "children": [
-        "/_auth/important/$taskId"
-      ]
-    },
     "/_auth/mobile-nav": {
       "filePath": "_auth.mobile-nav.tsx",
       "parent": "/_auth"
-    },
-    "/_auth/my-day": {
-      "filePath": "_auth.my-day.tsx",
-      "parent": "/_auth",
-      "children": [
-        "/_auth/my-day/$taskId"
-      ]
-    },
-    "/_auth/planned": {
-      "filePath": "_auth.planned.tsx",
-      "parent": "/_auth",
-      "children": [
-        "/_auth/planned/$taskId"
-      ]
     },
     "/_auth/": {
       "filePath": "_auth.index.tsx",
       "parent": "/_auth"
     },
-    "/_auth/important/$taskId": {
-      "filePath": "_auth.important.$taskId.tsx",
-      "parent": "/_auth/important"
+    "/_auth/tasks/all": {
+      "filePath": "_auth.tasks.all.tsx",
+      "parent": "/_auth",
+      "children": [
+        "/_auth/tasks/all/$taskId"
+      ]
     },
-    "/_auth/my-day/$taskId": {
-      "filePath": "_auth.my-day.$taskId.tsx",
-      "parent": "/_auth/my-day"
+    "/_auth/tasks/important": {
+      "filePath": "_auth.tasks.important.tsx",
+      "parent": "/_auth",
+      "children": [
+        "/_auth/tasks/important/$taskId"
+      ]
     },
-    "/_auth/planned/$taskId": {
-      "filePath": "_auth.planned.$taskId.tsx",
-      "parent": "/_auth/planned"
+    "/_auth/tasks/my-day": {
+      "filePath": "_auth.tasks.my-day.tsx",
+      "parent": "/_auth",
+      "children": [
+        "/_auth/tasks/my-day/$taskId"
+      ]
     },
-    "/_auth/index/$taskId": {
-      "filePath": "_auth.index.$taskId.tsx",
-      "parent": "/_auth"
+    "/_auth/tasks/planned": {
+      "filePath": "_auth.tasks.planned.tsx",
+      "parent": "/_auth",
+      "children": [
+        "/_auth/tasks/planned/$taskId"
+      ]
+    },
+    "/_auth/tasks/all/$taskId": {
+      "filePath": "_auth.tasks.all.$taskId.tsx",
+      "parent": "/_auth/tasks/all"
+    },
+    "/_auth/tasks/important/$taskId": {
+      "filePath": "_auth.tasks.important.$taskId.tsx",
+      "parent": "/_auth/tasks/important"
+    },
+    "/_auth/tasks/my-day/$taskId": {
+      "filePath": "_auth.tasks.my-day.$taskId.tsx",
+      "parent": "/_auth/tasks/my-day"
+    },
+    "/_auth/tasks/planned/$taskId": {
+      "filePath": "_auth.tasks.planned.$taskId.tsx",
+      "parent": "/_auth/tasks/planned"
     }
   }
 }
