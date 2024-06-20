@@ -7,7 +7,7 @@ import {FaRegStar} from "react-icons/fa"
 import {FaStar} from "react-icons/fa"
 import {FaRegCircle} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
-import {Link, useRouter} from "@tanstack/react-router"
+import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {MdSunny} from "react-icons/md"
 import {isDateSameAsToday} from "~/utils/date"
 import Loader from "../Loader"
@@ -20,6 +20,8 @@ export default function Task(props: TaskProps) {
   const [toggling, setToggling] = React.useState(false)
 
   const router = useRouter()
+
+  const search = useSearch({from: `/_auth/tasks/${props.type}`})
 
   async function toggleTaskImportance(id: number) {
     try {
@@ -47,7 +49,7 @@ export default function Task(props: TaskProps) {
 
   const tasksType = props.type || "all"
 
-  const to = `/tasks/${tasksType}/$taskId`
+  const to = `/tasks/${tasksType}/$taskId` as const
 
   return (
     <div className="flex items-center w-full rounded-md bg-light-black px-4">
@@ -68,6 +70,12 @@ export default function Task(props: TaskProps) {
       <Link
         to={to}
         params={{taskId: String(props.id)}}
+        search={{
+          query: search.query,
+          // @ts-ignore
+          // TODO - fix this later
+          filter: search.filter,
+        }}
         key={props.id}
         preload="intent"
         preloadDelay={800}

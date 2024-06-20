@@ -1,4 +1,4 @@
-import {createFileRoute, useNavigate} from "@tanstack/react-router"
+import {createFileRoute, useLocation, useNavigate, useSearch} from "@tanstack/react-router"
 import Drawer from "~/components/Tasks/Drawer"
 import {ErrorMessage} from "~/components/screens"
 import {API} from "~/service"
@@ -16,9 +16,14 @@ export const Route = createFileRoute("/_auth/tasks/planned/$taskId")({
 function TaskDetail() {
   const task = Route.useLoaderData()
 
-  const navigate = useNavigate({from: "/tasks/planned/$taskId"})
+  const location = useLocation()
 
-  const goBack = () => navigate({to: "/tasks/planned", search: {filter: "all-planned", query: ""}})
+  const navigate = useNavigate({from: location.href})
+
+  const search = useSearch({from: "/_auth/tasks/planned/$taskId"})
+
+  const goBack = () =>
+    navigate({to: "/tasks/planned", search: {filter: search.filter, query: search.query}})
 
   return <Drawer {...task} onDismiss={goBack} />
 }
