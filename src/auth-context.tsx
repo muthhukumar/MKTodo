@@ -1,6 +1,5 @@
 import * as React from "react"
-import {APIStore, CREDS, store} from "./utils/tauri-store"
-import {UnlistenFn} from "@tauri-apps/api/event"
+import {APIStore} from "./utils/tauri-store"
 import toast from "react-hot-toast"
 
 type Creds = {
@@ -21,30 +20,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const [creds, setCreds] = React.useState<{apiKey: string; host: string} | null>(null)
 
   const isAuthenticated = !!creds
-
-  React.useEffect(() => {
-    let unsubscribe: UnlistenFn | null = null
-
-    async function listen() {
-      try {
-        const creds = await APIStore.get()
-
-        setCreds(creds)
-
-        unsubscribe = await store.onKeyChange(CREDS, async () => {
-          setCreds(await APIStore.get())
-        })
-      } catch (err) {
-        toast.error("Key listening failed.")
-      }
-    }
-
-    listen()
-
-    return () => {
-      if (unsubscribe) unsubscribe()
-    }
-  }, [])
 
   React.useEffect(() => {
     async function getCreds() {

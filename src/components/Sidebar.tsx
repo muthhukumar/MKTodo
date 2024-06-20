@@ -6,10 +6,10 @@ import {TbHomeCheck} from "react-icons/tb"
 import {CiCalendarDate} from "react-icons/ci"
 import {RiCloseCircleFill} from "react-icons/ri"
 import {IoSearchOutline} from "react-icons/io5"
-import {APIStore} from "~/utils/tauri-store"
 import {Link, useLocation, useNavigate} from "@tanstack/react-router"
 import {useDelay} from "~/utils/hooks"
 import {twMerge} from "tailwind-merge"
+import {useAuth} from "~/auth-context"
 import toast from "react-hot-toast"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
@@ -42,15 +42,15 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
 export default function Sidebar({className}: {className?: string}) {
   const location = useLocation()
   const navigate = useNavigate({from: location.pathname})
+  const {logout} = useAuth()
 
-  async function chooseDifferentServer() {
-    try {
-      await APIStore.reset()
+  function chooseDifferentServer() {
+    toast.success("Logging out...")
+    logout()
 
-      navigate({from: location.pathname, to: "/login"})
-    } catch (error) {
-      toast.error("Choosing different server failed.")
-    }
+    setTimeout(() => {
+      navigate({to: "/login"})
+    }, 1200)
   }
 
   const search = useDelay((query: string) => {

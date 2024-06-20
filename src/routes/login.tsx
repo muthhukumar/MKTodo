@@ -1,9 +1,11 @@
 import * as React from "react"
-import {createFileRoute, redirect} from "@tanstack/react-router"
+import {createFileRoute, redirect, useNavigate} from "@tanstack/react-router"
 import {useAuth} from "~/auth-context"
 import {z} from "zod"
 import {ErrorMessage} from "~/components/screens"
 import toast from "react-hot-toast"
+import {Loader} from "~/components"
+import axios from "axios"
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({
@@ -21,7 +23,9 @@ export const Route = createFileRoute("/login")({
 function LoginForm() {
   const hostRef = React.useRef<HTMLInputElement>(null)
   const apiKeyRef = React.useRef<HTMLInputElement>(null)
+  const [loading, setLoading] = React.useState(false)
 
+  const navigate = useNavigate()
   const {login} = useAuth()
 
   async function onSubmit(e: React.FormEvent) {
@@ -31,10 +35,22 @@ function LoginForm() {
 
     if (!host || !apiKey) return
 
+    setLoading(true)
+
     try {
+      await axios.get(`${host}/api/v1/tasks`, {headers: {"x-api-key": apiKey}, timeout: 30000})
+
+      toast.success("Login successful")
+
       login({host, apiKey})
+
+      setTimeout(() => {
+        navigate({to: "/tasks/all", search: {query: ""}})
+      }, 1500)
     } catch (err) {
       toast.error("Login failed!")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -59,8 +75,14 @@ function LoginForm() {
             placeholder="API key"
           />
         </div>
-        <button className="border-light-black mt-8 px-3 py-2 w-full border rounded-md">
-          Connect
+        <button className="flex items-center justify-center border-light-black mt-8 px-3 py-2 w-full border rounded-md">
+          {!loading ? (
+            <span>Connect</span>
+          ) : (
+            <span className="py-1">
+              <Loader loaderClass="dark-loader" />
+            </span>
+          )}
         </button>
       </form>
     </div>
