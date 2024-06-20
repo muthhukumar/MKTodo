@@ -11,6 +11,7 @@ import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
+import toast from "react-hot-toast"
 
 export default function Drawer({
   name,
@@ -47,7 +48,7 @@ export default function Drawer({
     } catch {
       setTask(name)
 
-      console.log("failed to update task name")
+      toast.error("Updating task name failed")
     } finally {
       setShowInput(false)
     }
@@ -59,7 +60,7 @@ export default function Drawer({
 
       router.invalidate()
     } catch (error) {
-      console.log("failed to toggle task add to my day")
+      toast.error("Adding task to My Day failed")
     }
   }
 
@@ -69,7 +70,7 @@ export default function Drawer({
 
       router.invalidate()
     } catch (error) {
-      console.log("Failed to update task due date")
+      toast.error("Updating task Due Day failed")
     }
   }
 
@@ -79,7 +80,7 @@ export default function Drawer({
 
       router.invalidate()
     } catch (error) {
-      console.log("failed to delete task")
+      toast.error("Deleting task failed")
     }
   }
 
@@ -89,7 +90,7 @@ export default function Drawer({
 
       router.invalidate()
     } catch (error) {
-      console.log("failed to toggle task")
+      toast.error("Toggling Task completion failed")
     }
   }
 

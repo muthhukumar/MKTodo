@@ -11,6 +11,7 @@ import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {MdSunny} from "react-icons/md"
 import {isDateSameAsToday} from "~/utils/date"
 import Loader from "../Loader"
+import toast from "react-hot-toast"
 
 interface TaskProps extends TTask {
   type: "all" | "my-day" | "planned" | "important"
@@ -29,7 +30,7 @@ export default function Task(props: TaskProps) {
 
       router.invalidate()
     } catch (error) {
-      console.log("failed to toggle task importance")
+      toast.error("Toggle Importance failed")
     }
   }
 
@@ -41,7 +42,7 @@ export default function Task(props: TaskProps) {
 
       router.invalidate()
     } catch (error) {
-      console.log("failed to toggle task")
+      toast.error("Toggle Completion failed")
     } finally {
       setToggling(false)
     }

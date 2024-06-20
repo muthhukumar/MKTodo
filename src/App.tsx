@@ -3,6 +3,7 @@ import "./App.css"
 import "./tailwind.css"
 import "./css-reset.css"
 import "./modal.css"
+import {Toaster} from "react-hot-toast"
 
 import {createRouter, RouterProvider} from "@tanstack/react-router"
 import {useAuth, AuthProvider} from "./auth-context"
@@ -21,7 +22,12 @@ export const router = createRouter({
 function InnerApp() {
   const auth = useAuth()
 
-  return <RouterProvider router={router} context={{auth}} />
+  return (
+    <>
+      <Toaster position="top-center" />
+      <RouterProvider router={router} context={{auth}} />
+    </>
+  )
 }
 
 function App() {

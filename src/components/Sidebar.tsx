@@ -10,6 +10,7 @@ import {APIStore} from "~/utils/tauri-store"
 import {Link, useLocation, useNavigate} from "@tanstack/react-router"
 import {useDelay} from "~/utils/hooks"
 import {twMerge} from "tailwind-merge"
+import toast from "react-hot-toast"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname.includes(path)
@@ -48,7 +49,7 @@ export default function Sidebar({className}: {className?: string}) {
 
       navigate({from: location.pathname, to: "/login"})
     } catch (error) {
-      console.log("failed to choose different server", error)
+      toast.error("Choosing different server failed.")
     }
   }
 

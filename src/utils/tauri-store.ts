@@ -1,4 +1,5 @@
 import {Store} from "@tauri-apps/plugin-store"
+import toast from "react-hot-toast"
 
 export const store = new Store(".settings.dat")
 
@@ -9,14 +10,14 @@ export const APIStore = {
     try {
       await store.set(CREDS, {host, apiKey})
     } catch (error) {
-      console.log("Failed to save api key", error)
+      toast.error("Saving API key failed")
     }
   },
   async get() {
     try {
       return await store.get<{host: string; apiKey: string}>(CREDS)
     } catch (error) {
-      console.log("Failed to get API key", error)
+      toast.error("Getting API key failed")
       return null
     }
   },
@@ -26,7 +27,7 @@ export const APIStore = {
 
       return true
     } catch (error) {
-      console.log("failed to reset values")
+      toast.error("Resetting API key failed")
 
       return false
     }
@@ -38,7 +39,7 @@ export const APIStore = {
 
       return true
     } catch (error) {
-      console.log("failed to save", error)
+      toast.error("Saving API key failed")
       return false
     }
   },

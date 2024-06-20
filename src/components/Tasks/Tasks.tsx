@@ -10,6 +10,7 @@ import {API} from "~/service"
 import {separateTasks} from "~/utils/tasks"
 import {PiHamburger} from "react-icons/pi"
 import MobileOnly from "../MobileOnly"
+import toast from "react-hot-toast"
 
 interface TasksProps {
   showFilters?: boolean
@@ -65,7 +66,7 @@ export default function Tasks(props: TasksProps) {
 
         return clone
       })
-      console.log("failed to create task")
+      toast.error("Retrying Create Task failed.")
     }
   }
 
@@ -96,7 +97,7 @@ export default function Tasks(props: TasksProps) {
 
         return clone
       })
-      console.log("failed to create task")
+      toast.error("Create Task failed.")
     }
   }
 

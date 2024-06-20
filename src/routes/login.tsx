@@ -3,6 +3,7 @@ import {createFileRoute, redirect} from "@tanstack/react-router"
 import {useAuth} from "~/auth-context"
 import {z} from "zod"
 import {ErrorMessage} from "~/components/screens"
+import toast from "react-hot-toast"
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({
@@ -33,7 +34,7 @@ function LoginForm() {
     try {
       login({host, apiKey})
     } catch (err) {
-      console.log("faild to save details", err)
+      toast.error("Login failed!")
     }
   }
 

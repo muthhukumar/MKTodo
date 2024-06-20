@@ -1,6 +1,7 @@
 import * as React from "react"
 import {APIStore, CREDS, store} from "./utils/tauri-store"
 import {UnlistenFn} from "@tauri-apps/api/event"
+import toast from "react-hot-toast"
 
 type Creds = {
   apiKey: string
@@ -34,14 +35,13 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
           setCreds(await APIStore.get())
         })
       } catch (err) {
-        console.log("failed ot listen to values")
+        toast.error("Key listening failed.")
       }
     }
 
     listen()
 
     return () => {
-      console.log("unsubscripted")
       if (unsubscribe) unsubscribe()
     }
   }, [])
@@ -53,7 +53,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
         setCreds(creds)
       } catch (err) {
-        console.log("erro getting creds", err)
+        toast.error("Connecting to server failed...")
       }
     }
 
@@ -66,7 +66,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
       setCreds(null)
     } catch (error) {
-      console.log("failed to choose different server", error)
+      toast.error("Logout failed")
     }
   }
 
@@ -77,7 +77,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
       setCreds(creds)
     } catch (err) {
-      console.log("failed to save credentials", err)
+      toast.error("Session start failed")
     }
 
     return undefined
