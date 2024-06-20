@@ -35,7 +35,6 @@ export default function Drawer({
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  useOutsideAlerter(containerRef, {onClickOutside: onDismiss, ignore: [modalRef]})
   useOutsideAlerter(inputRef, {onClickOutside: () => setShowInput(false), ignore: []})
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -96,7 +95,7 @@ export default function Drawer({
 
   return (
     <div
-      className="w-full border-l border-zinc-700 slide-in fixed right-0 h-screen md:max-w-xs z-10 min-w-72 max-h-[100vh] py-3 px-3 bg-dark-black"
+      className="w-full border-l border-zinc-700 slide-in fixed md:static right-0 h-screen md:max-w-xs z-10 min-w-72 max-h-[100vh] py-3 px-3 bg-dark-black"
       ref={containerRef}
     >
       <div className="flex items-center w-full mb-3">

@@ -106,10 +106,6 @@ export default function Tasks(props: TasksProps) {
 
   const {completedTasks, pendingTasks} = React.useMemo(() => separateTasks(tasks), [tasks])
 
-  const tasksType = props.type || "all"
-
-  const to = `/tasks/${tasksType}/$taskId`
-
   return (
     <div className="flex bg-dark-black w-full">
       <div className="w-full max-h-[100vh] relative">
@@ -137,7 +133,10 @@ export default function Tasks(props: TasksProps) {
             ref={divRef}
           >
             {newTasks.map(t => (
-              <div className="px-3 py-1 bg-light-black rounded-md flex items-center justify-between">
+              <div
+                className="px-3 py-1 bg-light-black rounded-md flex items-center justify-between"
+                key={t.name}
+              >
                 <p>{t.name}</p>
                 <div className="flex items-center gap-1">
                   {t.status === "started" && <p className="ml-auto">Creating...</p>}
@@ -158,17 +157,13 @@ export default function Tasks(props: TasksProps) {
             ))}
             {newTasks.length > 0 && <div className="min-h-[12px]" />}
             {pendingTasks.map(t => (
-              <Link to={to} params={{taskId: String(t.id)}} key={t.id}>
-                <Task {...t} />
-              </Link>
+              <Task {...t} key={t.id} type={props.type} />
             ))}
             {completedTasks.length > 0 && (
               <h2 className="w-fit text-sm bg-light-black rounded-md px-2 py-1 my-2">Completed</h2>
             )}
             {completedTasks.map(t => (
-              <Link to={to} params={{taskId: String(t.id)}} key={t.id}>
-                <Task {...t} />
-              </Link>
+              <Task {...t} key={t.id} type={props.type} />
             ))}
             <div className="min-h-[8vh]" />
           </div>
