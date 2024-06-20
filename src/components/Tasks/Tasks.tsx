@@ -111,7 +111,7 @@ export default function Tasks(props: TasksProps) {
     <div className="flex bg-dark-black w-full">
       <div className="w-full max-h-[100vh] relative">
         <div className="px-3">
-          <div className="flex items-center mt-5 mb-1 justify-between">
+          <div className="flex items-center mt-3 mb-2 justify-between">
             <h1 className="flex items-center gap-2 text-2xl font-bold">
               <span>{title ? title : "Tasks"}</span>
               <span className="font-normal text-sm px-2 py-1 rounded-md bg-light-black">
@@ -124,13 +124,15 @@ export default function Tasks(props: TasksProps) {
               </Link>
             </MobileOnly>
           </div>
-          {showFilters && (
-            <div className="my-3">
-              <DueDateFilters />
-            </div>
-          )}
+          {showFilters && <DueDateFilters />}
           <div
-            className="mt-4 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll h-[90vh]"
+            className={clsx(
+              "mt-4 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll",
+              {
+                "h-[85vh]": showFilters,
+                "h-[90vh]": !showFilters,
+              },
+            )}
             ref={divRef}
           >
             {newTasks.map(t => (
@@ -176,6 +178,9 @@ export default function Tasks(props: TasksProps) {
               <FaPlus className="mx-3" />
               <input
                 value={task}
+                type="text"
+                name="Task"
+                title="Task"
                 onChange={e => setTask(e.target.value)}
                 className="outline-none w-full text-white rounded-md px-2 py-3 bg-mid-gray"
                 placeholder="Add a Task"
@@ -215,7 +220,7 @@ function DueDateFilters() {
           search={{filter: f.filter, query: ""}}
           key={f.id}
           className={clsx(
-            "inline-block w-fit hover:bg-light-black rounded-md px-5 py-[4px] md:px-3 md:py-[2px] text-sm no-break",
+            "inline-block w-fit hover:bg-light-black rounded-md px-3 py-2 text-sm no-break",
             {
               "bg-light-black": filter === f.filter,
             },
