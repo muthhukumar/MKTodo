@@ -30,3 +30,23 @@ export function separateTasks(tasks: Array<TTask>) {
     completedTasks,
   }
 }
+
+export class NewTask {
+  constructor(public name: string) {}
+}
+
+export class MyDayTask extends NewTask {
+  marked_today: string = ""
+  constructor({name, myDay}: {name: string; myDay: string}) {
+    super(name)
+    this.marked_today = myDay
+  }
+}
+
+export class ImportantTask extends NewTask {
+  is_important: boolean = true
+  constructor({name, important}: {name: string; important: boolean}) {
+    super(name)
+    this.is_important = important
+  }
+}

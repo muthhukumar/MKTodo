@@ -7,7 +7,7 @@ import {FaPlus} from "react-icons/fa6"
 import Drawer from "./Drawer"
 import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {API} from "~/service"
-import {separateTasks} from "~/utils/tasks"
+import {ImportantTask, MyDayTask, NewTask, separateTasks} from "~/utils/tasks"
 import {PiHamburger} from "react-icons/pi"
 import MobileOnly from "../MobileOnly"
 import toast from "react-hot-toast"
@@ -17,6 +17,7 @@ interface TasksProps {
   title?: string
   tasks: Array<TTask>
   type: "all" | "my-day" | "planned" | "important"
+  createTask?: (task: string) => NewTask | MyDayTask | ImportantTask
 }
 
 export default function Tasks(props: TasksProps) {
@@ -31,6 +32,7 @@ export default function Tasks(props: TasksProps) {
   const router = useRouter()
 
   const tasks = props.tasks
+  const createTask = props.createTask ? props.createTask : (task: string) => new NewTask(task)
 
   const [showSidebar, setShowSidebar] = React.useState<{show: boolean; taskId: TTask["id"] | null}>(
     {
@@ -51,7 +53,7 @@ export default function Tasks(props: TasksProps) {
     })
 
     try {
-      await API.createTask({task})
+      await API.createTask(createTask(task))
 
       setNewTasks(state => state.filter(t => t.name !== task))
 
@@ -82,7 +84,7 @@ export default function Tasks(props: TasksProps) {
     setNewTasks(state => [...state, {name: currentTask, status: "started"}])
 
     try {
-      await API.createTask({task: currentTask})
+      await API.createTask(createTask(currentTask))
 
       setNewTasks(state => state.filter(t => t.name !== currentTask))
 

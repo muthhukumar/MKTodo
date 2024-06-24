@@ -82,7 +82,7 @@ export default function Task(props: TaskProps) {
         preloadDelay={800}
         className={twMerge("py-2 w-full flex items-center text-white")}
       >
-        <div className="px-2">
+        <div className="w-full px-2">
           <div>
             <p key={props.id} className="text-white m-0 text-sm font-medium break-all">
               {props.name}
@@ -97,6 +97,7 @@ export default function Task(props: TaskProps) {
         </div>
         <div className="flex items-center ml-auto w-[24px]">
           <button
+            className="w-full"
             onClick={e => {
               toggleTaskImportance(props.id)
 
