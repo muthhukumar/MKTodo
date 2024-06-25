@@ -1,5 +1,5 @@
 import React from "react"
-import {TTask} from "~/@types"
+import type {TTask, TaskTypes} from "~/@types"
 import {API} from "~/service"
 
 import {FaCircleCheck} from "react-icons/fa6"
@@ -14,7 +14,7 @@ import Loader from "../Loader"
 import toast from "react-hot-toast"
 
 interface TaskProps extends TTask {
-  type: "all" | "my-day" | "planned" | "important"
+  type: TaskTypes
 }
 
 export default function Task(props: TaskProps) {
@@ -74,7 +74,7 @@ export default function Task(props: TaskProps) {
         search={{
           query: search.query,
           // @ts-ignore
-          // TODO - fix this later
+          // TODO: - fix this later
           filter: search.filter,
         }}
         key={props.id}

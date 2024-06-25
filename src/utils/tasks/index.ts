@@ -1,5 +1,11 @@
-import {TTask} from "~/@types"
-import {isDateSameAsToday, areDatesSame, getTomorrowDate, formatDueDate} from "~/utils/date"
+import {TTask, TaskTypes} from "~/@types"
+import {
+  isDateSameAsToday,
+  areDatesSame,
+  getTomorrowDate,
+  formatDueDate,
+  getTodayDateIOSString,
+} from "~/utils/date"
 
 export function getDueDateDisplayStr(dueDate: string) {
   if (isDateSameAsToday(dueDate)) {
@@ -48,5 +54,18 @@ export class ImportantTask extends NewTask {
   constructor({name, important}: {name: string; important: boolean}) {
     super(name)
     this.is_important = important
+  }
+}
+
+export const createTask = (taskType: TaskTypes, task: string) => {
+  switch (taskType) {
+    case "my-day":
+      return new MyDayTask({name: task, myDay: getTodayDateIOSString()})
+    case "important":
+      return new ImportantTask({important: true, name: task})
+    case "planned":
+    case "all":
+    default:
+      return new NewTask(task)
   }
 }

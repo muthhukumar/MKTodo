@@ -3,7 +3,6 @@ import {Tasks} from "~/components"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
 import {SearchQuerySchema} from "~/utils/schema"
-import {ImportantTask} from "~/utils/tasks"
 
 export const Route = createFileRoute("/_auth/tasks/important")({
   validateSearch: SearchQuerySchema,
@@ -23,11 +22,7 @@ function ImportantTasks() {
 
   return (
     <>
-      <Tasks
-        type="important"
-        tasks={tasks}
-        createTask={task => new ImportantTask({name: task, important: true})}
-      />
+      <Tasks type="important" tasks={tasks} />
       <Outlet />
     </>
   )

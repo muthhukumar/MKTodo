@@ -1,23 +1,22 @@
 import * as React from "react"
 
-import {TTask} from "~/@types"
+import {TTask, TaskTypes} from "~/@types"
 import Task from "./Task"
 import clsx from "clsx"
-import {FaPlus} from "react-icons/fa6"
 import Drawer from "./Drawer"
 import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {API} from "~/service"
-import {ImportantTask, MyDayTask, NewTask, separateTasks} from "~/utils/tasks"
+import {createTask, separateTasks} from "~/utils/tasks"
 import {PiHamburger} from "react-icons/pi"
 import MobileOnly from "../MobileOnly"
 import toast from "react-hot-toast"
+import CreateTaskInput from "./CreateTaskInput"
 
 interface TasksProps {
   showFilters?: boolean
   title?: string
   tasks: Array<TTask>
-  type: "all" | "my-day" | "planned" | "important"
-  createTask?: (task: string) => NewTask | MyDayTask | ImportantTask
+  type: TaskTypes
 }
 
 export default function Tasks(props: TasksProps) {
@@ -26,13 +25,13 @@ export default function Tasks(props: TasksProps) {
   const [newTasks, setNewTasks] = React.useState<
     Array<{name: string; status: "started" | "failed" | "retrying"}>
   >([])
+  const [taskType, setTaskType] = React.useState<TaskTypes>(props.type)
 
   const [task, setTask] = React.useState("")
 
   const router = useRouter()
 
   const tasks = props.tasks
-  const createTask = props.createTask ? props.createTask : (task: string) => new NewTask(task)
 
   const [showSidebar, setShowSidebar] = React.useState<{show: boolean; taskId: TTask["id"] | null}>(
     {
@@ -53,7 +52,7 @@ export default function Tasks(props: TasksProps) {
     })
 
     try {
-      await API.createTask(createTask(task))
+      await API.createTask(createTask(taskType, task))
 
       setNewTasks(state => state.filter(t => t.name !== task))
 
@@ -84,7 +83,7 @@ export default function Tasks(props: TasksProps) {
     setNewTasks(state => [...state, {name: currentTask, status: "started"}])
 
     try {
-      await API.createTask(createTask(currentTask))
+      await API.createTask(createTask(taskType, currentTask))
 
       setNewTasks(state => state.filter(t => t.name !== currentTask))
 
@@ -172,22 +171,14 @@ export default function Tasks(props: TasksProps) {
             ))}
             <div className="min-h-[8vh]" />
           </div>
-          <div className={clsx("absolute bottom-0 left-0 right-0 p-3 bg-dark-black")}>
-            <form
+          <div className="absolute bottom-0 left-0 right-0 p-3 bg-dark-black">
+            <CreateTaskInput
+              taskType={taskType}
+              setTaskType={setTaskType}
+              task={task}
+              setTask={value => setTask(value)}
               onSubmit={onSubmit}
-              className="focus-within:ring-2 focus-within:ring-blue-500 rounded-md flex items-center w-full bg-mid-gray"
-            >
-              <FaPlus className="mx-3" />
-              <input
-                value={task}
-                type="text"
-                name="Task"
-                title="Task"
-                onChange={e => setTask(e.target.value)}
-                className="outline-none w-full text-white rounded-md px-2 py-3 bg-mid-gray"
-                placeholder="Add a Task"
-              />
-            </form>
+            />
           </div>
         </div>
       </div>

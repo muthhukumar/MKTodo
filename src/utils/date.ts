@@ -66,3 +66,7 @@ export function isDatePastThisWeek(date: Date | string): boolean {
 
   return inputDate.isAfter(endOfWeek)
 }
+
+export function getTodayDateIOSString() {
+  return new Date().toISOString()
+}
