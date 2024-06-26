@@ -14,7 +14,7 @@ import Loader from "../Loader"
 import toast from "react-hot-toast"
 
 interface TaskProps extends TTask {
-  type: TaskTypes
+  type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
 }
 
 export default function Task(props: TaskProps) {
@@ -84,7 +84,7 @@ export default function Task(props: TaskProps) {
       >
         <div className="w-full px-2">
           <div>
-            <p key={props.id} className="text-white m-0 text-sm font-medium break-all">
+            <p key={props.id} className="text-white m-0 text-sm font-medium break-words text-left">
               {props.name}
             </p>
             {isDateSameAsToday(props.marked_today) && (

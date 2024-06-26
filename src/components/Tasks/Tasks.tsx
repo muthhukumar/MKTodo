@@ -11,6 +11,7 @@ import {PiHamburger} from "react-icons/pi"
 import MobileOnly from "../MobileOnly"
 import toast from "react-hot-toast"
 import CreateTaskInput from "./CreateTaskInput"
+import SearchBar from "../SearchBar"
 
 interface TasksProps {
   showFilters?: boolean
@@ -115,8 +116,8 @@ export default function Tasks(props: TasksProps) {
           <div className="flex items-center mt-3 mb-2 justify-between">
             <h1 className="flex items-center gap-2 text-2xl font-bold">
               <span>{title ? title : "Tasks"}</span>
-              <span className="font-normal text-sm px-2 py-1 rounded-md bg-light-black">
-                {completedTasks?.length}
+              <span className="font-normal text-xs px-2 py-1 rounded-md bg-light-black">
+                {completedTasks.length} / {pendingTasks?.length}
               </span>
             </h1>
             <MobileOnly>
@@ -125,13 +126,17 @@ export default function Tasks(props: TasksProps) {
               </Link>
             </MobileOnly>
           </div>
+
+          <div className="md:hidden my-2">
+            <SearchBar />
+          </div>
           {showFilters && <DueDateFilters />}
           <div
             className={clsx(
-              "mt-4 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll",
+              "my-2 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll",
               {
-                "h-[85vh]": showFilters,
-                "h-[90vh]": !showFilters,
+                "md:h-[85vh] h-[80vh]": showFilters,
+                "md:h-[90vh] h-[87vh]": !showFilters,
               },
             )}
             ref={divRef}
@@ -164,7 +169,12 @@ export default function Tasks(props: TasksProps) {
               <Task {...t} key={t.id} type={props.type} />
             ))}
             {completedTasks.length > 0 && (
-              <h2 className="w-fit text-sm bg-light-black rounded-md px-2 py-1 my-2">Completed</h2>
+              <h2 className="w-fit text-sm bg-light-black rounded-md px-2 py-1 my-2">
+                Completed
+                <span className="font-normal text-xs px-2 py-1 rounded-md bg-light-black">
+                  {completedTasks.length}
+                </span>
+              </h2>
             )}
             {completedTasks.map(t => (
               <Task {...t} key={t.id} type={props.type} />

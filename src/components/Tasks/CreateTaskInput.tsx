@@ -30,6 +30,8 @@ export default function CreateTaskInput({
         <option value="all">Default</option>
         <option value="my-day">My Day</option>
         <option value="important">Important</option>
+        <option value="planned:today">Today</option>
+        <option value="planned:tomorrow">Tomorrow</option>
       </select>
       <input
         value={task}

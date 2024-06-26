@@ -4,13 +4,11 @@ import {CiStar} from "react-icons/ci"
 import {IconType} from "react-icons"
 import {TbHomeCheck} from "react-icons/tb"
 import {CiCalendarDate} from "react-icons/ci"
-import {RiCloseCircleFill} from "react-icons/ri"
-import {IoSearchOutline} from "react-icons/io5"
 import {Link, useLocation, useNavigate} from "@tanstack/react-router"
-import {useDelay} from "~/utils/hooks"
 import {twMerge} from "tailwind-merge"
 import {useAuth} from "~/auth-context"
 import toast from "react-hot-toast"
+import {SearchBar} from "."
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname.includes(path)
@@ -53,10 +51,6 @@ export default function Sidebar({className}: {className?: string}) {
     }, 1200)
   }
 
-  const search = useDelay((query: string) => {
-    navigate({search: {query}})
-  }, 1200)
-
   return (
     <div
       className={twMerge(
@@ -65,20 +59,7 @@ export default function Sidebar({className}: {className?: string}) {
       )}
     >
       <div className="px-3">
-        <form className="focus-within:ring-2 focus-within:ring-blue-500 px-1 flex items-center gap-3 border border-zinc-700 rounded-md  bg-light-black">
-          <IoSearchOutline size={22} />
-          <input
-            className="outline-none text-sm rounded-md py-1 w-full bg-light-black"
-            placeholder="Search"
-            onChange={e => {
-              search(e.target.value)
-            }}
-          />
-          {/* TODO - clicking this is not resetting the value */}
-          <button type="reset" onClick={() => navigate({to: location.pathname})}>
-            <RiCloseCircleFill size={22} />
-          </button>
-        </form>
+        <SearchBar />
         <div className="flex-col flex gap-2 mt-5">
           <IconLink Icon={MdOutlineWbSunny} title="My Day" path="/tasks/my-day" />
           <IconLink Icon={CiStar} title="Important" path="/tasks/important" />
@@ -91,34 +72,8 @@ export default function Sidebar({className}: {className?: string}) {
         >
           Choose different server
         </button>
-
         <p className="mt-4">{location.href}</p>
-
-        {/* <LastSynced /> */}
       </div>
     </div>
   )
 }
-
-// function LastSynced() {
-//   const {syncStatus, loading} = useTasks()
-//   const isLoading = useDelayedLoading({waitFor: 600, loading})
-
-//   if (!syncStatus) return
-
-//   return (
-//     <div className="absolute bottom-1 left-0 right-0 my-2 text-sm">
-//       {!isLoading ? (
-//         <p
-//           className={clsx("text-zinc-400 text-center", {
-//             "text-red-600": !syncStatus.success,
-//           })}
-//         >
-//           Last synced {timeAgo(syncStatus.lastSyncedAt)}
-//         </p>
-//       ) : (
-//         <Spinner />
-//       )}
-//     </div>
-//   )
-// }

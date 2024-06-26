@@ -106,8 +106,8 @@ export default function Drawer({
           </div>
           <form onSubmit={onSubmit} className="flex-[0.9] w-full">
             {!showInput ? (
-              <button onClick={() => setShowInput(true)}>
-                <p className="break-all">{name}</p>
+              <button onClick={() => setShowInput(true)} className="inline-block">
+                <p className="text-left break-words">{name}</p>
               </button>
             ) : (
               <input

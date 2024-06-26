@@ -18,4 +18,10 @@ export type DueDateFilters =
   | "later"
 
 // TODO: Change the all to default
-export type TaskTypes = "all" | "my-day" | "important" | "planned"
+export type TaskTypes =
+  | "all"
+  | "my-day"
+  | "important"
+  | "planned"
+  | "planned:today"
+  | "planned:tomorrow"

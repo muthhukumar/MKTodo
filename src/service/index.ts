@@ -1,6 +1,6 @@
 import {TTask} from "~/@types"
 import axios from "./axios"
-import {ImportantTask, MyDayTask, NewTask} from "~/utils/tasks"
+import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
 
 async function getTasks(filter: "my-day" | "important" | null, query?: string) {
   try {
@@ -24,7 +24,7 @@ async function getTask(taskId: TTask["id"]) {
   }
 }
 
-async function createTask(task: NewTask | ImportantTask | MyDayTask) {
+async function createTask(task: NewTask | ImportantTask | MyDayTask | PlannedTask) {
   try {
     const response = await axios.post(`/api/v1/task/create`, task)
 

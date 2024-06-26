@@ -5,6 +5,7 @@ import {
   getTomorrowDate,
   formatDueDate,
   getTodayDateIOSString,
+  getTodayDate,
 } from "~/utils/date"
 
 export function getDueDateDisplayStr(dueDate: string) {
@@ -57,12 +58,25 @@ export class ImportantTask extends NewTask {
   }
 }
 
+export class PlannedTask extends NewTask {
+  due_date: string = ""
+
+  constructor({name, dueDate}: {name: string; dueDate: string}) {
+    super(name)
+    this.due_date = dueDate
+  }
+}
+
 export const createTask = (taskType: TaskTypes, task: string) => {
   switch (taskType) {
     case "my-day":
       return new MyDayTask({name: task, myDay: getTodayDateIOSString()})
     case "important":
       return new ImportantTask({important: true, name: task})
+    case "planned:today":
+      return new PlannedTask({dueDate: getTodayDate(), name: task})
+    case "planned:tomorrow":
+      return new PlannedTask({dueDate: getTomorrowDate(), name: task})
     case "planned":
     case "all":
     default:
