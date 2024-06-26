@@ -117,7 +117,7 @@ export default function Tasks(props: TasksProps) {
             <h1 className="flex items-center gap-2 text-2xl font-bold">
               <span>{title ? title : "Tasks"}</span>
               <span className="font-normal text-xs px-2 py-1 rounded-md bg-light-black">
-                {completedTasks.length} / {pendingTasks?.length}
+                {pendingTasks.length} / {tasks.length}
               </span>
             </h1>
             <MobileOnly>
