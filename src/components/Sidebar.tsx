@@ -9,6 +9,7 @@ import {twMerge} from "tailwind-merge"
 import {useAuth} from "~/auth-context"
 import toast from "react-hot-toast"
 import {SearchBar} from "."
+import {usePing} from "~/utils/hooks"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname.includes(path)
@@ -41,6 +42,7 @@ export default function Sidebar({className}: {className?: string}) {
   const location = useLocation()
   const navigate = useNavigate({from: location.pathname})
   const {logout} = useAuth()
+  const online = usePing()
 
   function chooseDifferentServer() {
     toast.success("Logging out...")
@@ -74,6 +76,19 @@ export default function Sidebar({className}: {className?: string}) {
         </button>
         <p className="mt-4">{location.href}</p>
       </div>
+      {online !== null && !online && (
+        <p
+          className={clsx(
+            "w-fit mx-auto absolute left-0 right-0 bottom-0 mb-5 px-4 py-1 border border-light-black rounded-full text-center",
+            {
+              "text-green-400 border-green-400": online,
+              "text-red-400 border-red-400": !online,
+            },
+          )}
+        >
+          {online ? "Online" : "Server is offline"}
+        </p>
+      )}
     </div>
   )
 }
