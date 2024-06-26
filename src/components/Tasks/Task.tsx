@@ -95,23 +95,24 @@ export default function Task(props: TaskProps) {
             )}
           </div>
         </div>
-        <div className="flex items-center ml-auto w-[24px]">
-          <button
-            className="w-full"
-            onClick={e => {
-              toggleTaskImportance(props.id)
-
-              e.stopPropagation()
-            }}
-          >
-            {!props.is_important ? (
-              <FaRegStar size={18} className="text-zinc-500" />
-            ) : (
-              <FaStar size={18} className="text-zinc-500" />
-            )}
-          </button>
-        </div>
       </Link>
+
+      <div className="flex items-center ml-auto w-[24px]">
+        <button
+          className="w-full"
+          onClick={e => {
+            toggleTaskImportance(props.id)
+
+            e.stopPropagation()
+          }}
+        >
+          {!props.is_important ? (
+            <FaRegStar size={18} className="text-zinc-500" />
+          ) : (
+            <FaStar size={18} className="text-zinc-500" />
+          )}
+        </button>
+      </div>
     </div>
   )
 }
