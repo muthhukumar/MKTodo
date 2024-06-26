@@ -98,6 +98,18 @@ async function updateTaskDueDateById(id: number, dueDate: string) {
   }
 }
 
+async function ping(): Promise<boolean> {
+  try {
+    await axios.get("/health", {
+      timeout: 1000 * 15, // 15 seconds
+    })
+
+    return true
+  } catch {
+    return false
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -108,4 +120,5 @@ export const API = {
   toggleTaskAddToMyDayById,
   updateTaskDueDateById,
   getTask,
+  ping,
 }

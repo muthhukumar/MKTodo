@@ -1,4 +1,5 @@
 import * as React from "react"
+import {API} from "~/service"
 
 export function useOutsideAlerter(
   ref: React.RefObject<any>,
@@ -90,4 +91,20 @@ export function useDelay<T extends any>(
   }
 
   return fn
+}
+
+export function usePing() {
+  const [online, setOnline] = React.useState<boolean | null>(null)
+
+  React.useEffect(() => {
+    async function isOnline() {
+      const isOnline = await API.ping()
+
+      setOnline(isOnline)
+    }
+
+    isOnline()
+  }, [])
+
+  return online
 }

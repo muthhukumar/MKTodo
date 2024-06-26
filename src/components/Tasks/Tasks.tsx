@@ -166,7 +166,11 @@ export default function Tasks(props: TasksProps) {
             ))}
             {newTasks.length > 0 && <div className="min-h-[12px]" />}
             {pendingTasks.map(t => (
-              <Task {...t} key={t.id} type={props.type} />
+              <Task
+                {...t}
+                key={t.id}
+                type={props.type as "all" | "my-day" | "important" | "planned"}
+              />
             ))}
             {completedTasks.length > 0 && (
               <h2 className="w-fit text-sm bg-light-black rounded-md px-2 py-1 my-2">
@@ -177,7 +181,11 @@ export default function Tasks(props: TasksProps) {
               </h2>
             )}
             {completedTasks.map(t => (
-              <Task {...t} key={t.id} type={props.type} />
+              <Task
+                {...t}
+                key={t.id}
+                type={props.type as "all" | "my-day" | "important" | "planned"}
+              />
             ))}
             <div className="min-h-[8vh]" />
           </div>
