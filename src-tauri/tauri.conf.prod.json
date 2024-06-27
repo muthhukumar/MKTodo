@@ -11,7 +11,7 @@
   "app": {
     "windows": [
       {
-        "title": "MKTodo",
+        "title": "mktodo",
         "width": 800,
         "height": 600
       }

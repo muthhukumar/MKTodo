@@ -10,6 +10,7 @@ import {useAuth, AuthProvider} from "./auth-context"
 
 import {routeTree} from "./routeTree.gen"
 import {SplashScreen} from "~/components"
+import {ErrorBoundary} from "~/components/screens"
 
 export const router = createRouter({
   routeTree,
@@ -23,10 +24,10 @@ function InnerApp() {
   const auth = useAuth()
 
   return (
-    <>
+    <ErrorBoundary>
       <Toaster position="top-center" />
       <RouterProvider router={router} context={{auth}} />
-    </>
+    </ErrorBoundary>
   )
 }
 

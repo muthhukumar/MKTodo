@@ -1,8 +1,9 @@
 import * as React from "react"
 import {APIStore} from "./utils/tauri-store"
 import toast from "react-hot-toast"
+import {API} from "./service"
 
-type Creds = {
+export type Creds = {
   apiKey: string
   host: string
 }
@@ -25,6 +26,12 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     async function getCreds() {
       try {
         const creds = await APIStore.get()
+
+        if (creds) {
+          const success = await API.pingWithAuth(creds)
+
+          if (!success) return setCreds(null)
+        }
 
         setCreds(creds)
       } catch (err) {
@@ -74,8 +81,10 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
 export function useAuth() {
   const context = React.useContext(AuthContext)
+
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider")
   }
+
   return context
 }

@@ -6,6 +6,7 @@ import {ErrorMessage} from "~/components/screens"
 import toast from "react-hot-toast"
 import {Loader} from "~/components"
 import axios from "axios"
+import {removeTrailngSlash} from "~/utils/url"
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({
@@ -30,7 +31,8 @@ function LoginForm() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const host = hostRef.current?.value
+
+    const host = removeTrailngSlash(hostRef.current?.value ?? "")
     const apiKey = apiKeyRef.current?.value
 
     if (!host || !apiKey) return

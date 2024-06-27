@@ -1,6 +1,7 @@
 import {TTask} from "~/@types"
 import axios from "./axios"
 import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
+import {Creds} from "~/auth-context"
 
 async function getTasks(filter: "my-day" | "important" | null, query?: string) {
   try {
@@ -98,6 +99,21 @@ async function updateTaskDueDateById(id: number, dueDate: string) {
   }
 }
 
+async function pingWithAuth({host, apiKey}: Creds): Promise<boolean> {
+  try {
+    await axios.get(`${host}/api/v1/tasks`, {
+      headers: {
+        "x-api-key": apiKey,
+      },
+      timeout: 1000 * 30, // 30 seconds
+    })
+
+    return true
+  } catch {
+    return false
+  }
+}
+
 async function ping(): Promise<boolean> {
   try {
     await axios.get("/health", {
@@ -121,4 +137,5 @@ export const API = {
   updateTaskDueDateById,
   getTask,
   ping,
+  pingWithAuth,
 }

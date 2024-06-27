@@ -10,9 +10,7 @@ axios.interceptors.request.use(async config => {
     config.baseURL = creds?.host
 
     config.headers.set("x-api-key", creds?.apiKey)
-  } catch {
-    config.baseURL = "http://192.168.1.4:300"
-  }
+  } catch {}
 
   return config
 })
