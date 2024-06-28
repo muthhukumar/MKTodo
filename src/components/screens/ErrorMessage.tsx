@@ -18,7 +18,7 @@ export default function ErrorMessage() {
       </MobileOnly>
       {online !== null && (
         <p
-          className={clsx("mb-5 px-4 py-1 border border-light-black rounded-full", {
+          className={clsx("mb-5 px-4 py-1 border border-border rounded-full", {
             "text-green-400 border-green-400": online,
             "text-red-400 border-red-400": !online,
           })}

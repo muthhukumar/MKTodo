@@ -96,7 +96,7 @@ export default function Drawer({
 
   return (
     <div
-      className="w-full border-l border-zinc-700 slide-in fixed md:static right-0 h-screen md:max-w-xs z-10 min-w-72 max-h-[100vh] py-3 px-3 bg-dark-black"
+      className="w-full border-l border-zinc-700 slide-in fixed md:static right-0 h-screen md:max-w-xs z-10 min-w-72 max-h-[100vh] py-3 px-3 bg-background"
       ref={containerRef}
     >
       <div className="flex items-center w-full mb-3">
@@ -155,7 +155,7 @@ function AddToMyDay(props: {
   return (
     <button
       className={clsx(
-        "border-y w-full py-3 border-light-black text-zinc-400 px-2 flex items-center gap-4 text-sm",
+        "border-y w-full py-3 border-border text-zinc-400 px-2 flex items-center gap-4 text-sm",
       )}
       onClick={e => {
         props.onToggleAddToMyDay(props.id)
@@ -189,7 +189,7 @@ function DeleteTaskModel({
     <Dialog.Root open={open} onOpenChange={onDismiss}>
       <Dialog.Portal>
         <Dialog.Overlay className="dialog-overlay" />
-        <Dialog.Content className="dialog-content bg-zinc-800">
+        <Dialog.Content className="dialog-content border rounded-md border-border bg-background">
           <Dialog.Title className="dialog-title text-center">Delete Task</Dialog.Title>
           <Dialog.Description className="font-bold dialog-description">{name}</Dialog.Description>
           <p className="text-sm mb-4">You won't be able to undo this action.</p>

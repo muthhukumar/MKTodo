@@ -59,7 +59,7 @@ function DueDateOptions(props: DueDateOptionsProps) {
   const [date, setDate] = React.useState("")
 
   return (
-    <div className="border border-zinc-700 rounded-md bg-dark-black p-1">
+    <div className="border border-border rounded-md bg-background p-1">
       <DueDateOptionProps
         Icon={BsCalendar4Event}
         title="Today"
@@ -81,7 +81,8 @@ function DueDateOptions(props: DueDateOptionsProps) {
         info={getDayFromDate(getComingMondayDate())}
         setShow={setShow}
       />
-      <div className="h-[1px] bg-light-black m-[5px]" />
+      {/* TODO: change the bg color here */}
+      <div className="h-[1px] bg-border m-[5px]" />
       <DueDateOptionProps
         Icon={IoCalendarClearOutline}
         title="Pick a Date"
@@ -90,7 +91,10 @@ function DueDateOptions(props: DueDateOptionsProps) {
         setShow={setShow}
         action={
           <div className="flex gap-1 items-center justify-end px-3 py-1">
-            <button className="bg-dark-black rounded-md px-2" onClick={() => setShow(false)}>
+            <button
+              className="bg-item-background border border-border rounded-md px-2"
+              onClick={() => setShow(false)}
+            >
               cancel
             </button>
             <button
@@ -109,7 +113,6 @@ function DueDateOptions(props: DueDateOptionsProps) {
         <input
           type="date"
           placeholder="Pick a Date"
-          className="bg-dark-black hover:bg-light-black"
           value={date}
           onChange={e => {
             setDate(e.target.value)
@@ -141,7 +144,7 @@ function DueDateOptionProps(props: DueDateOptionProps) {
           onSelect()
           autoClose && setShow(false)
         }}
-        className="text-sm w-full py-1 flex items-center gap-3 hover:bg-light-black px-3"
+        className="text-sm w-full py-1 flex items-center gap-3 hover:bg-hover-background px-3"
       >
         <Icon />
         <p className="">{title}</p>

@@ -19,7 +19,7 @@ export default function CreateTaskInput({
   return (
     <form
       onSubmit={onSubmit}
-      className="focus-within:ring-2 focus-within:ring-blue-500 rounded-md flex items-center w-full bg-mid-gray"
+      className="border border-border focus-within:ring-2 focus-within:ring-blue-500 rounded-md flex items-center w-full bg-item-background"
     >
       <FaPlus className="mx-3" />
       <select
@@ -39,7 +39,7 @@ export default function CreateTaskInput({
         name="Task"
         title="Task"
         onChange={e => onChange(e.target.value)}
-        className="outline-none w-full text-white rounded-md px-2 py-3 bg-mid-gray"
+        className="outline-none w-full text-white rounded-md px-2 py-3 bg-item-background"
         placeholder="Add a Task"
       />
     </form>

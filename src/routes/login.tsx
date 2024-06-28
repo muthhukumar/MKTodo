@@ -64,7 +64,7 @@ function LoginForm() {
           <h3>Connect to Server</h3>
           <input
             ref={hostRef}
-            className="mt-2 border rounded-md border-light-black px-3 py-2 w-full"
+            className="mt-2 border rounded-md border-border px-3 py-2 w-full"
             placeholder="Host"
             name="host"
           />
@@ -73,11 +73,11 @@ function LoginForm() {
           <h3>API Key</h3>
           <input
             ref={apiKeyRef}
-            className="mt-2 border-light-black border rounded-md px-3 py-2 w-full"
+            className="mt-2 border-border border rounded-md px-3 py-2 w-full"
             placeholder="API key"
           />
         </div>
-        <button className="flex items-center justify-center border-light-black mt-8 px-3 py-2 w-full border rounded-md">
+        <button className="flex items-center justify-center border-border mt-8 px-3 py-2 w-full border rounded-md">
           {!loading ? (
             <span>Connect</span>
           ) : (

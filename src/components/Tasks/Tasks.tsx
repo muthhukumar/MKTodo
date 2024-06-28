@@ -100,13 +100,13 @@ export default function Tasks(props: TasksProps) {
   const {completedTasks, pendingTasks} = React.useMemo(() => separateTasks(tasks), [tasks])
 
   return (
-    <div className="flex bg-dark-black w-full">
+    <div className="flex bg-background w-full">
       <div className="w-full max-h-[100vh] relative">
         <div className="px-3">
           <div className="flex items-center mt-3 mb-2 justify-between">
             <h1 className="flex items-center gap-2 text-2xl font-bold">
               <span>{title ? title : "Tasks"}</span>
-              <span className="font-normal text-xs px-2 py-1 rounded-md bg-light-black">
+              <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
                 {pendingTasks.length} / {tasks.length}
               </span>
             </h1>
@@ -133,7 +133,7 @@ export default function Tasks(props: TasksProps) {
           >
             {newTasks.map(t => (
               <div
-                className="px-3 py-1 bg-light-black rounded-md flex items-center justify-between"
+                className="px-3 py-1 bg-item-background rounded-md flex items-center justify-between"
                 key={t.name}
               >
                 <p>{t.name}</p>
@@ -163,9 +163,9 @@ export default function Tasks(props: TasksProps) {
               />
             ))}
             {completedTasks.length > 0 && (
-              <h2 className="w-fit text-sm bg-light-black rounded-md px-2 py-1 my-2">
+              <h2 className="w-fit text-sm bg-hover-background rounded-md px-2 py-1 my-2">
                 Completed
-                <span className="font-normal text-xs px-2 py-1 rounded-md bg-light-black">
+                <span className="font-normal text-xs px-2 py-1 rounded-md">
                   {completedTasks.length}
                 </span>
               </h2>
@@ -179,7 +179,7 @@ export default function Tasks(props: TasksProps) {
             ))}
             <div className="min-h-[8vh]" />
           </div>
-          <div className="absolute bottom-0 left-0 right-0 p-3 bg-dark-black">
+          <div className="absolute bottom-0 left-0 right-0 p-3 bg-background">
             <CreateTaskInput
               taskType={taskType}
               setTaskType={setTaskType}
@@ -214,9 +214,9 @@ function DueDateFilters() {
           search={{filter: f.filter, query: ""}}
           key={f.id}
           className={clsx(
-            "inline-block w-fit hover:bg-light-black rounded-md px-3 py-2 text-sm no-break",
+            "inline-block w-fit hover:bg-hover-background rounded-md px-3 py-2 text-sm no-break",
             {
-              "bg-light-black": filter === f.filter,
+              "bg-hover-background": filter === f.filter,
             },
           )}
         >

@@ -18,9 +18,9 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
     <Link
       to={path}
       className={clsx(
-        "relative hover:cursor-pointer flex items-center hover:bg-highlight-black px-1 py-1 rounded-md",
+        "relative hover:cursor-pointer flex items-center hover:bg-hover-background px-1 py-1 rounded-md",
         {
-          "bg-highlight-black": isActivePath,
+          "bg-hover-background": isActivePath,
         },
       )}
     >
@@ -56,7 +56,7 @@ export default function Sidebar({className}: {className?: string}) {
   return (
     <div
       className={twMerge(
-        "h-screen relative w-1/4 min-w-80 max-w-md py-6 md:py-8 bg-mid-black border-r-2 border-blak",
+        "h-screen relative w-1/4 min-w-80 max-w-md py-6 md:py-8 bg-background border-r border-border",
         className,
       )}
     >
@@ -71,7 +71,7 @@ export default function Sidebar({className}: {className?: string}) {
           <IconLink Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
         </div>
         <button
-          className="border border-light-black rounded-md px-3 py-2 w-full mt-5"
+          className="border border-border rounded-md px-3 py-2 w-full mt-5"
           onClick={chooseDifferentServer}
         >
           Choose different server
@@ -81,7 +81,7 @@ export default function Sidebar({className}: {className?: string}) {
       {online !== null && !online && (
         <p
           className={clsx(
-            "w-fit mx-auto absolute left-0 right-0 bottom-0 mb-5 px-4 py-1 border border-light-black rounded-full text-center",
+            "w-fit mx-auto absolute left-0 right-0 bottom-0 mb-5 px-4 py-1 border border-border rounded-full text-center",
             {
               "text-green-400 border-green-400": online,
               "text-red-400 border-red-400": !online,

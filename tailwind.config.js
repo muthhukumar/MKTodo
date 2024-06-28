@@ -4,12 +4,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        "dark-black": "#1f1f1e",
-        "mid-black": "#252426",
-        "mid-gray": "#272627",
-        "light-black": "#323232",
-        "highlight-black": "#3e3f41",
-        "blak": "#0b0a0d",
+        "background": "var(--background)",
+        "hover-background": "var(--hover-background)",
+        "item-background": "var(--item-background)",
+        "border": "var(--border)",
       },
     },
     keyframes: {

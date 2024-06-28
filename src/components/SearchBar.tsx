@@ -11,10 +11,10 @@ export default function SearchBar() {
   }, 1200)
 
   return (
-    <form className="focus-within:ring-2 focus-within:ring-blue-500 px-1 flex items-center gap-3 border border-zinc-700 rounded-md bg-light-black">
+    <form className="focus-within:ring-2 focus-within:ring-blue-500 px-1 flex items-center gap-3 border border-zinc-700 rounded-md bg-item-background">
       <IoSearchOutline size={22} />
       <input
-        className="outline-none text-sm rounded-md py-1 w-full bg-light-black"
+        className="outline-none text-sm rounded-md py-1 w-full bg-item-background"
         placeholder="Search"
         onChange={e => {
           search(e.target.value)
