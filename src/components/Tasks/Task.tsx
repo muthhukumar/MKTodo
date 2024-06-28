@@ -53,7 +53,7 @@ export default function Task(props: TaskProps) {
   const to = `/tasks/${tasksType}/$taskId` as const
 
   return (
-    <div className="border border-border flex items-center w-full rounded-md bg-item-background px-4 py-[2px] hover:bg-hover-background">
+    <div className="border border-border flex items-center w-full rounded-md bg-item-background px-4 py-[2px] hover:bg-hover-background my-[2px] md:my-[1px]">
       {toggling ? (
         <div className="w-[24px]">
           <Loader />
@@ -84,7 +84,10 @@ export default function Task(props: TaskProps) {
       >
         <div className="w-full px-2">
           <div>
-            <p key={props.id} className="text-white m-0 text-sm font-medium break-words text-left">
+            <p
+              key={props.id}
+              className="text-white m-0 text-base md:text-sm font-medium break-words text-left"
+            >
               {props.name}
             </p>
             {isDateSameAsToday(props.marked_today) && (

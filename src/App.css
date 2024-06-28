@@ -1,8 +1,8 @@
 :root {
-  --background: #000101;
-  --hover-background: #1e1f1e;
-  --item-background: #0b0b0a;
-  --border: #242525;
+  --background: #101111;
+  --hover-background: #333434;
+  --item-background: #191919;
+  --border: #2c2c2c;
 
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;

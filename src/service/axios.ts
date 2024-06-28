@@ -1,7 +1,9 @@
 import baseAxios from "axios"
 import {APIStore} from "~/utils/tauri-store"
 
-const axios = baseAxios.create()
+const axios = baseAxios.create({
+  timeout: 30 * 1000, // 30 seconds
+})
 
 axios.interceptors.request.use(async config => {
   try {
