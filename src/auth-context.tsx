@@ -30,7 +30,10 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         if (creds) {
           const success = await API.pingWithAuth(creds)
 
-          if (!success) return setCreds(null)
+          if (!success) {
+            toast.error("Login failed. Invalid credentials.")
+            return setCreds(null)
+          }
         }
 
         setCreds(creds)

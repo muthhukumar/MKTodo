@@ -56,13 +56,15 @@ export default function Sidebar({className}: {className?: string}) {
   return (
     <div
       className={twMerge(
-        "h-screen relative w-1/4 min-w-80 max-w-md py-8 bg-mid-black border-r-2 border-blak",
+        "h-screen relative w-1/4 min-w-80 max-w-md py-6 md:py-8 bg-mid-black border-r-2 border-blak",
         className,
       )}
     >
       <div className="px-3">
-        <SearchBar />
-        <div className="flex-col flex gap-2 mt-5">
+        <div className="hidden md:block">
+          <SearchBar />
+        </div>
+        <div className="flex-col flex gap-2 md:mt-5">
           <IconLink Icon={MdOutlineWbSunny} title="My Day" path="/tasks/my-day" />
           <IconLink Icon={CiStar} title="Important" path="/tasks/important" />
           <IconLink Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />
