@@ -3,7 +3,6 @@ import * as React from "react"
 import {TTask, TaskTypes} from "~/@types"
 import Task from "./Task"
 import clsx from "clsx"
-import Drawer from "./Drawer"
 import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {API} from "~/service"
 import {createTask, separateTasks} from "~/utils/tasks"
@@ -33,13 +32,6 @@ export default function Tasks(props: TasksProps) {
   const router = useRouter()
 
   const tasks = props.tasks
-
-  const [showSidebar, setShowSidebar] = React.useState<{show: boolean; taskId: TTask["id"] | null}>(
-    {
-      show: false,
-      taskId: null,
-    },
-  )
 
   async function retry(task: string) {
     setNewTasks(state => {
@@ -102,8 +94,6 @@ export default function Tasks(props: TasksProps) {
       toast.error("Create Task failed.")
     }
   }
-
-  const selectedTask = showSidebar.taskId ? tasks.find(t => t.id === showSidebar.taskId) : null
 
   const divRef = React.useRef<HTMLDivElement>(null)
 
@@ -200,13 +190,6 @@ export default function Tasks(props: TasksProps) {
           </div>
         </div>
       </div>
-      {showSidebar.show && selectedTask && (
-        <Drawer
-          {...selectedTask}
-          onDismiss={() => setShowSidebar({taskId: null, show: false})}
-          ignoreRef={divRef}
-        />
-      )}
     </div>
   )
 }
