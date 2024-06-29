@@ -8,6 +8,7 @@ export default {
         "hover-background": "var(--hover-background)",
         "item-background": "var(--item-background)",
         "border": "var(--border)",
+        "tblue": "var(--tblue)",
       },
     },
     keyframes: {

@@ -28,7 +28,7 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
         <Icon size={20} />
       </div>
       <div className="flex-[0.9]">
-        <p className="text-sm">{title}</p>
+        <p className="text-lg md:text-sm">{title}</p>
       </div>
       {/* TODO - add the tasks count later here */}
       {/* {isActivePath && (
@@ -71,7 +71,7 @@ export default function Sidebar({className}: {className?: string}) {
           <IconLink Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
         </div>
         <button
-          className="border border-border rounded-md px-3 py-2 w-full mt-5"
+          className="text-lg md:text-base border border-border rounded-md px-3 py-2 w-full mt-5"
           onClick={chooseDifferentServer}
         >
           Choose different server

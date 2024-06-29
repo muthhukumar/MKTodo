@@ -1,5 +1,5 @@
 import {createFileRoute, Outlet, redirect} from "@tanstack/react-router"
-import {DesktopOnly, Sidebar} from "~/components"
+import {DesktopOnly, MobileBottomNavbar, MobileOnly, Sidebar} from "~/components"
 import {ErrorMessage} from "~/components/screens"
 
 export const Route = createFileRoute("/_auth")({
@@ -19,11 +19,17 @@ export const Route = createFileRoute("/_auth")({
 
 function Auth() {
   return (
-    <div className="h-screen flex">
+    <div className="h-screen md:flex">
       <DesktopOnly>
         <Sidebar />
+        <Outlet />
       </DesktopOnly>
-      <Outlet />
+      <MobileOnly>
+        <div className="h-[95%] md:h-auto w-full flex">
+          <Outlet />
+        </div>
+        <MobileBottomNavbar />
+      </MobileOnly>
     </div>
   )
 }
