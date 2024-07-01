@@ -11,6 +11,8 @@ import MobileOnly from "../MobileOnly"
 import toast from "react-hot-toast"
 import CreateTaskInput from "./CreateTaskInput"
 import SearchBar from "../SearchBar"
+import DesktopOnly from "../DesktopOnly"
+import MobileCreateTaskInput from "./MobileCreateTaskInput"
 
 interface TasksProps {
   showFilters?: boolean
@@ -100,34 +102,33 @@ export default function Tasks(props: TasksProps) {
   const {completedTasks, pendingTasks} = React.useMemo(() => separateTasks(tasks), [tasks])
 
   return (
-    <div className="flex bg-background w-full">
-      <div className="w-full max-h-[100vh] relative">
-        <div className="px-3">
-          <div className="flex items-center mt-3 mb-2 justify-between">
-            <h1 className="flex items-center gap-2 text-2xl font-bold">
-              <span>{title ? title : "Tasks"}</span>
-              <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
-                {pendingTasks.length} / {tasks.length}
-              </span>
-            </h1>
-            <MobileOnly>
-              <Link to="/mobile-nav">
-                <PiHamburger size={20} />
-              </Link>
-            </MobileOnly>
+    <div className="bg-background w-full">
+      <div className="w-full relative">
+        <div className="px-3 bg-background">
+          <div className="sticky top-0 left-0 right-0">
+            <div className="flex items-center mt-3 mb-2 justify-between">
+              <h1 className="flex items-center gap-2 text-2xl font-bold">
+                <span>{title ? title : "Tasks"}</span>
+                <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
+                  {pendingTasks.length} / {tasks.length}
+                </span>
+              </h1>
+              <MobileOnly>
+                <Link to="/mobile-nav">
+                  <PiHamburger size={20} />
+                </Link>
+              </MobileOnly>
+            </div>
+
+            <div className="md:hidden my-2">
+              <SearchBar />
+            </div>
+            {showFilters && <DueDateFilters />}
           </div>
 
-          <div className="md:hidden my-2">
-            <SearchBar />
-          </div>
-          {showFilters && <DueDateFilters />}
           <div
             className={clsx(
               "my-2 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll",
-              {
-                "md:h-[85vh] h-[80vh]": showFilters,
-                "md:h-[90vh] h-[87vh]": !showFilters,
-              },
             )}
             ref={divRef}
           >
@@ -177,16 +178,30 @@ export default function Tasks(props: TasksProps) {
                 type={props.type as "all" | "my-day" | "important" | "planned"}
               />
             ))}
-            <div className="min-h-[8vh]" />
+            <div className="min-h-[10vh]" />
           </div>
-          <div className="absolute bottom-0 left-0 right-0 p-3 bg-background">
-            <CreateTaskInput
-              taskType={taskType}
-              setTaskType={setTaskType}
-              task={task}
-              setTask={value => setTask(value)}
-              onSubmit={onSubmit}
-            />
+          <div className="p-3 bg-background">
+            <DesktopOnly>
+              <CreateTaskInput
+                taskType={taskType}
+                setTaskType={setTaskType}
+                task={task}
+                setTask={value => setTask(value)}
+                onSubmit={onSubmit}
+              />
+            </DesktopOnly>
+            {/*
+
+            <MobileOnly>
+              <MobileCreateTaskInput
+                taskType={taskType}
+                setTaskType={setTaskType}
+                task={task}
+                setTask={value => setTask(value)}
+                onSubmit={onSubmit}
+              />
+            </MobileOnly>
+            */}
           </div>
         </div>
       </div>

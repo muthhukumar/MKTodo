@@ -25,9 +25,7 @@ function Auth() {
         <Outlet />
       </DesktopOnly>
       <MobileOnly>
-        <div className="h-[95%] md:h-auto w-full flex">
-          <Outlet />
-        </div>
+        <Outlet />
         <MobileBottomNavbar />
       </MobileOnly>
     </div>
