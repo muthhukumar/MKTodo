@@ -23,11 +23,11 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
 
   return (
     <>
-      <div className="absolute bottom-7 right-3">
+      <div className="fixed bottom-20 right-3">
         {!showInput && (
           <button
             onClick={() => setShowInput(true)}
-            className="p-3 rounded-md bg-tblue border border-border"
+            className="p-3 rounded-full bg-tblue border border-border"
           >
             <FaPlus className="text-white" />
           </button>
@@ -37,7 +37,7 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
         <form
           ref={formRef}
           onSubmit={onSubmit}
-          className="absolute bottom-0 left-0 right-0 w-full bg-white rounded-t-md z-10"
+          className="fixed bottom-0 left-0 right-0 w-full rounded-t-md z-[100]"
         >
           <input
             value={task}

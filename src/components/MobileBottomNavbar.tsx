@@ -28,7 +28,7 @@ function NavItem({Icon, title, path}: {title: string; path: string; Icon: IconTy
 
 export default function MobileBottomNavbar() {
   return (
-    <div className="sticky bottom-0 left-0 right-0 px-1 bg-item-background z-30 flex items-center">
+    <div className="sticky bottom-0 left-0 right-0 px-1 bg-item-background z-20 flex items-center">
       <NavItem Icon={MdOutlineWbSunny} title="My Day" path="/tasks/my-day" />
       <NavItem Icon={CiStar} title="Important" path="/tasks/important" />
       <NavItem Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />

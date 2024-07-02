@@ -104,9 +104,9 @@ export default function Tasks(props: TasksProps) {
   return (
     <div className="bg-background w-full">
       <div className="w-full relative">
-        <div className="px-3 bg-background">
-          <div className="sticky top-0 left-0 right-0">
-            <div className="flex items-center mt-3 mb-2 justify-between">
+        <div className="px-3">
+          <div className="sticky top-0 py-1 left-0 right-0 bg-background">
+            <div className="flex items-center mb-2 justify-between">
               <h1 className="flex items-center gap-2 text-2xl font-bold">
                 <span>{title ? title : "Tasks"}</span>
                 <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
@@ -180,17 +180,18 @@ export default function Tasks(props: TasksProps) {
             ))}
             <div className="min-h-[10vh]" />
           </div>
-          <div className="p-3 bg-background">
+          <div className="p-3 bg-background sticky bottom-4 left-0 right-0">
             <DesktopOnly>
-              <CreateTaskInput
-                taskType={taskType}
-                setTaskType={setTaskType}
-                task={task}
-                setTask={value => setTask(value)}
-                onSubmit={onSubmit}
-              />
+              <div className="">
+                <CreateTaskInput
+                  taskType={taskType}
+                  setTaskType={setTaskType}
+                  task={task}
+                  setTask={value => setTask(value)}
+                  onSubmit={onSubmit}
+                />
+              </div>
             </DesktopOnly>
-            {/*
 
             <MobileOnly>
               <MobileCreateTaskInput
@@ -201,7 +202,6 @@ export default function Tasks(props: TasksProps) {
                 onSubmit={onSubmit}
               />
             </MobileOnly>
-            */}
           </div>
         </div>
       </div>
