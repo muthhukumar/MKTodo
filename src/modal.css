@@ -42,3 +42,7 @@
   border: none;
   border-radius: 4px;
 }
+
+.stop-scrolling {
+  overscroll-behavior: none;
+}

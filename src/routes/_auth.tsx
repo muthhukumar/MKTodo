@@ -22,11 +22,13 @@ function Auth() {
     <div className="h-screen md:flex">
       <DesktopOnly>
         <Sidebar />
-        <Outlet />
+        <div className="overflow-y-auto stop-scrolling h-full w-full">
+          <Outlet />
+        </div>
       </DesktopOnly>
       <MobileOnly>
-        <Outlet />
         <MobileBottomNavbar />
+        <Outlet />
       </MobileOnly>
     </div>
   )

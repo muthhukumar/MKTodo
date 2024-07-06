@@ -19,7 +19,11 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
 
   const formRef = React.useRef<HTMLFormElement>(null)
 
-  useOutsideAlerter(formRef, {onClickOutside: () => setShowInput(false)})
+  function hideInput() {
+    setShowInput(false)
+  }
+
+  useOutsideAlerter(formRef, {onClickOutside: hideInput})
 
   return (
     <>
@@ -37,7 +41,7 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
         <form
           ref={formRef}
           onSubmit={onSubmit}
-          className="fixed bottom-0 left-0 right-0 w-full rounded-t-md z-[100]"
+          className="bg-item-background border border-border fixed bottom-0 left-0 right-0 w-full rounded-t-md z-50"
         >
           <input
             value={task}
@@ -63,6 +67,12 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
                 <option value="planned:tomorrow">Tomorrow</option>
               </select>
             </div>
+            <button
+              className="ml-auto border px-3 py-1 border-border rounded-md"
+              onClick={hideInput}
+            >
+              Close
+            </button>
           </div>
         </form>
       )}

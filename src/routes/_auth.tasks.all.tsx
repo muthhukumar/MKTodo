@@ -32,8 +32,8 @@ function AllTasks() {
 
   return (
     <>
-      <Tasks type="all" tasks={tasks} />
       <Outlet />
+      <Tasks type="all" tasks={tasks} />
     </>
   )
 }

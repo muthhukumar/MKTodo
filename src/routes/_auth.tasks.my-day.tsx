@@ -22,8 +22,8 @@ function MyDayTasks() {
 
   return (
     <>
-      <Tasks type="my-day" tasks={tasks} />
       <Outlet />
+      <Tasks type="my-day" tasks={tasks} />
     </>
   )
 }

@@ -106,7 +106,7 @@ export default function Tasks(props: TasksProps) {
       <div className="w-full relative">
         <div className="px-3">
           <div className="sticky top-0 py-1 left-0 right-0 bg-background">
-            <div className="flex items-center mb-2 justify-between">
+            <div className="flex items-center mb-2 justify-between py-2">
               <h1 className="flex items-center gap-2 text-2xl font-bold">
                 <span>{title ? title : "Tasks"}</span>
                 <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
@@ -128,7 +128,7 @@ export default function Tasks(props: TasksProps) {
 
           <div
             className={clsx(
-              "my-2 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll",
+              "min-h-[100vh] my-2 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll",
             )}
             ref={divRef}
           >
@@ -178,31 +178,29 @@ export default function Tasks(props: TasksProps) {
                 type={props.type as "all" | "my-day" | "important" | "planned"}
               />
             ))}
-            <div className="min-h-[10vh]" />
           </div>
-          <div className="p-3 bg-background sticky bottom-4 left-0 right-0">
-            <DesktopOnly>
-              <div className="">
-                <CreateTaskInput
-                  taskType={taskType}
-                  setTaskType={setTaskType}
-                  task={task}
-                  setTask={value => setTask(value)}
-                  onSubmit={onSubmit}
-                />
-              </div>
-            </DesktopOnly>
-
-            <MobileOnly>
-              <MobileCreateTaskInput
+          <div className="min-h-[20vh]" />
+          <DesktopOnly>
+            <div className="p-3 bg-background sticky w-full bottom-4 md:bottom-0 left-0 right-0">
+              <CreateTaskInput
                 taskType={taskType}
                 setTaskType={setTaskType}
                 task={task}
                 setTask={value => setTask(value)}
                 onSubmit={onSubmit}
               />
-            </MobileOnly>
-          </div>
+            </div>
+          </DesktopOnly>
+
+          <MobileOnly>
+            <MobileCreateTaskInput
+              taskType={taskType}
+              setTaskType={setTaskType}
+              task={task}
+              setTask={value => setTask(value)}
+              onSubmit={onSubmit}
+            />
+          </MobileOnly>
         </div>
       </div>
     </div>
