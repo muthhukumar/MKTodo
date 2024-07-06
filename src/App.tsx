@@ -23,15 +23,6 @@ export const router = createRouter({
 function InnerApp() {
   const auth = useAuth()
 
-  return (
-    <ErrorBoundary>
-      <Toaster position="top-center" />
-      <RouterProvider router={router} context={{auth}} />
-    </ErrorBoundary>
-  )
-}
-
-function App() {
   const [showSplashScreen, setShowSplashScreen] = React.useState(true)
 
   React.useEffect(() => {
@@ -44,7 +35,24 @@ function App() {
     }
   }, [])
 
-  return <AuthProvider>{showSplashScreen ? <SplashScreen /> : <InnerApp />}</AuthProvider>
+  return (
+    <ErrorBoundary>
+      <Toaster position="top-center" />
+      {showSplashScreen || auth.loading ? (
+        <SplashScreen />
+      ) : (
+        <RouterProvider router={router} context={{auth}} />
+      )}
+    </ErrorBoundary>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <InnerApp />
+    </AuthProvider>
+  )
 }
 
 export default App

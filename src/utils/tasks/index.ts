@@ -60,10 +60,23 @@ export class ImportantTask extends NewTask {
 
 export class PlannedTask extends NewTask {
   due_date: string = ""
+  marked_today: string = ""
 
-  constructor({name, dueDate}: {name: string; dueDate: string}) {
+  constructor({
+    name,
+    dueDate,
+    marked_today,
+  }: {
+    name: string
+    dueDate: string
+    marked_today?: string
+  }) {
     super(name)
     this.due_date = dueDate
+
+    if (marked_today) {
+      this.marked_today = marked_today
+    }
   }
 }
 
@@ -74,7 +87,7 @@ export const createTask = (taskType: TaskTypes, task: string) => {
     case "important":
       return new ImportantTask({important: true, name: task})
     case "planned:today":
-      return new PlannedTask({dueDate: getTodayDate(), name: task})
+      return new PlannedTask({dueDate: getTodayDate(), name: task, marked_today: getTodayDate()})
     case "planned:tomorrow":
       return new PlannedTask({dueDate: getTomorrowDate(), name: task})
     case "planned":

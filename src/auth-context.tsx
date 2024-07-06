@@ -13,12 +13,14 @@ export interface AuthContextType {
   login: (creds: Creds) => void
   logout: () => void
   creds: Creds | null
+  loading: boolean
 }
 
 const AuthContext = React.createContext<AuthContextType | null>(null)
 
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const [creds, setCreds] = React.useState<{apiKey: string; host: string} | null>(null)
+  const [loading, setLoading] = React.useState(false)
 
   const isAuthenticated = !!creds
 
@@ -28,6 +30,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         const creds = await APIStore.get()
 
         if (creds) {
+          setLoading(true)
+
           const success = await API.pingWithAuth(creds)
 
           if (!success) {
@@ -39,6 +43,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         setCreds(creds)
       } catch (err) {
         toast.error("Connecting to server failed...")
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -75,6 +81,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         creds,
         logout,
         login,
+        loading,
       }}
     >
       {children}
