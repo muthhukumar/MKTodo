@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import * as React from "react"
 import {IconType} from "react-icons"
 
@@ -6,7 +7,13 @@ import {IoCalendarOutline, IoCalendarClearOutline} from "react-icons/io5"
 import {LuCalendarRange} from "react-icons/lu"
 import {MdClose} from "react-icons/md"
 
-import {getTodayDate, getDayFromDate, getTomorrowDate, getComingMondayDate} from "~/utils/date"
+import {
+  getTodayDate,
+  getDayFromDate,
+  getTomorrowDate,
+  getComingMondayDate,
+  isDateInPast,
+} from "~/utils/date"
 import {getDueDateDisplayStr} from "~/utils/tasks"
 
 interface DueDateInputProps {
@@ -17,11 +24,15 @@ interface DueDateInputProps {
 export default function DueDateInput({onSelect, dueDate}: DueDateInputProps) {
   const [show, setShow] = React.useState(false)
 
+  const overdue = dueDate ? isDateInPast(dueDate) : false
+
   return (
     <div>
       <div className="flex items-center">
         <button
-          className="w-full px-2 text-sm flex my-3 items-center gap-3 text-zinc-400"
+          className={clsx("w-full px-2 text-sm flex my-3 items-center gap-3 text-zinc-400", {
+            "text-red-600": overdue,
+          })}
           onClick={() => {
             setShow(state => !state)
           }}

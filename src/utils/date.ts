@@ -43,7 +43,7 @@ export function areDatesSame(date1: Date | string, date2: Date | string) {
 }
 
 export function formatDueDate(date: Date | string): string {
-  return moment(date).format("ddd D MMMM")
+  return moment(date).format("ddd, D MMMM")
 }
 
 export function isDateBeforeToday(date: Date | string): boolean {
@@ -69,4 +69,8 @@ export function isDatePastThisWeek(date: Date | string): boolean {
 
 export function getTodayDateIOSString() {
   return new Date().toISOString()
+}
+
+export function isDateInPast(date: string | Date | moment.Moment): boolean {
+  return moment(date).isBefore(moment(), "day")
 }

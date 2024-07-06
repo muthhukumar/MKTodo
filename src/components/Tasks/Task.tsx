@@ -9,9 +9,12 @@ import {FaRegCircle} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
 import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {MdSunny} from "react-icons/md"
-import {isDateSameAsToday} from "~/utils/date"
+import {isDateInPast, isDateSameAsToday} from "~/utils/date"
 import Loader from "../Loader"
 import toast from "react-hot-toast"
+import {CiCalendar} from "react-icons/ci"
+import {getDueDateDisplayStr} from "~/utils/tasks"
+import clsx from "clsx"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
@@ -90,12 +93,15 @@ export default function Task(props: TaskProps) {
             >
               {props.name}
             </p>
-            {isDateSameAsToday(props.marked_today) && (
-              <div className="text-xs flex items-center gap-2 text-gray-400">
-                <MdSunny size={10} />
-                <p>My Day</p>
-              </div>
-            )}
+            <div className="flex items-center gap-x-2">
+              {isDateSameAsToday(props.marked_today) && (
+                <div className="text-xs flex items-center gap-2 text-gray-400">
+                  <MdSunny size={10} />
+                  <p>My Day</p>
+                </div>
+              )}
+              {Boolean(props.due_date) && <DueDateTag value={props.due_date} />}
+            </div>
           </div>
         </div>
       </Link>
@@ -116,6 +122,25 @@ export default function Task(props: TaskProps) {
           )}
         </button>
       </div>
+    </div>
+  )
+}
+
+function DueDateTag({value}: {value: string}) {
+  const isToday = isDateSameAsToday(value)
+  const overdue = isDateInPast(value)
+
+  const text = getDueDateDisplayStr(value)
+
+  return (
+    <div
+      className={clsx("text-gray-400 text-xs flex items-center gap-2 rounded-full px-2", {
+        "text-blue-300": isToday,
+        "text-red-600": overdue,
+      })}
+    >
+      <CiCalendar size={10} />
+      <span>{text}</span>
     </div>
   )
 }
