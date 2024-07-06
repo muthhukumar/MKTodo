@@ -41,12 +41,13 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
         <form
           ref={formRef}
           onSubmit={onSubmit}
-          className="bg-item-background border border-border fixed bottom-0 left-0 right-0 w-full rounded-t-md z-50"
+          className="bg-item-background border border-border fixed bottom-0 left-0 right-0 w-[98%] mx-auto rounded-t-md z-50"
         >
           <input
             value={task}
             type="text"
             name="Task"
+            autoFocus
             title="Task"
             onChange={e => onChange(e.target.value)}
             className="outline-none w-full text-white rounded-md px-2 py-3 bg-item-background"
@@ -68,6 +69,7 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
               </select>
             </div>
             <button
+              type="button"
               className="ml-auto border px-3 py-1 border-border rounded-md"
               onClick={hideInput}
             >

@@ -106,7 +106,7 @@ export default function Tasks(props: TasksProps) {
       <div className="w-full relative">
         <div className="px-3">
           <div className="sticky top-0 py-1 left-0 right-0 bg-background">
-            <div className="flex items-center mb-2 justify-between py-2">
+            <div className="flex items-center justify-between py-2">
               <h1 className="flex items-center gap-2 text-2xl font-bold">
                 <span>{title ? title : "Tasks"}</span>
                 <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
@@ -120,7 +120,7 @@ export default function Tasks(props: TasksProps) {
               </MobileOnly>
             </div>
 
-            <div className="md:hidden my-2">
+            <div className="md:hidden my-1">
               <SearchBar />
             </div>
             {showFilters && <DueDateFilters />}
@@ -128,7 +128,7 @@ export default function Tasks(props: TasksProps) {
 
           <div
             className={clsx(
-              "min-h-[100vh] my-2 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll",
+              "min-h-[100vh] my-1 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll",
             )}
             ref={divRef}
           >
