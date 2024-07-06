@@ -3,6 +3,7 @@ import * as React from "react"
 import {FaPlus} from "react-icons/fa6"
 import {TaskTypes} from "~/@types"
 import {useOutsideAlerter} from "~/utils/hooks"
+import {BsFillFileArrowUpFill} from "react-icons/bs"
 
 interface CreateTaskInputProps {
   task: string
@@ -43,16 +44,21 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
           onSubmit={onSubmit}
           className="bg-item-background border border-border fixed bottom-0 left-0 right-0 w-[98%] mx-auto rounded-t-md z-50"
         >
-          <input
-            value={task}
-            type="text"
-            name="Task"
-            autoFocus
-            title="Task"
-            onChange={e => onChange(e.target.value)}
-            className="outline-none w-full text-white rounded-md px-2 py-3 bg-item-background"
-            placeholder="Add a Task"
-          />
+          <div className="w-full flex items-center">
+            <input
+              value={task}
+              type="text"
+              name="Task"
+              autoFocus
+              title="Task"
+              onChange={e => onChange(e.target.value)}
+              className="outline-none w-full text-white rounded-md px-2 py-3 bg-item-background"
+              placeholder="Add a Task"
+            />
+            <button type="submit" className="mr-3 flex items-center justify-center">
+              <BsFillFileArrowUpFill size={30} className="ext-inherit text-white" />
+            </button>
+          </div>
           <div className="w-full h-[1px] bg-border my-1" />
           <div className="bg-item-background flex items-center p-1">
             <div className="rounded-md border-border border inline-block py-1 text-white">
