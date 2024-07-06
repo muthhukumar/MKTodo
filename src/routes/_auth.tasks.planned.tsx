@@ -38,8 +38,8 @@ function PlannedTasks() {
 
   return (
     <>
-      <Tasks type="planned" tasks={filteredTasks} showFilters title="Planned" />
       <Outlet />
+      <Tasks type="planned" tasks={filteredTasks} showFilters title="Planned" />
     </>
   )
 }

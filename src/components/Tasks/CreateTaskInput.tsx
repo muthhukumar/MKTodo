@@ -23,7 +23,7 @@ export default function CreateTaskInput({
     >
       <FaPlus className="mx-3" />
       <select
-        className="rounded-md py-1 text-white"
+        className="reset-select rounded-md py-1 text-white"
         value={taskType}
         onChange={e => setTaskType(e.target.value as TaskTypes)}
       >

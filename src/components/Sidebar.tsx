@@ -56,7 +56,7 @@ export default function Sidebar({className}: {className?: string}) {
   return (
     <div
       className={twMerge(
-        "h-screen relative w-1/4 min-w-80 max-w-md py-6 md:py-8 bg-background border-r border-border",
+        "sticky h-screen left-0 top-0 bottom-0 w-1/4 min-w-80 max-w-md py-6 md:py-8 bg-background border-r border-border",
         className,
       )}
     >
