@@ -15,6 +15,7 @@ import toast from "react-hot-toast"
 import {CiCalendar} from "react-icons/ci"
 import {getDueDateDisplayStr} from "~/utils/tasks"
 import clsx from "clsx"
+import {GoDotFill} from "react-icons/go"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
@@ -100,6 +101,10 @@ export default function Task(props: TaskProps) {
                   <p>My Day</p>
                 </div>
               )}
+              {Boolean(isDateSameAsToday(props.marked_today) && Boolean(props.due_date)) && (
+                <GoDotFill className="text-gray-400" size={6} />
+              )}
+
               {Boolean(props.due_date) && <DueDateTag value={props.due_date} />}
             </div>
           </div>
@@ -134,7 +139,7 @@ function DueDateTag({value}: {value: string}) {
 
   return (
     <div
-      className={clsx("text-gray-400 text-xs flex items-center gap-2 rounded-full px-2", {
+      className={clsx("text-gray-400 text-xs flex items-center gap-2 rounded-full", {
         "text-blue-300": isToday,
         "text-red-600": overdue,
       })}
