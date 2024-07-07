@@ -1,9 +1,6 @@
 import clsx from "clsx"
 import {useAuth} from "~/auth-context"
 import {usePing} from "~/utils/hooks"
-import {MobileOnly} from ".."
-import {Link} from "@tanstack/react-router"
-import {PiHamburger} from "react-icons/pi"
 
 export default function ErrorMessage() {
   const online = usePing()
@@ -11,11 +8,6 @@ export default function ErrorMessage() {
 
   return (
     <div className="relative flex items-center justify-center flex-col p-3 h-screen w-full">
-      <MobileOnly>
-        <Link to="/mobile-nav" className="top-3 absolute right-3">
-          <PiHamburger size={20} />
-        </Link>
-      </MobileOnly>
       {online !== null && (
         <p
           className={clsx("mb-5 px-4 py-1 border border-border rounded-full", {

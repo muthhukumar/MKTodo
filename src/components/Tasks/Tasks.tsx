@@ -6,13 +6,13 @@ import clsx from "clsx"
 import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {API} from "~/service"
 import {createTask, separateTasks} from "~/utils/tasks"
-import {PiHamburger} from "react-icons/pi"
 import MobileOnly from "../MobileOnly"
 import toast from "react-hot-toast"
 import CreateTaskInput from "./CreateTaskInput"
 import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
 import MobileCreateTaskInput from "./MobileCreateTaskInput"
+import {Logout, MobileSearchBar} from ".."
 
 interface TasksProps {
   showFilters?: boolean
@@ -114,24 +114,22 @@ export default function Tasks(props: TasksProps) {
                 </span>
               </h1>
               <MobileOnly>
-                <Link to="/mobile-nav">
-                  <PiHamburger size={20} />
-                </Link>
+                <div className="flex items-center gap-3">
+                  <Logout />
+                  <MobileSearchBar />
+                </div>
               </MobileOnly>
             </div>
 
-            <div className="md:hidden my-1">
-              <SearchBar />
-            </div>
+            <DesktopOnly>
+              <div className="hidden my-1">
+                <SearchBar />
+              </div>
+            </DesktopOnly>
             {showFilters && <DueDateFilters />}
           </div>
 
-          <div
-            className={clsx(
-              "min-h-[100vh] my-1 flex flex-col gap-[2px] no-scrollbar scroll-smooth overflow-y-scroll",
-            )}
-            ref={divRef}
-          >
+          <div className={clsx("min-h-[100vh] my-1 flex flex-col gap-[2px]")} ref={divRef}>
             {newTasks.map(t => (
               <div
                 className="px-3 py-1 bg-item-background rounded-md flex items-center justify-between"

@@ -23,7 +23,7 @@ function MyDayTasks() {
   return (
     <>
       <Outlet />
-      <Tasks type="my-day" tasks={tasks} />
+      <Tasks type="my-day" title="My Day" tasks={tasks} />
     </>
   )
 }

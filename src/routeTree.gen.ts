@@ -14,7 +14,6 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth.index'
-import { Route as AuthMobileNavImport } from './routes/_auth.mobile-nav'
 import { Route as AuthTasksPlannedImport } from './routes/_auth.tasks.planned'
 import { Route as AuthTasksMyDayImport } from './routes/_auth.tasks.my-day'
 import { Route as AuthTasksImportantImport } from './routes/_auth.tasks.important'
@@ -38,11 +37,6 @@ const AuthRoute = AuthImport.update({
 
 const AuthIndexRoute = AuthIndexImport.update({
   path: '/',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthMobileNavRoute = AuthMobileNavImport.update({
-  path: '/mobile-nav',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -103,13 +97,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
-    }
-    '/_auth/mobile-nav': {
-      id: '/_auth/mobile-nav'
-      path: '/mobile-nav'
-      fullPath: '/mobile-nav'
-      preLoaderRoute: typeof AuthMobileNavImport
-      parentRoute: typeof AuthImport
     }
     '/_auth/': {
       id: '/_auth/'
@@ -181,7 +168,6 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   AuthRoute: AuthRoute.addChildren({
-    AuthMobileNavRoute,
     AuthIndexRoute,
     AuthTasksAllRoute: AuthTasksAllRoute.addChildren({
       AuthTasksAllTaskIdRoute,
@@ -214,7 +200,6 @@ export const routeTree = rootRoute.addChildren({
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
-        "/_auth/mobile-nav",
         "/_auth/",
         "/_auth/tasks/all",
         "/_auth/tasks/important",
@@ -224,10 +209,6 @@ export const routeTree = rootRoute.addChildren({
     },
     "/login": {
       "filePath": "login.tsx"
-    },
-    "/_auth/mobile-nav": {
-      "filePath": "_auth.mobile-nav.tsx",
-      "parent": "/_auth"
     },
     "/_auth/": {
       "filePath": "_auth.index.tsx",

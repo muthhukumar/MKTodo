@@ -23,7 +23,7 @@ function ImportantTasks() {
   return (
     <>
       <Outlet />
-      <Tasks type="important" tasks={tasks} />
+      <Tasks type="important" title="Important" tasks={tasks} />
     </>
   )
 }

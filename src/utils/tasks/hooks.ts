@@ -19,6 +19,7 @@ export function useAsyncFilteredTasks({
   React.useEffect(() => {
     const worker = new FilterWorker()
 
+    // TODO: Split the work to multiple workers
     worker.postMessage({tasks, query, dueDateFilter})
 
     worker.onmessage = function (event) {
