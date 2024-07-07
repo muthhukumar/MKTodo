@@ -2,6 +2,7 @@ import {Store} from "@tauri-apps/plugin-store"
 import toast from "react-hot-toast"
 
 export const store = new Store(".settings.dat")
+export const optionStore = new Store(".options.dat")
 
 export const CREDS = "CREDS"
 
@@ -40,6 +41,54 @@ export const APIStore = {
       return true
     } catch (error) {
       toast.error("Saving API key failed")
+      return false
+    }
+  },
+}
+
+export type OptionsType = {
+  showCompleted: boolean
+}
+
+export const OptionsStore = {
+  async set<T extends keyof OptionsType>({key, value}: {key: T; value: OptionsType[T]}) {
+    try {
+      const allOptions = (await OptionsStore.get()) ?? {}
+
+      await optionStore.set("options", {
+        ...allOptions,
+        [key]: value,
+      })
+    } catch {
+      toast.error("Setting option failed")
+    }
+  },
+  async get(): Promise<OptionsType | null> {
+    try {
+      return await optionStore.get("options")
+    } catch {
+      toast.error("Getting option failed")
+      return null
+    }
+  },
+  async save(): Promise<boolean> {
+    try {
+      await optionStore.save()
+
+      return true
+    } catch (error) {
+      toast.error("Saving Options failed")
+      return false
+    }
+  },
+  async reset() {
+    try {
+      await optionStore.reset()
+
+      return true
+    } catch (error) {
+      toast.error("Resetting options failed")
+
       return false
     }
   },

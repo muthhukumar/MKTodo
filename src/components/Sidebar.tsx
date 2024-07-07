@@ -4,10 +4,8 @@ import {CiStar} from "react-icons/ci"
 import {IconType} from "react-icons"
 import {TbHomeCheck} from "react-icons/tb"
 import {CiCalendarDate} from "react-icons/ci"
-import {Link, useLocation, useNavigate} from "@tanstack/react-router"
+import {Link, useLocation} from "@tanstack/react-router"
 import {twMerge} from "tailwind-merge"
-import {useAuth} from "~/auth-context"
-import toast from "react-hot-toast"
 import {SearchBar} from "."
 import {usePing} from "~/utils/hooks"
 
@@ -40,18 +38,7 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
 
 export default function Sidebar({className}: {className?: string}) {
   const location = useLocation()
-  const navigate = useNavigate({from: location.pathname})
-  const {logout} = useAuth()
   const online = usePing()
-
-  function chooseDifferentServer() {
-    toast.success("Logging out...")
-    logout()
-
-    setTimeout(() => {
-      navigate({to: "/login"})
-    }, 1200)
-  }
 
   return (
     <div
@@ -70,12 +57,6 @@ export default function Sidebar({className}: {className?: string}) {
           <IconLink Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />
           <IconLink Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
         </div>
-        <button
-          className="text-lg md:text-base border border-border rounded-md px-3 py-2 w-full mt-5"
-          onClick={chooseDifferentServer}
-        >
-          Choose different server
-        </button>
         <p className="mt-4">{location.href}</p>
       </div>
       {online !== null && !online && (

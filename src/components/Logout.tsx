@@ -24,8 +24,9 @@ export default function Logout() {
 
   return (
     <>
-      <button onClick={() => setShowConfirmationModal(true)}>
-        <CiLogout size={22} />
+      <button className="flex items-center gap-2" onClick={() => setShowConfirmationModal(true)}>
+        <CiLogout size={18} />
+        <span>Logout</span>
       </button>
       <LogoutConfirmationModal
         open={showConfirmationModal}

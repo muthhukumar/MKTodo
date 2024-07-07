@@ -12,7 +12,7 @@ import CreateTaskInput from "./CreateTaskInput"
 import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
 import MobileCreateTaskInput from "./MobileCreateTaskInput"
-import {Logout, MobileSearchBar} from ".."
+import {MobileSearchBar, Options} from ".."
 
 interface TasksProps {
   showFilters?: boolean
@@ -113,12 +113,12 @@ export default function Tasks(props: TasksProps) {
                   {pendingTasks.length} / {tasks.length}
                 </span>
               </h1>
-              <MobileOnly>
-                <div className="flex items-center gap-3">
-                  <Logout />
+              <div className="flex items-center gap-3">
+                <MobileOnly>
                   <MobileSearchBar />
-                </div>
-              </MobileOnly>
+                </MobileOnly>
+                <Options />
+              </div>
             </div>
 
             <DesktopOnly>
