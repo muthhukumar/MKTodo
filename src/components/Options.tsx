@@ -5,6 +5,7 @@ import {FaRegCheckCircle} from "react-icons/fa"
 import {OptionsStore, OptionsType} from "~/utils/tauri-store"
 import {useRouter} from "@tanstack/react-router"
 import Logout from "./Logout"
+import toast from "react-hot-toast"
 
 export default function Options() {
   const [showOptions, setShowOptions] = React.useState(false)
@@ -29,18 +30,22 @@ export default function Options() {
 
   useOutsideAlerter(divRef, {onClickOutside: () => setShowOptions(false), ignore: [buttonRef]})
 
-  function onToggleShowCompleted() {
+  async function onToggleShowCompleted() {
     const showCompleted = options?.showCompleted === true ? true : false
 
-    OptionsStore.set({key: "showCompleted", value: !showCompleted})
-    OptionsStore.save()
+    try {
+      await OptionsStore.set({key: "showCompleted", value: !showCompleted})
+      await OptionsStore.save()
 
-    setTimeout(() => {
-      router.invalidate()
-      getOptions()
+      setTimeout(() => {
+        router.invalidate()
+        getOptions()
 
-      setShowOptions(false)
-    }, 750)
+        setShowOptions(false)
+      }, 250)
+    } catch {
+      toast.error("Changing option failed.")
+    }
   }
 
   return (
