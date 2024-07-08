@@ -96,7 +96,7 @@ export default function Task(props: TaskProps) {
             </p>
             <div className="flex items-center gap-x-2">
               {isDateSameAsToday(props.marked_today) && (
-                <div className="text-xs flex items-center gap-2 text-gray-400">
+                <div className="text-xs flex items-center gap-1 text-gray-400">
                   <MdSunny size={10} />
                   <p>My Day</p>
                 </div>
@@ -139,12 +139,12 @@ function DueDateTag({value}: {value: string}) {
 
   return (
     <div
-      className={clsx("text-gray-400 text-xs flex items-center gap-2 rounded-full", {
+      className={clsx("text-gray-400 text-xs flex items-center gap-1 rounded-full", {
         "text-blue-300": isToday,
         "text-red-600": overdue,
       })}
     >
-      <CiCalendar size={10} />
+      <CiCalendar size={12} />
       <span>{text}</span>
     </div>
   )
