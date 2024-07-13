@@ -35,13 +35,13 @@ export default function SearchBar() {
   return (
     <>
       <button onClick={() => setShowSearch(true)}>
-        <IoSearchOutline size={18} />
+        <IoSearchOutline size={20} />
       </button>
       {showSearch && (
         <div className="py-1 bg-background fixed top-2 w-[96%] mx-auto left-0 right-0">
           <form className="focus-within:ring-2 focus-within:ring-blue-500 px-4 md:px-1 flex items-center gap-3 border border-zinc-700 rounded-md bg-item-background">
             <button onClick={() => setShowSearch(false)}>
-              <IoArrowBack size={18} />
+              <IoArrowBack size={20} />
             </button>
             <input
               autoFocus

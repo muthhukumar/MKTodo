@@ -12,7 +12,7 @@ import CreateTaskInput from "./CreateTaskInput"
 import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
 import MobileCreateTaskInput from "./MobileCreateTaskInput"
-import {MobileSearchBar, Options} from ".."
+import {Loader, MobileSearchBar, Options} from ".."
 
 interface TasksProps {
   showFilters?: boolean
@@ -129,15 +129,15 @@ export default function Tasks(props: TasksProps) {
             {showFilters && <DueDateFilters />}
           </div>
 
-          <div className={clsx("my-1 flex flex-col gap-[2px]")} ref={divRef}>
+          <div className={clsx("h-screen my-1 flex flex-col gap-[2px]")} ref={divRef}>
             {newTasks.map(t => (
               <div
-                className="px-3 py-1 bg-item-background rounded-md flex items-center justify-between"
+                className="px-3 py-2 bg-item-background rounded-md flex items-center justify-between"
                 key={t.name}
               >
                 <p>{t.name}</p>
                 <div className="flex items-center gap-1">
-                  {t.status === "started" && <p className="ml-auto">Creating...</p>}
+                  {t.status === "started" && <Loader />}
                   {t.status === "failed" && (
                     <p className="px-2 rounded-md bg-red-700 text-white">failed</p>
                   )}
@@ -147,7 +147,14 @@ export default function Tasks(props: TasksProps) {
                       onClick={() => retry(t.name)}
                       disabled={t.status === "retrying"}
                     >
-                      {t.status === "retrying" ? "retrying..." : "retry"}
+                      {t.status === "retrying" ? (
+                        <div className="flex items-center gap-1">
+                          <span>Retrying</span>
+                          <Loader />
+                        </div>
+                      ) : (
+                        "retry"
+                      )}
                     </button>
                   )}
                 </div>

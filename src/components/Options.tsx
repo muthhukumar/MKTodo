@@ -51,7 +51,7 @@ export default function Options() {
   return (
     <>
       <button ref={buttonRef} onClick={() => setShowOptions(state => !state)}>
-        <CgOptions size={18} className="text-gray-300" />
+        <CgOptions size={20} className="text-gray-300" />
       </button>
       {showOptions && (
         <div

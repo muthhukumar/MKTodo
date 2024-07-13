@@ -57,7 +57,7 @@ export default function Task(props: TaskProps) {
   const to = `/tasks/${tasksType}/$taskId` as const
 
   return (
-    <div className="border border-border flex items-center w-full rounded-md bg-item-background px-4 py-[1px] hover:bg-hover-background my-[1px]">
+    <div className="border border-border flex items-center w-full rounded-md bg-item-background px-3 md:px-4 py-[1px] hover:bg-hover-background my-[1px]">
       {toggling ? (
         <div className="w-[24px]">
           <Loader />

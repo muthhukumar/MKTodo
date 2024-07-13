@@ -126,7 +126,7 @@ body {
 }
 
 .loader:after {
-  background: inherit;
+  background: var(--background);
   width: 75%;
   height: 75%;
   border-radius: 50%;

@@ -7,6 +7,7 @@ import toast from "react-hot-toast"
 import {Loader} from "~/components"
 import axios from "axios"
 import {removeTrailngSlash} from "~/utils/url"
+import {handleError} from "~/utils/error"
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({
@@ -50,7 +51,7 @@ function LoginForm() {
         navigate({to: "/tasks/all", search: {query: ""}})
       }, 1500)
     } catch (err) {
-      toast.error("Login failed!")
+      handleError(err, "Login failed!")
     } finally {
       setLoading(false)
     }
