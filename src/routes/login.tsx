@@ -8,6 +8,7 @@ import {Loader} from "~/components"
 import axios from "axios"
 import {removeTrailngSlash} from "~/utils/url"
 import {handleError} from "~/utils/error"
+import Logo from "../assets/logo.png"
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({
@@ -59,8 +60,8 @@ function LoginForm() {
 
   return (
     <div className="h-screen w-full flex items-center justify-center px-3">
-      <form className="w-full max-w-sm mx-auto rounded-md px-3 py-2" onSubmit={onSubmit}>
-        <h2 className="mt-3 font-bold text-5xl text-center">mktodo</h2>
+      <form className="mb-3 w-full max-w-sm mx-auto rounded-md px-3 py-2" onSubmit={onSubmit}>
+        <img src={Logo} />
         <div className="mt-5">
           <h3>Connect to Server</h3>
           <input

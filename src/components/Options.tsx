@@ -1,6 +1,5 @@
 import * as React from "react"
 import {CgOptions} from "react-icons/cg"
-import {useOutsideAlerter} from "~/utils/hooks"
 import {FaRegCheckCircle} from "react-icons/fa"
 import {OptionsStore, OptionsType} from "~/utils/tauri-store"
 import {useRouter} from "@tanstack/react-router"
@@ -27,8 +26,6 @@ export default function Options() {
 
   const divRef = React.useRef<HTMLDivElement>(null)
   const buttonRef = React.useRef<HTMLButtonElement>(null)
-
-  useOutsideAlerter(divRef, {onClickOutside: () => setShowOptions(false), ignore: [buttonRef]})
 
   async function onToggleShowCompleted() {
     const showCompleted = options?.showCompleted === true ? true : false

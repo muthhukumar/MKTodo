@@ -60,6 +60,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   async function logout() {
     try {
       await APIStore.reset()
+      await APIStore.save()
 
       setCreds(null)
     } catch (error) {
