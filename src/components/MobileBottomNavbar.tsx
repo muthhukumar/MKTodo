@@ -13,9 +13,9 @@ function NavItem({Icon, path}: {title: string; path: string; Icon: IconType}) {
   return (
     <Link to={path} className={"flex-1 rounded-md flex flex-col items-center px-3 py-1"}>
       <div
-        className={clsx("p-3 rounded-md mb-1", {
+        className={clsx("px-3 py-1 rounded-md mb-1", {
           "text-zinc-200": isActivePath,
-          "text-zinc-400": !isActivePath,
+          "text-zinc-500": !isActivePath,
         })}
       >
         <Icon size={24} />
@@ -26,7 +26,7 @@ function NavItem({Icon, path}: {title: string; path: string; Icon: IconType}) {
 
 export default function MobileBottomNavbar() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-1 bg-item-background border-t border-zinc-500 rounded-b-full z-10 flex items-center">
+    <div className="fixed bottom-0 left-0 right-0 p-1 bg-item-background border-t border-zinc-500 rounded-b-md z-10 flex items-center">
       <NavItem Icon={MdOutlineWbSunny} title="My Day" path="/tasks/my-day" />
       <NavItem Icon={CiStar} title="Important" path="/tasks/important" />
       <NavItem Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />

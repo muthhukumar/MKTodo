@@ -129,7 +129,7 @@ export default function Tasks(props: TasksProps) {
             {showFilters && <DueDateFilters />}
           </div>
 
-          <div className={clsx("h-screen my-1 flex flex-col gap-[2px]")} ref={divRef}>
+          <div className={clsx("min-h-screen my-1 flex flex-col gap-[2px]")} ref={divRef}>
             {newTasks.map(t => (
               <div
                 className="px-3 py-2 bg-item-background rounded-md flex items-center justify-between"
