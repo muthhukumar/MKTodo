@@ -42,7 +42,7 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
         <form
           ref={formRef}
           onSubmit={onSubmit}
-          className="bg-item-background border border-border fixed bottom-0 left-0 right-0 w-[98%] mx-auto rounded-t-md z-50"
+          className="bg-item-background border border-zinc-600 fixed bottom-0 left-0 right-0 w-[98%] mx-auto rounded-t-md z-50"
         >
           <div className="w-full flex items-center">
             <input

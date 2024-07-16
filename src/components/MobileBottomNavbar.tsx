@@ -7,20 +7,18 @@ import {CiCalendarDate} from "react-icons/ci"
 import clsx from "clsx"
 import {IconType} from "react-icons"
 
-function NavItem({Icon, title, path}: {title: string; path: string; Icon: IconType}) {
+function NavItem({Icon, path}: {title: string; path: string; Icon: IconType}) {
   const isActivePath = window.location.pathname.includes(path)
 
   return (
     <Link to={path} className={"flex-1 rounded-md flex flex-col items-center px-3 py-1"}>
       <div
-        className={clsx("py-1 px-3 rounded-md mb-1", {
-          "bg-tblue": isActivePath,
+        className={clsx("py-2 px-3 rounded-md mb-1", {
+          "text-white": isActivePath,
+          "text-zinc-500": !isActivePath,
         })}
       >
-        <Icon size={20} />
-      </div>
-      <div>
-        <p className={clsx("text-sm", {"text-tblue": isActivePath})}>{title}</p>
+        <Icon size={22} />
       </div>
     </Link>
   )
@@ -28,7 +26,7 @@ function NavItem({Icon, title, path}: {title: string; path: string; Icon: IconTy
 
 export default function MobileBottomNavbar() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-1 bg-item-background border border-border rounded-md z-10 flex items-center">
+    <div className="fixed bottom-0 left-0 right-0 p-1 bg-item-background border-t border-t-zinc-500 rounded-t-md z-10 flex items-center">
       <NavItem Icon={MdOutlineWbSunny} title="My Day" path="/tasks/my-day" />
       <NavItem Icon={CiStar} title="Important" path="/tasks/important" />
       <NavItem Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />
