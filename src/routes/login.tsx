@@ -6,7 +6,7 @@ import {ErrorMessage} from "~/components/screens"
 import toast from "react-hot-toast"
 import {Loader} from "~/components"
 import axios from "axios"
-import {removeTrailngSlash} from "~/utils/url"
+import {removeTrailingSlash} from "~/utils/url"
 import {handleError} from "~/utils/error"
 import Logo from "../assets/logo.png"
 
@@ -34,7 +34,7 @@ function LoginForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    const host = removeTrailngSlash(hostRef.current?.value ?? "")
+    const host = removeTrailingSlash(hostRef.current?.value ?? "")
     const apiKey = apiKeyRef.current?.value
 
     if (!host || !apiKey) return

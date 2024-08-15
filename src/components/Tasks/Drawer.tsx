@@ -13,6 +13,7 @@ import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
 import toast from "react-hot-toast"
 import {Linkify} from ".."
+import {extractLinks} from "~/utils/url"
 
 export default function Drawer({
   name,
@@ -32,6 +33,8 @@ export default function Drawer({
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)
   const modalRef = React.useRef<HTMLDivElement>(null)
+
+  const links = React.useMemo(() => extractLinks(name), [name])
 
   const router = useRouter()
 
@@ -129,6 +132,8 @@ export default function Drawer({
       </div>
       <AddToMyDay id={id} markedToday={marked_today} onToggleAddToMyDay={toggleTaskAddToMyDay} />
       <DueDateInput onSelect={dueDate => updateTaskDueDate(id, dueDate)} dueDate={due_date} />
+      <div className="selectable-text my-3 p-3 border rounded-md border-border">{name}</div>
+      {links.length > 0 && <Links links={links} />}
 
       <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
         <button onClick={onDismiss}>
@@ -150,6 +155,47 @@ export default function Drawer({
         open={showDeleteModal}
         onDismiss={() => setShowDeleteModal(false)}
       />
+    </div>
+  )
+}
+
+//interface AutoResizeTextareaProps extends React.ComponentProps<"textarea"> {}
+
+//const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = props => {
+//  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
+//
+//  React.useEffect(() => {
+//    const textarea = textareaRef.current
+//    if (textarea) {
+//      textarea.style.height = "auto" // Reset the height
+//      textarea.style.height = `${textarea.scrollHeight}px` // Set the height to match content
+//    }
+//  }, [props.value]) // Run this effect when defaultValue changes
+//
+//  return (
+//    <textarea
+//      ref={textareaRef}
+//      {...props}
+//      style={{
+//        overflow: "hidden",
+//        resize: "none",
+//      }}
+//    />
+//  )
+//}
+
+function Links({links}: {links: Array<string>}) {
+  return (
+    <div className="border-border py-3 my-3 p-3 border rounded-md">
+      <div className="flex flex-col gap-1">
+        {links.map(link => {
+          return (
+            <a href={link} key={link} target="_blank" className="text-blue-400">
+              {link}
+            </a>
+          )
+        })}
+      </div>
     </div>
   )
 }
