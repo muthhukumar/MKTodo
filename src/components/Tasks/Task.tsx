@@ -16,6 +16,7 @@ import {CiCalendar} from "react-icons/ci"
 import {getDueDateDisplayStr} from "~/utils/tasks"
 import clsx from "clsx"
 import {GoDotFill} from "react-icons/go"
+import Linkify from "../Linkify"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
@@ -92,7 +93,7 @@ export default function Task(props: TaskProps) {
               key={props.id}
               className="text-white m-0 text-base md:text-sm font-medium break-words text-left"
             >
-              {props.name}
+              <Linkify>{props.name}</Linkify>
             </p>
             <div className="flex items-center gap-x-2">
               {isDateSameAsToday(props.marked_today) && (

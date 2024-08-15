@@ -12,6 +12,7 @@ import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
 import toast from "react-hot-toast"
+import {Linkify} from ".."
 
 export default function Drawer({
   name,
@@ -37,6 +38,10 @@ export default function Drawer({
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   useOutsideAlerter(inputRef, {onClickOutside: () => setShowInput(false), ignore: []})
+
+  React.useEffect(() => {
+    setTask(name)
+  }, [name])
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -107,7 +112,9 @@ export default function Drawer({
           <form onSubmit={onSubmit} className="flex-[0.9] w-full">
             {!showInput ? (
               <button onClick={() => setShowInput(true)} className="inline-block">
-                <p className="text-left break-words">{name}</p>
+                <p className="text-left break-words">
+                  <Linkify>{name}</Linkify>
+                </p>
               </button>
             ) : (
               <input
