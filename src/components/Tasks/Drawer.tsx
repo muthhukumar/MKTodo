@@ -12,7 +12,7 @@ import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
 import toast from "react-hot-toast"
-import {Linkify} from ".."
+import {CopyToClipboardButton, Linkify} from ".."
 import {extractLinks} from "~/utils/url"
 
 export default function Drawer({
@@ -132,13 +132,15 @@ export default function Drawer({
       </div>
       <AddToMyDay id={id} markedToday={marked_today} onToggleAddToMyDay={toggleTaskAddToMyDay} />
       <DueDateInput onSelect={dueDate => updateTaskDueDate(id, dueDate)} dueDate={due_date} />
-      <div className="selectable-text my-3 p-3 border rounded-md border-border">{name}</div>
       {links.length > 0 && <Links links={links} />}
 
       <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
-        <button onClick={onDismiss}>
-          <MdOutlineArrowForwardIos size={18} />
-        </button>
+        <div className="flex items-center gap-3">
+          <button onClick={onDismiss}>
+            <MdOutlineArrowForwardIos size={18} />
+          </button>
+          <CopyToClipboardButton content={name} />
+        </div>
         <p className="text-xs">Created {timeAgo(created_at)}</p>
         <button>
           <MdOutlineDeleteForever size={20} onClick={() => setShowDeleteModal(true)} />
@@ -160,7 +162,7 @@ export default function Drawer({
 }
 
 //interface AutoResizeTextareaProps extends React.ComponentProps<"textarea"> {}
-
+//
 //const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = props => {
 //  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 //
@@ -190,9 +192,12 @@ function Links({links}: {links: Array<string>}) {
       <div className="flex flex-col gap-1">
         {links.map(link => {
           return (
-            <a href={link} key={link} target="_blank" className="text-blue-400">
-              {link}
-            </a>
+            <div className="justify-between flex items-center gap-3">
+              <a href={link} key={link} target="_blank" className="text-blue-400">
+                {link}
+              </a>
+              <CopyToClipboardButton content={link} />
+            </div>
           )
         })}
       </div>

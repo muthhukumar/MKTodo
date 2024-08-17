@@ -1,7 +1,7 @@
 {
   "productName": "mktodo",
   "version": "0.0.0",
-  "identifier": "com.muthukumar.mktodo.dev",
+  "identifier": "com.muthukumar.mktodo.mktodo",
   "build": {
     "beforeDevCommand": "yarn dev",
     "devUrl": "http://localhost:1420",
