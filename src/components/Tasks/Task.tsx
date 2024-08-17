@@ -93,7 +93,7 @@ export default function Task(props: TaskProps) {
               key={props.id}
               className="text-white m-0 text-base md:text-sm font-medium break-words text-left"
             >
-              <Linkify>{props.name}</Linkify>
+              <Linkify preventNavigation>{props.name}</Linkify>
             </p>
             <div className="flex items-center gap-x-2">
               {isDateSameAsToday(props.marked_today) && (

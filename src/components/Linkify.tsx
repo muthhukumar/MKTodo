@@ -2,14 +2,30 @@
 import * as React from "react"
 import {assert} from "~/utils/assert"
 
-function Linkify({children}: {children: React.ReactNode}) {
+function Linkify({
+  children,
+  preventNavigation = false,
+}: {
+  children: React.ReactNode
+  preventNavigation?: boolean
+}) {
   assert(typeof children === "string", "children should be a link")
 
   // TODO: validate the children here
   const urlRegex = /(https?:\/\/[^\s]+)/g // TODO: we have to find another want to match url
 
   const parts = children.split(urlRegex).map((part, index) => {
-    if (urlRegex.test(part)) {
+    if (!urlRegex.test(part)) {
+      return part
+    }
+
+    if (preventNavigation) {
+      return (
+        <span key={index} className="text-blue-400">
+          {part}
+        </span>
+      )
+    } else {
       return (
         <a
           href={part}
@@ -22,8 +38,6 @@ function Linkify({children}: {children: React.ReactNode}) {
         </a>
       )
     }
-
-    return part
   })
 
   return <span>{parts}</span>
