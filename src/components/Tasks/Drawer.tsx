@@ -6,13 +6,13 @@ import {MdOutlineArrowForwardIos, MdOutlineDeleteForever, MdSunny, MdClose} from
 
 import {TTask} from "~/@types"
 import {timeAgo, isDateSameAsToday} from "~/utils/date"
-import {useOutsideAlerter} from "~/utils/hooks"
+import {useDelay} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
 import toast from "react-hot-toast"
-import {CopyToClipboardButton, Linkify} from ".."
+import {AutoResizeTextarea, CopyToClipboardButton} from ".."
 import {extractLinks} from "~/utils/url"
 
 export default function Drawer({
@@ -27,9 +27,6 @@ export default function Drawer({
   onDismiss: () => void
   ignoreRef?: React.RefObject<HTMLDivElement>
 }) {
-  const [showInput, setShowInput] = React.useState(false)
-
-  const [task, setTask] = React.useState(name)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)
   const modalRef = React.useRef<HTMLDivElement>(null)
@@ -38,27 +35,17 @@ export default function Drawer({
 
   const router = useRouter()
 
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const inputRef = React.useRef<HTMLTextAreaElement>(null)
 
-  useOutsideAlerter(inputRef, {onClickOutside: () => setShowInput(false), ignore: []})
-
-  React.useEffect(() => {
-    setTask(name)
-  }, [name])
-
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+  async function updateTaskName(value: string) {
+    if (name === value) return
 
     try {
-      await API.updateTaskById({id: id, task})
+      await API.updateTaskById({id: id, task: value})
 
       router.invalidate()
     } catch {
-      setTask(name)
-
       toast.error("Updating task name failed")
-    } finally {
-      setShowInput(false)
     }
   }
 
@@ -102,32 +89,29 @@ export default function Drawer({
     }
   }
 
+  const onFocusLeave = useDelay(updateTaskName)
+  const onChange = useDelay(updateTaskName, 3000)
+
   return (
     <div
       className="w-full border-l border-zinc-700 slide-in fixed right-0 h-screen md:max-w-xs z-50 min-w-72 max-h-[100vh] py-3 px-3 bg-background"
       ref={containerRef}
     >
       <div className="flex items-center w-full mb-3">
-        <div className="mt-3 flex items-center w-full">
+        <div className="mt-3 flex items-start w-full">
           <div className="flex-[0.1] flex items-center">
             <TaskToggleIcon completed={completed} onClick={() => toggleTask(id)} />
           </div>
-          <form onSubmit={onSubmit} className="flex-[0.9] w-full">
-            {!showInput ? (
-              <button onClick={() => setShowInput(true)} className="inline-block">
-                <p className="text-left break-words">
-                  <Linkify>{name}</Linkify>
-                </p>
-              </button>
-            ) : (
-              <input
-                ref={inputRef}
-                className="w-full"
-                value={task}
-                onChange={e => setTask(e.target.value)}
-              />
-            )}
-          </form>
+          <div className="flex-[0.9] w-full">
+            <AutoResizeTextarea
+              ref={inputRef}
+              className="w-full rounded-md bg-background outline-none"
+              onBlur={e => onFocusLeave(e.target.value)}
+              key={name}
+              onChange={e => onChange(e.target.value)}
+              defaultValue={name}
+            />
+          </div>
         </div>
       </div>
       <AddToMyDay id={id} markedToday={marked_today} onToggleAddToMyDay={toggleTaskAddToMyDay} />
@@ -160,31 +144,6 @@ export default function Drawer({
     </div>
   )
 }
-
-//interface AutoResizeTextareaProps extends React.ComponentProps<"textarea"> {}
-//
-//const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = props => {
-//  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
-//
-//  React.useEffect(() => {
-//    const textarea = textareaRef.current
-//    if (textarea) {
-//      textarea.style.height = "auto" // Reset the height
-//      textarea.style.height = `${textarea.scrollHeight}px` // Set the height to match content
-//    }
-//  }, [props.value]) // Run this effect when defaultValue changes
-//
-//  return (
-//    <textarea
-//      ref={textareaRef}
-//      {...props}
-//      style={{
-//        overflow: "hidden",
-//        resize: "none",
-//      }}
-//    />
-//  )
-//}
 
 function Links({links}: {links: Array<string>}) {
   return (
