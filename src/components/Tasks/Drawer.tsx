@@ -152,7 +152,7 @@ function Links({links}: {links: Array<string>}) {
         {links.map(link => {
           return (
             <div className="justify-between flex items-center gap-3">
-              <a href={link} key={link} target="_blank" className="text-blue-400">
+              <a href={link} key={link} target="_blank" className="text-blue-400 truncate">
                 {link}
               </a>
               <CopyToClipboardButton content={link} />
