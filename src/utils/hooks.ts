@@ -94,7 +94,7 @@ export function useDelay<T extends any>(
 }
 
 export function usePing() {
-  const [online, setOnline] = React.useState<boolean | null>(null)
+  const [online, setOnline] = React.useState<{server: boolean; internet: boolean} | null>(null)
 
   React.useEffect(() => {
     async function isOnline() {

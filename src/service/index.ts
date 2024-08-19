@@ -1,5 +1,6 @@
 import {TTask} from "~/@types"
 import axios from "./axios"
+import defaultAxios from "axios"
 import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
 import {Creds} from "~/auth-context"
 import {OptionsStore} from "~/utils/tauri-store"
@@ -117,16 +118,29 @@ async function pingWithAuth({host, apiKey}: Creds): Promise<boolean> {
   }
 }
 
-async function ping(): Promise<boolean> {
+async function ping(): Promise<{server: boolean; internet: boolean}> {
+  let server = false
+  let internet = false
+
   try {
     await axios.get("/health", {
       timeout: 1000 * 15, // 15 seconds
     })
-
-    return true
+    server = true
   } catch {
-    return false
+    server = false
   }
+
+  try {
+    await defaultAxios.get("https://www.muthukumar.dev", {
+      timeout: 1000 * 15, // 15 seconds
+    })
+    internet = true
+  } catch {
+    internet = false
+  }
+
+  return {server, internet}
 }
 
 export const API = {

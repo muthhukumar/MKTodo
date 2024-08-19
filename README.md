@@ -3,6 +3,7 @@
 ## Philosophy
 
 - function over form
+- Build our task app in a way that help us in improving our life. Not just same old todo app.
 
 ### Utils
 

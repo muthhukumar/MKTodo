@@ -35,7 +35,12 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
           const pinged = await API.ping()
           const success = await API.pingWithAuth(creds)
 
-          if (!pinged) {
+          if (!pinged.internet) {
+            toast.error("You are offline. Please connect to the internet.")
+            return setCreds(creds)
+          }
+
+          if (!pinged.server) {
             toast.error("Unable to connect to server.")
             return setCreds(creds)
           }

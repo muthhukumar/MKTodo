@@ -9,14 +9,24 @@ export default function ErrorMessage() {
   return (
     <div className="relative flex items-center justify-center flex-col p-3 h-screen w-full">
       {online !== null && (
-        <p
-          className={clsx("mb-5 px-4 py-1 border border-border rounded-full", {
-            "text-green-400 border-green-400": online,
-            "text-red-400 border-red-400": !online,
-          })}
-        >
-          {online ? "Online" : "Server is offline"}
-        </p>
+        <>
+          <p
+            className={clsx("mb-5 px-4 py-1 border border-border rounded-full", {
+              "text-green-400 border-green-400": online.internet,
+              "text-red-400 border-red-400": !online.internet,
+            })}
+          >
+            Internet is {online.internet ? "Online" : "Offline"}
+          </p>
+          <p
+            className={clsx("mb-5 px-4 py-1 border border-border rounded-full", {
+              "text-green-400 border-green-400": online.server,
+              "text-red-400 border-red-400": !online.server,
+            })}
+          >
+            Server is {online.server ? "Online" : "Offline"}
+          </p>
+        </>
       )}
       <h2 className="font-bold text-4xl mb-4">Well, this is awkward</h2>
       <div className="text-zinc-400">
