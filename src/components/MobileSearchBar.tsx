@@ -10,7 +10,7 @@ export default function SearchBar() {
 
   const navigate = useNavigate({from: location.pathname})
 
-  const search = useDelay((query: string) => {
+  const [search] = useDelay((query: string) => {
     navigate({search: {query}})
   }, 1200)
 

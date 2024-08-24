@@ -18,7 +18,7 @@ function TaskDetail() {
 
   const navigate = useNavigate({from: "/tasks/my-day/$taskId"})
 
-  const goBack = () => navigate({to: "/tasks/my-day", search: {query: ""}})
+  const goBack = () => navigate({to: "/tasks/my-day", search: {query: "", random: false}})
 
   return <Drawer {...task} onDismiss={goBack} />
 }

@@ -49,7 +49,7 @@ function LoginForm() {
       login({host, apiKey})
 
       setTimeout(() => {
-        navigate({to: "/tasks/all", search: {query: ""}})
+        navigate({to: "/tasks/all", search: {query: "", random: false}})
       }, 1500)
     } catch (err) {
       handleError(err, "Login failed!")

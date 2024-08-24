@@ -90,7 +90,11 @@ export function useDelay<T extends any>(
     }, delay)
   }
 
-  return fn
+  function cancel() {
+    if (timer) clearTimeout(timer)
+  }
+
+  return [fn, cancel]
 }
 
 export function usePing() {

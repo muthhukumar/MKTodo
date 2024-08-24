@@ -10,7 +10,8 @@
     "tauri": "tauri",
     "build:mac:prod": "tauri build --config './src-tauri/tauri.conf.prod.json'",
     "build:mac": "yarn tauri build --target x86_64-apple-darwin  --config './src-tauri/tauri.conf.prod.json'",
-    "build:android": "yarn tauri android build"
+    "build:android": "yarn tauri android build",
+    "check-types": "tsc"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",

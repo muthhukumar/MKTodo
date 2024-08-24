@@ -6,10 +6,10 @@ import {SearchQuerySchema} from "~/utils/schema"
 
 export const Route = createFileRoute("/_auth/tasks/all")({
   validateSearch: SearchQuerySchema,
-  loaderDeps: ({search: {query}}) => ({query}),
-  loader: async ({deps: {query}}) => {
+  loaderDeps: ({search: {query, random}}) => ({query, random}),
+  loader: async ({deps: {query, random}}) => {
     return {
-      tasks: await API.getTasks(null, query),
+      tasks: await API.getTasks(null, query, random),
     }
   },
   beforeLoad: ({context, location}) => {

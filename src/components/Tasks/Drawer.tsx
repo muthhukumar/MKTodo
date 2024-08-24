@@ -89,8 +89,8 @@ export default function Drawer({
     }
   }
 
-  const onFocusLeave = useDelay(updateTaskName)
-  const onChange = useDelay(updateTaskName, 3000)
+  const [onFocusLeave] = useDelay(updateTaskName)
+  const [onChange] = useDelay(updateTaskName, 3000)
 
   return (
     <div

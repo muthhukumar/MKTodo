@@ -5,12 +5,12 @@ import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
 import {Creds} from "~/auth-context"
 import {OptionsStore} from "~/utils/tauri-store"
 
-async function getTasks(filter: "my-day" | "important" | null, query?: string) {
+async function getTasks(filter: "my-day" | "important" | null, query?: string, random?: boolean) {
   try {
     const options = (await OptionsStore.get()) ?? {}
 
     const response = await axios.get(`/api/v1/tasks`, {
-      params: {filter, query, ...options},
+      params: {filter, random, query, ...options},
     })
 
     return response.data.data as Array<TTask>

@@ -184,6 +184,7 @@ export default function Tasks(props: TasksProps) {
               />
             ))}
           </div>
+
           <div className="min-h-[20vh]" />
           <DesktopOnly>
             <div className="p-3 bg-background sticky w-full bottom-4 md:bottom-0 left-0 right-0">
