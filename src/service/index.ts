@@ -132,6 +132,7 @@ async function ping(): Promise<{server: boolean; internet: boolean}> {
   }
 
   try {
+    // TODO - maybe remove this. This is actually slowing down our app.
     await defaultAxios.get("https://www.muthukumar.dev", {
       timeout: 1000 * 15, // 15 seconds
     })

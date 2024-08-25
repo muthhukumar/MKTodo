@@ -20,7 +20,7 @@ import Linkify from "../Linkify"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
-  onToggle: (id: number) => void
+  onToggle: (id: number, completed: boolean) => void
 }
 
 export default function Task(props: TaskProps) {
@@ -40,9 +40,9 @@ export default function Task(props: TaskProps) {
     }
   }
 
-  async function toggleTask(id: number) {
+  async function toggleTask(id: number, completed: boolean) {
     setToggling(true)
-    props.onToggle(props.id)
+    props.onToggle(props.id, completed)
 
     try {
       await API.toggleTaskCompletedById(id)
@@ -69,7 +69,7 @@ export default function Task(props: TaskProps) {
         <TaskToggleIcon
           completed={props.completed}
           onClick={e => {
-            toggleTask(props.id)
+            toggleTask(props.id, props.completed)
 
             e.stopPropagation()
           }}

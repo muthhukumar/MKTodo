@@ -13,7 +13,8 @@ import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
 import MobileCreateTaskInput from "./MobileCreateTaskInput"
 import {Loader, MobileSearchBar, Options} from ".."
-import {useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
+import {useAudioPlayer, useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
+import doneAudio from "~/assets/audio/ting.mp3"
 
 interface TasksProps {
   showFilters?: boolean
@@ -37,6 +38,8 @@ export default function Tasks(props: TasksProps) {
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
+  const {togglePlay} = useAudioPlayer(doneAudio)
+
   const onPress = useDeviceCallback({
     mobile: () => undefined,
     desktop: () => inputRef.current?.focus(),
@@ -51,7 +54,9 @@ export default function Tasks(props: TasksProps) {
     setTasks(props.tasks)
   }, [props.tasks])
 
-  function onTaskToggle(id: number) {
+  function onTaskToggle(id: number, completed: boolean) {
+    if (!completed) togglePlay()
+
     setTasks(tasks => tasks.filter(t => t.id !== id))
   }
 

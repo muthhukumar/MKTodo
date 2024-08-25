@@ -14,6 +14,8 @@ import {useRouter} from "@tanstack/react-router"
 import toast from "react-hot-toast"
 import {AutoResizeTextarea, CopyToClipboardButton} from ".."
 import {extractLinks} from "~/utils/url"
+import {useAudioPlayer} from "~/utils/hooks"
+import doneAudio from "~/assets/audio/ting.mp3"
 
 export default function Drawer({
   name,
@@ -36,6 +38,8 @@ export default function Drawer({
   const router = useRouter()
 
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
+
+  const {togglePlay} = useAudioPlayer(doneAudio)
 
   async function updateTaskName(value: string) {
     if (name === value) return
@@ -80,6 +84,8 @@ export default function Drawer({
   }
 
   async function toggleTask(id: number) {
+    if (!completed) togglePlay()
+
     try {
       await API.toggleTaskCompletedById(id)
 

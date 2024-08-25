@@ -113,24 +113,46 @@ export function usePing() {
   return online
 }
 
-export const useAudio = (url: string) => {
-  const [audio] = React.useState(new Audio(url))
-  const [playing, setPlaying] = React.useState(false)
-
-  const toggle = () => setPlaying(!playing)
+export function useAudioPlayer(src: string) {
+  const audioRef = React.useRef<HTMLAudioElement | null>()
+  const [isPlaying, setIsPlaying] = React.useState(false)
 
   React.useEffect(() => {
-    playing ? audio.play() : audio.pause()
-  }, [playing])
+    audioRef.current = new Audio(src)
 
-  React.useEffect(() => {
-    audio.addEventListener("ended", () => setPlaying(false))
+    const handleEnded = () => setIsPlaying(false)
+    audioRef.current.addEventListener("ended", handleEnded)
+
     return () => {
-      audio.removeEventListener("ended", () => setPlaying(false))
+      audioRef.current?.removeEventListener("ended", handleEnded)
+      audioRef.current?.pause()
+      audioRef.current = null
     }
-  }, [])
+  }, [src])
 
-  return [playing, toggle] as const
+  const togglePlay = () => {
+    if (!audioRef.current) return
+
+    if (isPlaying) {
+      audioRef.current.pause()
+    } else {
+      audioRef.current.volume = 0.3
+      audioRef.current.play()
+    }
+
+    setIsPlaying(!isPlaying)
+  }
+
+  const resetAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+      audioRef.current = null
+    }
+    setIsPlaying(false)
+  }
+
+  return {togglePlay, resetAudio}
 }
 
 export function useOnKeyPress({
