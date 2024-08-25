@@ -24,18 +24,21 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install
 
       - name: Build the app
         run: yarn build:mac:prod
 
-      - name: Upload DMG to release
+      - name: Find DMG files
+        id: find_dmg
+        run: |
+          echo "::set-output name=dmg_files::$(ls src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg)"
+
+      - name: Upload DMGs to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file:
-            src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/MKTodo_${{ github.ref_name
-            }}_aarch64.dmg
-          asset_name: MKTodo-${{ github.ref_name }}-macos.dmg
+          file: ${{ steps.find_dmg.outputs.dmg_files }}
+          asset_name: ${{ steps.find_dmg.outputs.dmg_files }}
           tag: ${{ github.ref }}
           overwrite: true
