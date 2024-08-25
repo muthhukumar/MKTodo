@@ -1,6 +1,7 @@
 // TODO: refactor this component later
 import * as React from "react"
 import {assert} from "~/utils/assert"
+import {LiaExternalLinkAltSolid} from "react-icons/lia"
 
 function Linkify({
   children,
@@ -21,8 +22,17 @@ function Linkify({
 
     if (preventNavigation) {
       return (
-        <span key={index} className="text-blue-400">
+        <span key={index} className="flex items-center gap-1 relative text-blue-400">
           {part}
+          <a
+            href={part}
+            key={index}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="-mt-3 text-blue-400"
+          >
+            <LiaExternalLinkAltSolid />
+          </a>
         </span>
       )
     } else {
