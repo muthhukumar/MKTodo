@@ -31,6 +31,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
-          asset_name: ${{ github.ref_name }}-macos.dmg
+          asset_name: MKTodo-${{ github.ref_name }}-macos.dmg
           tag: ${{ github.ref }}
           overwrite: true
