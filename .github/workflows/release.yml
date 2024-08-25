@@ -1,4 +1,5 @@
 name: Release
+
 on:
   push:
     tags:
@@ -32,13 +33,14 @@ jobs:
       - name: Find DMG files
         id: find_dmg
         run: |
-          echo "::set-output name=dmg_files::$(ls src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg)"
+          dmg_files=$(ls src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg)
+          echo "::set-output name=dmg_files::${dmg_files}"
 
       - name: Upload DMGs to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ steps.find_dmg.outputs.dmg_files }}
-          asset_name: ${{ steps.find_dmg.outputs.dmg_files }}
+          asset_name: MKTodo_${{ github.ref_name }}_aarch64.dmg
           tag: ${{ github.ref }}
           overwrite: true
