@@ -132,3 +132,47 @@ export const useAudio = (url: string) => {
 
   return [playing, toggle] as const
 }
+
+export function useOnKeyPress({
+  validateKey,
+  callback,
+}: {
+  validateKey: (e: KeyboardEvent) => boolean
+  callback: () => void
+}) {
+  React.useEffect(() => {
+    function handleKeyPress(e: KeyboardEvent) {
+      if (validateKey(e)) {
+        callback()
+      }
+    }
+
+    window.addEventListener("keypress", handleKeyPress)
+
+    return () => {
+      window.removeEventListener("keypress", handleKeyPress)
+    }
+  }, [])
+
+  return null
+}
+
+export function useDeviceCallback({
+  mobile,
+  desktop,
+}: {
+  mobile: <T>(...args: Array<T>) => void
+  desktop: <T>(...args: Array<T>) => void
+}) {
+  const {isMobile} = useSize()
+
+  function fn<T>(...args: Array<T>) {
+    if (isMobile) {
+      mobile(...args)
+    } else {
+      desktop(...args)
+    }
+  }
+
+  return fn
+}

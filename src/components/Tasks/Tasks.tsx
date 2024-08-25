@@ -13,6 +13,7 @@ import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
 import MobileCreateTaskInput from "./MobileCreateTaskInput"
 import {Loader, MobileSearchBar, Options} from ".."
+import {useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
 
 interface TasksProps {
   showFilters?: boolean
@@ -23,17 +24,36 @@ interface TasksProps {
 
 export default function Tasks(props: TasksProps) {
   const {showFilters, title} = props
+  const [tasks, setTasks] = React.useState(props.tasks)
 
   const [newTasks, setNewTasks] = React.useState<
     Array<{name: string; status: "started" | "failed" | "retrying"}>
   >([])
-  const [taskType, setTaskType] = React.useState<TaskTypes>(props.type)
+  const [taskType, setTaskType] = React.useState(props.type)
 
   const [task, setTask] = React.useState("")
 
   const router = useRouter()
 
-  const tasks = props.tasks
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  const onPress = useDeviceCallback({
+    mobile: () => undefined,
+    desktop: () => inputRef.current?.focus(),
+  })
+
+  useOnKeyPress({
+    validateKey: e => Boolean((e.metaKey || e.ctrlKey) && e.key === "n"),
+    callback: onPress,
+  })
+
+  React.useEffect(() => {
+    setTasks(props.tasks)
+  }, [props.tasks])
+
+  function onTaskToggle(id: number) {
+    setTasks(tasks => tasks.filter(t => t.id !== id))
+  }
 
   async function retry(task: string) {
     setNewTasks(state => {
@@ -163,6 +183,7 @@ export default function Tasks(props: TasksProps) {
             {newTasks.length > 0 && <div className="min-h-[12px]" />}
             {pendingTasks.map(t => (
               <Task
+                onToggle={onTaskToggle}
                 {...t}
                 key={t.id}
                 type={props.type as "all" | "my-day" | "important" | "planned"}
@@ -178,6 +199,7 @@ export default function Tasks(props: TasksProps) {
             )}
             {completedTasks.map(t => (
               <Task
+                onToggle={onTaskToggle}
                 {...t}
                 key={t.id}
                 type={props.type as "all" | "my-day" | "important" | "planned"}
@@ -189,6 +211,7 @@ export default function Tasks(props: TasksProps) {
           <DesktopOnly>
             <div className="p-3 bg-background sticky w-full bottom-4 md:bottom-0 left-0 right-0">
               <CreateTaskInput
+                ref={inputRef}
                 taskType={taskType}
                 setTaskType={setTaskType}
                 task={task}

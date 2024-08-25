@@ -20,6 +20,7 @@ import Linkify from "../Linkify"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
+  onToggle: (id: number) => void
 }
 
 export default function Task(props: TaskProps) {
@@ -41,14 +42,15 @@ export default function Task(props: TaskProps) {
 
   async function toggleTask(id: number) {
     setToggling(true)
+    props.onToggle(props.id)
 
     try {
       await API.toggleTaskCompletedById(id)
-
-      router.invalidate()
     } catch (error) {
       toast.error("Toggle Completion failed")
     } finally {
+      router.invalidate()
+
       setToggling(false)
     }
   }

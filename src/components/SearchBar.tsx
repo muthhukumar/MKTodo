@@ -2,7 +2,7 @@ import * as React from "react"
 import {useNavigate} from "@tanstack/react-router"
 import {IoSearchOutline} from "react-icons/io5"
 import {RiCloseCircleFill} from "react-icons/ri"
-import {useDelay} from "~/utils/hooks"
+import {useDelay, useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
 
 export default function SearchBar() {
   const navigate = useNavigate({from: location.pathname})
@@ -10,6 +10,16 @@ export default function SearchBar() {
   const [search, cancel] = useDelay((query: string) => {
     navigate({search: {query}})
   }, 1200)
+
+  const onPress = useDeviceCallback({
+    mobile: () => undefined,
+    desktop: () => inputRef.current?.focus(),
+  })
+
+  useOnKeyPress({
+    validateKey: e => Boolean((e.metaKey || e.ctrlKey) && e.key === "f"),
+    callback: onPress,
+  })
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
