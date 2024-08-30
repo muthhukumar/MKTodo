@@ -35,7 +35,10 @@ async function createTask(task: NewTask | ImportantTask | MyDayTask | PlannedTas
 
     return response.data as {message: string}
   } catch (error) {
-    return Promise.reject("Failed")
+    const e = error as {response: {data: unknown}}
+
+    // TODO: refactor this later
+    return Promise.reject(e.response.data)
   }
 }
 

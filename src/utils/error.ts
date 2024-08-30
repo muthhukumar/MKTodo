@@ -18,3 +18,34 @@ export function handleError(err: unknown, defaultErrorMessage: string): void {
     toast.error(defaultErrorMessage)
   }
 }
+
+type ErrorType =
+  | {
+      "status": number
+      "object": "error"
+      "code": "validation_failed"
+      "message": string
+      "request_id": string
+      "invalid_fields": Array<{
+        "error_message": string
+        "field": string
+        "is_invalid": boolean
+      }>
+    }
+  | {message: string}
+
+export function handleError2({error: e, defaultMessage}: {error: unknown; defaultMessage: string}) {
+  const error = e as ErrorType
+
+  if ("message" in error && !("code" in error)) {
+    toast.error(error.message)
+    return
+  }
+
+  if ("code" in error && error.code === "validation_failed") {
+    toast.error(error.invalid_fields.map(f => f.error_message).join(", "))
+    return
+  }
+
+  toast.error(defaultMessage)
+}

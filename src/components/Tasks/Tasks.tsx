@@ -15,6 +15,7 @@ import MobileCreateTaskInput from "./MobileCreateTaskInput"
 import {Loader, MobileSearchBar, Options} from ".."
 import {useAudioPlayer, useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
+import {handleError2} from "~/utils/error"
 
 interface TasksProps {
   showFilters?: boolean
@@ -109,6 +110,9 @@ export default function Tasks(props: TasksProps) {
 
       router.invalidate()
     } catch (error) {
+      // TODO: refactor this later
+      handleError2({error, defaultMessage: "Creating Task failed."})
+
       setNewTasks(state => {
         const clone = [...state]
 
@@ -118,7 +122,6 @@ export default function Tasks(props: TasksProps) {
 
         return clone
       })
-      toast.error("Create Task failed.")
     }
   }
 
