@@ -1,25 +1,6 @@
-import {AxiosError} from "axios"
 import toast from "react-hot-toast"
 
-export function handleError(err: unknown, defaultErrorMessage: string): void {
-  const error = err as AxiosError
-
-  const status = error?.response?.status
-
-  if (status === 500) {
-    const errorMessage = typeof error.response?.data === "string" ? error.response.data : null
-    // @ts-ignore
-    const msg = "message" in error.response?.data?.message! ? error.response?.data?.message : null
-
-    const result = errorMessage || msg || defaultErrorMessage
-
-    toast.error(`Server error: ${result}`)
-  } else {
-    toast.error(defaultErrorMessage)
-  }
-}
-
-type ErrorType =
+export type ErrorType =
   | {
       "status": number
       "object": "error"
@@ -32,20 +13,29 @@ type ErrorType =
         "is_invalid": boolean
       }>
     }
-  | {message: string}
+  | {message: string; status: number; code: "error_message"}
 
-export function handleError2({error: e, defaultMessage}: {error: unknown; defaultMessage: string}) {
+export function handleError({error: e, defaultMessage}: {error: unknown; defaultMessage: string}) {
   const error = e as ErrorType
 
-  if ("message" in error && !("code" in error)) {
-    toast.error(error.message)
-    return
+  let message = ""
+
+  if (error.code) {
+    switch (error.code) {
+      case "validation_failed": {
+        message = error.invalid_fields.map(f => f.error_message).join(", ")
+        break
+      }
+      case "error_message": {
+        message = error.message
+        break
+      }
+    }
   }
 
-  if ("code" in error && error.code === "validation_failed") {
-    toast.error(error.invalid_fields.map(f => f.error_message).join(", "))
-    return
+  if (error.status >= 500) {
+    message = `Internal server error: ${message}`
   }
 
-  toast.error(defaultMessage)
+  toast.error(message || defaultMessage)
 }

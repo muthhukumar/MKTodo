@@ -11,11 +11,11 @@ import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
-import toast from "react-hot-toast"
 import {AutoResizeTextarea, CopyToClipboardButton} from ".."
 import {extractLinks} from "~/utils/url"
 import {useAudioPlayer} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
+import {handleError} from "~/utils/error"
 
 export default function Drawer({
   name,
@@ -48,8 +48,8 @@ export default function Drawer({
       await API.updateTaskById({id: id, task: value})
 
       router.invalidate()
-    } catch {
-      toast.error("Updating task name failed")
+    } catch (error) {
+      handleError({error, defaultMessage: "Updating task name failed"})
     }
   }
 
@@ -59,7 +59,7 @@ export default function Drawer({
 
       router.invalidate()
     } catch (error) {
-      toast.error("Adding task to My Day failed")
+      handleError({error, defaultMessage: "Adding task to My Day failed"})
     }
   }
 
@@ -69,7 +69,7 @@ export default function Drawer({
 
       router.invalidate()
     } catch (error) {
-      toast.error("Updating task Due Day failed")
+      handleError({error, defaultMessage: "Updating task Due Day failed"})
     }
   }
 
@@ -79,7 +79,7 @@ export default function Drawer({
 
       router.invalidate()
     } catch (error) {
-      toast.error("Deleting task failed")
+      handleError({error, defaultMessage: "Deleting task failed"})
     }
   }
 
@@ -91,7 +91,7 @@ export default function Drawer({
 
       router.invalidate()
     } catch (error) {
-      toast.error("Toggling Task completion failed")
+      handleError({error, defaultMessage: "Toggling Task completion failed"})
     }
   }
 

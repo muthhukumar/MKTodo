@@ -38,11 +38,7 @@ function InnerApp() {
   return (
     <ErrorBoundary>
       <Toaster position="top-center" />
-      {showSplashScreen || auth.loading ? (
-        <SplashScreen />
-      ) : (
-        <RouterProvider router={router} context={{auth}} />
-      )}
+      {showSplashScreen ? <SplashScreen /> : <RouterProvider router={router} context={{auth}} />}
     </ErrorBoundary>
   )
 }

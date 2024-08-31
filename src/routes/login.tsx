@@ -51,8 +51,8 @@ function LoginForm() {
       setTimeout(() => {
         navigate({to: "/tasks/all", search: {query: "", random: false}})
       }, 1500)
-    } catch (err) {
-      handleError(err, "Login failed!")
+    } catch (error) {
+      handleError({error, defaultMessage: "Login failed!"})
     } finally {
       setLoading(false)
     }

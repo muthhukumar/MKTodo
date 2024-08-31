@@ -2,8 +2,8 @@ import {TTask} from "~/@types"
 import axios from "./axios"
 import defaultAxios from "axios"
 import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
-import {Creds} from "~/auth-context"
 import {OptionsStore} from "~/utils/tauri-store"
+import {ErrorType} from "~/utils/error"
 
 async function getTasks(filter: "my-day" | "important" | null, query?: string, random?: boolean) {
   try {
@@ -35,10 +35,7 @@ async function createTask(task: NewTask | ImportantTask | MyDayTask | PlannedTas
 
     return response.data as {message: string}
   } catch (error) {
-    const e = error as {response: {data: unknown}}
-
-    // TODO: refactor this later
-    return Promise.reject(e.response.data)
+    return Promise.reject(error)
   }
 }
 
@@ -106,45 +103,49 @@ async function updateTaskDueDateById(id: number, dueDate: string) {
   }
 }
 
-async function pingWithAuth({host, apiKey}: Creds): Promise<boolean> {
-  try {
-    await axios.get(`${host}/api/v1/tasks`, {
-      headers: {
-        "x-api-key": apiKey,
-      },
-      timeout: 1000 * 30, // 30 seconds
-    })
-
-    return true
-  } catch {
-    return false
+async function checkServerHealth({
+  notifyInternetStatus,
+  notifySessionValidity,
+  notifyServerStatus,
+}: {
+  notifyServerStatus: (isOnline: boolean) => void
+  notifyInternetStatus?: (isOnline: boolean) => void
+  notifySessionValidity?: {
+    creds: {
+      host: string
+      apiKey: string
+    }
+    notify: (isOnline: boolean) => void
   }
-}
-
-async function ping(): Promise<{server: boolean; internet: boolean}> {
-  let server = false
-  let internet = false
-
-  try {
-    await axios.get("/health", {
-      timeout: 1000 * 15, // 15 seconds
-    })
-    server = true
-  } catch {
-    server = false
+}) {
+  if (notifyInternetStatus) {
+    defaultAxios
+      .head("https://www.muthukumar.dev", {
+        timeout: 1000 * 15,
+        validateStatus: status => status >= 200 && status <= 300,
+      })
+      .then(() => notifyInternetStatus(true))
+      .catch(() => notifyInternetStatus(false))
   }
 
-  try {
-    // TODO - maybe remove this. This is actually slowing down our app.
-    await defaultAxios.get("https://www.muthukumar.dev", {
-      timeout: 1000 * 15, // 15 seconds
-    })
-    internet = true
-  } catch {
-    internet = false
+  if (notifySessionValidity) {
+    defaultAxios
+      .get(`${notifySessionValidity.creds.host}/api/v1/tasks`, {
+        headers: {
+          "x-api-key": notifySessionValidity.creds.apiKey,
+        },
+        timeout: 1000 * 15,
+      })
+      .then(() => notifySessionValidity.notify(true))
+      .catch((error: ErrorType) => {
+        if (error.status === 401 || error.status === 403) notifySessionValidity.notify(false)
+      })
   }
 
-  return {server, internet}
+  axios
+    .get("/health", {timeout: 1000 * 15})
+    .then(() => notifyServerStatus(true))
+    .catch(() => notifyServerStatus(false))
 }
 
 export const API = {
@@ -157,6 +158,5 @@ export const API = {
   toggleTaskAddToMyDayById,
   updateTaskDueDateById,
   getTask,
-  ping,
-  pingWithAuth,
+  checkServerHealth,
 }

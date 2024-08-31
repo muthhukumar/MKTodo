@@ -101,13 +101,21 @@ export function usePing() {
   const [online, setOnline] = React.useState<{server: boolean; internet: boolean} | null>(null)
 
   React.useEffect(() => {
-    async function isOnline() {
-      const isOnline = await API.ping()
+    API.checkServerHealth({
+      notifyInternetStatus: status =>
+        setOnline(state => {
+          if (!state) return {internet: status, server: false}
 
-      setOnline(isOnline)
-    }
+          return {...state, internet: status}
+        }),
+      notifyServerStatus(isOnline) {
+        setOnline(state => {
+          if (!state) return {server: isOnline, internet: false}
 
-    isOnline()
+          return {...state, server: isOnline}
+        })
+      },
+    })
   }, [])
 
   return online

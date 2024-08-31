@@ -11,12 +11,12 @@ import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {MdSunny} from "react-icons/md"
 import {isDateInPast, isDateSameAsToday} from "~/utils/date"
 import Loader from "../Loader"
-import toast from "react-hot-toast"
 import {CiCalendar} from "react-icons/ci"
 import {getDueDateDisplayStr} from "~/utils/tasks"
 import clsx from "clsx"
 import {GoDotFill} from "react-icons/go"
 import Linkify from "../Linkify"
+import {handleError} from "~/utils/error"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
@@ -36,7 +36,7 @@ export default function Task(props: TaskProps) {
 
       router.invalidate()
     } catch (error) {
-      toast.error("Toggle Importance failed")
+      handleError({error, defaultMessage: "Toggle Importance failed"})
     }
   }
 
@@ -47,7 +47,7 @@ export default function Task(props: TaskProps) {
     try {
       await API.toggleTaskCompletedById(id)
     } catch (error) {
-      toast.error("Toggle Completion failed")
+      handleError({error, defaultMessage: "Toggle Completion failed"})
     } finally {
       router.invalidate()
 

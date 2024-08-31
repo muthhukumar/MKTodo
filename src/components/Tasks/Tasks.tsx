@@ -7,7 +7,6 @@ import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {API} from "~/service"
 import {createTask, separateTasks} from "~/utils/tasks"
 import MobileOnly from "../MobileOnly"
-import toast from "react-hot-toast"
 import CreateTaskInput from "./CreateTaskInput"
 import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
@@ -15,7 +14,7 @@ import MobileCreateTaskInput from "./MobileCreateTaskInput"
 import {Loader, MobileSearchBar, Options} from ".."
 import {useAudioPlayer, useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
-import {handleError2} from "~/utils/error"
+import {handleError} from "~/utils/error"
 
 interface TasksProps {
   showFilters?: boolean
@@ -79,6 +78,8 @@ export default function Tasks(props: TasksProps) {
 
       router.invalidate()
     } catch (error) {
+      handleError({error, defaultMessage: "Retrying Create Task failed."})
+
       setNewTasks(state => {
         const clone = [...state]
 
@@ -88,7 +89,6 @@ export default function Tasks(props: TasksProps) {
 
         return clone
       })
-      toast.error("Retrying Create Task failed.")
     }
   }
 
@@ -110,8 +110,7 @@ export default function Tasks(props: TasksProps) {
 
       router.invalidate()
     } catch (error) {
-      // TODO: refactor this later
-      handleError2({error, defaultMessage: "Creating Task failed."})
+      handleError({error, defaultMessage: "Creating Task failed."})
 
       setNewTasks(state => {
         const clone = [...state]

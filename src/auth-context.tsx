@@ -1,7 +1,10 @@
+// TODO: remove loading
+
 import * as React from "react"
 import {APIStore} from "./utils/tauri-store"
 import toast from "react-hot-toast"
 import {API} from "./service"
+import {handleError} from "./utils/error"
 
 export type Creds = {
   apiKey: string
@@ -32,28 +35,35 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         if (creds) {
           setLoading(true)
 
-          const pinged = await API.ping()
-          const success = await API.pingWithAuth(creds)
-
-          if (!pinged.internet) {
-            toast.error("You are offline. Please connect to the internet.")
-            return setCreds(creds)
-          }
-
-          if (!pinged.server) {
-            toast.error("Unable to connect to server.")
-            return setCreds(creds)
-          }
-
-          if (!success) {
-            toast.error("Login failed. Invalid credentials.")
-            return setCreds(null)
-          }
+          API.checkServerHealth({
+            notifyServerStatus: isOnline => {
+              if (!isOnline) {
+                toast.error("Unable to connect to server.")
+                setCreds(creds)
+              }
+            },
+            notifyInternetStatus: isOnline => {
+              if (!isOnline) {
+                toast.error("You are offline. Please connect to the internet.")
+                setCreds(creds)
+              }
+            },
+            notifySessionValidity: {
+              creds,
+              notify: isOnline => {
+                if (!isOnline) {
+                  toast.error("Login failed. Invalid credentials.")
+                  setCreds(null)
+                  logout()
+                }
+              },
+            },
+          })
         }
 
         setCreds(creds)
       } catch (err) {
-        toast.error("Connecting to server failed...")
+        handleError({error: err, defaultMessage: "Connecting to server failed..."})
       } finally {
         setLoading(false)
       }
