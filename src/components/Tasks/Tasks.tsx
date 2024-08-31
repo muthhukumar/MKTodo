@@ -133,7 +133,7 @@ export default function Tasks(props: TasksProps) {
     <div className="bg-background w-full">
       <div className="w-full relative">
         <div className="px-3">
-          <div className="sticky top-0 py-1 left-0 right-0 bg-background">
+          <div className="sticky top-0 py-1 left-0 right-0 bg-background z-10">
             <div className="flex items-center justify-between py-2">
               <h1 className="flex items-center gap-2 text-2xl font-bold">
                 <span>{title ? title : "Tasks"}</span>
