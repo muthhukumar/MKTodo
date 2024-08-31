@@ -1,4 +1,5 @@
-import baseAxios from "axios"
+import baseAxios, {AxiosError} from "axios"
+import toast from "react-hot-toast"
 import {APIStore} from "~/utils/tauri-store"
 
 const axios = baseAxios.create({
@@ -18,12 +19,18 @@ axios.interceptors.request.use(async config => {
 })
 
 axios.interceptors.response.use(
-  response => {
-    return response
-  },
+  response => response,
   error => {
+    if (isNetworkError(error)) {
+      toast.error(error.message)
+    }
+
     return Promise.reject(error.response.data)
   },
 )
+
+function isNetworkError(err: AxiosError) {
+  return !!err.isAxiosError && !err.response
+}
 
 export default axios
