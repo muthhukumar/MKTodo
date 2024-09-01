@@ -24,7 +24,6 @@ interface TaskProps extends TTask {
 }
 
 export default function Task(props: TaskProps) {
-  const [toggling, setToggling] = React.useState(false)
   const [localToggle, setLocalToggle] = React.useState(false)
 
   const router = useRouter()
@@ -42,7 +41,6 @@ export default function Task(props: TaskProps) {
   }
 
   async function toggleTask(id: number, completed: boolean) {
-    setToggling(true)
     setLocalToggle(!completed)
 
     props.onToggle(props.id, completed)
@@ -58,8 +56,6 @@ export default function Task(props: TaskProps) {
       } else {
         router.invalidate()
       }
-
-      setToggling(false)
     }
   }
 
@@ -69,20 +65,14 @@ export default function Task(props: TaskProps) {
 
   return (
     <div className="overflow-hidden border border-border flex items-center w-full rounded-md bg-item-background px-3 md:px-4 py-[1px] hover:bg-hover-background my-[1px]">
-      {toggling ? (
-        <div className="w-[24px]">
-          <Loader />
-        </div>
-      ) : (
-        <TaskToggleIcon
-          completed={props.completed || localToggle}
-          onClick={e => {
-            toggleTask(props.id, props.completed)
+      <TaskToggleIcon
+        completed={props.completed || localToggle}
+        onClick={e => {
+          toggleTask(props.id, props.completed)
 
-            e.stopPropagation()
-          }}
-        />
-      )}
+          e.stopPropagation()
+        }}
+      />
       <Link
         to={to}
         params={{taskId: String(props.id)}}
