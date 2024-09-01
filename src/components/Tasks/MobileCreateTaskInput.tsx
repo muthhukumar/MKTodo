@@ -24,6 +24,8 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
     setShowInput(false)
   }
 
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
   useOutsideAlerter(formRef, {onClickOutside: hideInput})
 
   return (
@@ -46,6 +48,7 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
         >
           <div className="w-full flex items-center">
             <input
+              ref={inputRef}
               value={task}
               type="text"
               name="Task"
@@ -55,7 +58,13 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
               className="outline-none w-full text-white rounded-md px-2 py-3 bg-item-background"
               placeholder="Add a Task"
             />
-            <button type="submit" className="mr-3 flex items-center justify-center">
+            <button
+              type="submit"
+              className="mr-3 flex items-center justify-center"
+              onClick={() => {
+                inputRef.current?.focus()
+              }}
+            >
               <BsFillFileArrowUpFill size={30} className="ext-inherit text-white" />
             </button>
           </div>
