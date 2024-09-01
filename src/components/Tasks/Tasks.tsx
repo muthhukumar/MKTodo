@@ -57,7 +57,9 @@ export default function Tasks(props: TasksProps) {
   function onTaskToggle(id: number, completed: boolean) {
     if (!completed) togglePlay()
 
-    setTasks(tasks => tasks.filter(t => t.id !== id))
+    setTimeout(() => {
+      setTasks(tasks => tasks.filter(t => t.id !== id))
+    }, 1000)
   }
 
   async function retry(task: string) {

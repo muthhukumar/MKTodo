@@ -25,6 +25,7 @@ interface TaskProps extends TTask {
 
 export default function Task(props: TaskProps) {
   const [toggling, setToggling] = React.useState(false)
+  const [localToggle, setLocalToggle] = React.useState(false)
 
   const router = useRouter()
 
@@ -42,14 +43,17 @@ export default function Task(props: TaskProps) {
 
   async function toggleTask(id: number, completed: boolean) {
     setToggling(true)
+    setLocalToggle(true)
+
     props.onToggle(props.id, completed)
 
     try {
       await API.toggleTaskCompletedById(id)
     } catch (error) {
+      setLocalToggle(false)
       handleError({error, defaultMessage: "Toggle Completion failed"})
     } finally {
-      router.invalidate()
+      setTimeout(router.invalidate, 5000)
 
       setToggling(false)
     }
@@ -67,7 +71,7 @@ export default function Task(props: TaskProps) {
         </div>
       ) : (
         <TaskToggleIcon
-          completed={props.completed}
+          completed={props.completed || localToggle}
           onClick={e => {
             toggleTask(props.id, props.completed)
 
