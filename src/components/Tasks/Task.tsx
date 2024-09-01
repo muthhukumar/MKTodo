@@ -43,7 +43,7 @@ export default function Task(props: TaskProps) {
 
   async function toggleTask(id: number, completed: boolean) {
     setToggling(true)
-    setLocalToggle(true)
+    setLocalToggle(!completed)
 
     props.onToggle(props.id, completed)
 
@@ -53,7 +53,11 @@ export default function Task(props: TaskProps) {
       setLocalToggle(false)
       handleError({error, defaultMessage: "Toggle Completion failed"})
     } finally {
-      setTimeout(router.invalidate, 5000)
+      if (!completed) {
+        setTimeout(router.invalidate, 5000)
+      } else {
+        router.invalidate()
+      }
 
       setToggling(false)
     }
