@@ -7,7 +7,7 @@ import {FaRegStar} from "react-icons/fa"
 import {FaStar} from "react-icons/fa"
 import {FaRegCircle} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
-import {Link, useRouter, useSearch} from "@tanstack/react-router"
+import {Link, useParams, useRouter, useSearch} from "@tanstack/react-router"
 import {MdSunny} from "react-icons/md"
 import {isDateInPast, isDateSameAsToday} from "~/utils/date"
 import {CiCalendar} from "react-icons/ci"
@@ -28,6 +28,8 @@ export default function Task(props: TaskProps) {
   const router = useRouter()
 
   const search = useSearch({from: `/_auth/tasks/${props.type}`})
+
+  const param = useParams({strict: false})
 
   async function toggleTaskImportance(id: number) {
     try {
@@ -63,7 +65,16 @@ export default function Task(props: TaskProps) {
   const to = `/tasks/${tasksType}/$taskId` as const
 
   return (
-    <div className="overflow-hidden border border-border flex items-center w-full rounded-md bg-item-background px-3 md:px-4 py-[1px] hover:bg-hover-background my-[1px]">
+    <div
+      className={twMerge(
+        clsx(
+          "bg-item-background overflow-hidden border border-border flex items-center w-full rounded-md px-3 md:px-4 py-[1px] hover:bg-hover-background my-[1px]",
+          {
+            "bg-hover-background": param.taskId && Number(param.taskId) === props.id,
+          },
+        ),
+      )}
+    >
       <TaskToggleIcon
         completed={props.completed || localToggle}
         onClick={e => {
@@ -108,7 +119,6 @@ export default function Task(props: TaskProps) {
           </div>
         </div>
       </Link>
-
       <div className="flex items-center ml-auto w-[24px]">
         <button
           className="w-full"
