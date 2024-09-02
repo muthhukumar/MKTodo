@@ -77,7 +77,7 @@ export default function Drawer({
     try {
       await API.deleteTaskById(id)
 
-      router.invalidate()
+      onDismiss()
     } catch (error) {
       handleError({error, defaultMessage: "Deleting task failed"})
     }

@@ -10,7 +10,6 @@ import {twMerge} from "tailwind-merge"
 import {Link, useRouter, useSearch} from "@tanstack/react-router"
 import {MdSunny} from "react-icons/md"
 import {isDateInPast, isDateSameAsToday} from "~/utils/date"
-import Loader from "../Loader"
 import {CiCalendar} from "react-icons/ci"
 import {getDueDateDisplayStr} from "~/utils/tasks"
 import clsx from "clsx"
@@ -83,8 +82,6 @@ export default function Task(props: TaskProps) {
           filter: search.filter,
         }}
         key={props.id}
-        preload="intent"
-        preloadDelay={800}
         className={twMerge("py-2 w-full flex items-center text-white")}
       >
         <div className="w-full px-2">
