@@ -40,7 +40,7 @@ export default function Tasks(props: TasksProps) {
 
   const {togglePlay} = useAudioPlayer(doneAudio)
 
-  const onPress = useDeviceCallback({
+  const onPress = useDeviceCallback<KeyboardEvent>({
     mobile: () => undefined,
     desktop: () => inputRef.current?.focus(),
   })
@@ -54,7 +54,7 @@ export default function Tasks(props: TasksProps) {
     setTasks(props.tasks)
   }, [props.tasks])
 
-  function onTaskToggle(id: number, completed: boolean) {
+  const onTaskToggle = React.useCallback((id: number, completed: boolean) => {
     if (!completed) togglePlay()
 
     if (!completed) {
@@ -62,7 +62,7 @@ export default function Tasks(props: TasksProps) {
         setTasks(tasks => tasks.filter(t => t.id !== id))
       }, 2000)
     }
-  }
+  }, [])
 
   async function retry(task: string) {
     setNewTasks(state => {

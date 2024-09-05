@@ -163,17 +163,41 @@ export function useAudioPlayer(src: string) {
   return {togglePlay, resetAudio}
 }
 
+export function useOnKeyDown({
+  validateKey,
+  callback,
+}: {
+  validateKey: (e: KeyboardEvent) => boolean
+  callback: (e: KeyboardEvent) => void
+}) {
+  React.useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (validateKey(e)) {
+        callback(e)
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [])
+
+  return null
+}
+
 export function useOnKeyPress({
   validateKey,
   callback,
 }: {
   validateKey: (e: KeyboardEvent) => boolean
-  callback: () => void
+  callback: (e: KeyboardEvent) => void
 }) {
   React.useEffect(() => {
     function handleKeyPress(e: KeyboardEvent) {
       if (validateKey(e)) {
-        callback()
+        callback(e)
       }
     }
 
@@ -187,16 +211,16 @@ export function useOnKeyPress({
   return null
 }
 
-export function useDeviceCallback({
+export function useDeviceCallback<T>({
   mobile,
   desktop,
 }: {
-  mobile: <T>(...args: Array<T>) => void
-  desktop: <T>(...args: Array<T>) => void
+  mobile: (...args: Array<T>) => void
+  desktop: (...args: Array<T>) => void
 }) {
   const {isMobile} = useSize()
 
-  function fn<T>(...args: Array<T>) {
+  function fn(...args: Array<T>) {
     if (isMobile) {
       mobile(...args)
     } else {

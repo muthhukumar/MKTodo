@@ -7,6 +7,7 @@ import {
   getTodayDateIOSString,
   getTodayDate,
 } from "~/utils/date"
+import {invariants} from "../invariants"
 
 export function getDueDateDisplayStr(dueDate: string) {
   if (isDateSameAsToday(dueDate)) {
@@ -96,3 +97,51 @@ export const createTask = (taskType: TaskTypes, task: string) => {
       return new NewTask(task)
   }
 }
+
+export function selectNext<T, VT>({
+  data,
+  current,
+  match,
+}: {
+  data: Array<T>
+  current: VT
+  match: (props: {iterator: T; value: VT}) => boolean
+}) {
+  const index = data.findIndex(t => match({iterator: t as T, value: current}))
+
+  invariants(index !== -1, "Index should never be -1")
+
+  const result = data[(index + 1) % data.length]
+
+  invariants(Boolean(result), "Result should not be null or undefined")
+
+  return result
+}
+
+type TaskType = {
+  value: TaskTypes
+  title: string
+}
+
+export const taskTypes: Array<TaskType> = [
+  {
+    value: "all",
+    title: "Default",
+  },
+  {
+    value: "my-day",
+    title: "My Day",
+  },
+  {
+    value: "important",
+    title: "Important",
+  },
+  {
+    value: "planned:today",
+    title: "Today",
+  },
+  {
+    value: "planned:tomorrow",
+    title: "Tomorrow",
+  },
+]

@@ -22,7 +22,7 @@ interface TaskProps extends TTask {
   onToggle: (id: number, completed: boolean) => void
 }
 
-export default function Task(props: TaskProps) {
+function Task(props: TaskProps) {
   const [localToggle, setLocalToggle] = React.useState(false)
 
   const router = useRouter()
@@ -175,3 +175,5 @@ export function TaskToggleIcon({
     </button>
   )
 }
+
+export default React.memo(Task)

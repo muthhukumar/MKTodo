@@ -1,11 +1,14 @@
 import * as React from "react"
 import {FaPlus} from "react-icons/fa6"
 import {TaskTypes} from "~/@types"
+import {useDeviceCallback, useOnKeyDown} from "~/utils/hooks"
+import {selectNext, taskTypes} from "~/utils/tasks"
+import {isActiveElement} from "~/utils/ui"
 
 interface CreateTaskInputProps {
   task: string
   setTask: (value: string) => void
-  setTaskType: (value: TaskTypes) => void
+  setTaskType: React.Dispatch<React.SetStateAction<TaskTypes>>
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
   taskType: TaskTypes
 }
@@ -22,6 +25,28 @@ const CreateTaskInput = React.forwardRef<HTMLInputElement, CreateTaskInputProps>
       } as HTMLInputElement
     }, [])
 
+    const onPress = useDeviceCallback<KeyboardEvent>({
+      mobile: () => undefined,
+      desktop: e => {
+        if (isActiveElement(inputRef)) {
+          e.preventDefault()
+
+          setTaskType(taskType => {
+            return selectNext({
+              data: taskTypes,
+              current: taskType,
+              match: ({iterator, value}) => iterator.value === value,
+            }).value
+          })
+        }
+      },
+    })
+
+    useOnKeyDown({
+      validateKey: e => e.key === "Tab",
+      callback: onPress,
+    })
+
     return (
       <form
         onSubmit={onSubmit}
@@ -33,11 +58,13 @@ const CreateTaskInput = React.forwardRef<HTMLInputElement, CreateTaskInputProps>
           value={taskType}
           onChange={e => setTaskType(e.target.value as TaskTypes)}
         >
-          <option value="all">Default</option>
-          <option value="my-day">My Day</option>
-          <option value="important">Important</option>
-          <option value="planned:today">Today</option>
-          <option value="planned:tomorrow">Tomorrow</option>
+          {taskTypes.map(t => {
+            return (
+              <option key={t.value} value={t.value}>
+                {t.title}
+              </option>
+            )
+          })}
         </select>
         <input
           ref={inputRef}
