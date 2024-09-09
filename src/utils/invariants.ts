@@ -1,4 +1,4 @@
-export function invariants(condition: boolean, format: string, ...args: any[]): void {
+export function invariants(condition: boolean, format: string, ...args: any[]): asserts condition {
   if (format === undefined) {
     throw new Error("assert requires error message format argument")
   }

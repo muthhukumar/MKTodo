@@ -86,6 +86,7 @@ function Task(props: TaskProps) {
       <Link
         to={to}
         params={{taskId: String(props.id)}}
+        preload={false}
         search={{
           query: search.query,
           // @ts-ignore

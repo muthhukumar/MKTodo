@@ -11,7 +11,7 @@ export default function SearchBar() {
     navigate({search: {query}})
   }, 1200)
 
-  const onPress = useDeviceCallback({
+  const onPress = useDeviceCallback<KeyboardEvent>({
     mobile: () => undefined,
     desktop: () => inputRef.current?.focus(),
   })

@@ -15,7 +15,7 @@ async function getTasks(filter: "my-day" | "important" | null, query?: string, r
 
     return response.data.data as Array<TTask>
   } catch (error) {
-    return Promise.reject("Failed")
+    return Promise.reject(error)
   }
 }
 
@@ -25,7 +25,7 @@ async function getTask(taskId: TTask["id"]) {
 
     return response.data.data as TTask
   } catch (error) {
-    return Promise.reject("Failed")
+    return Promise.reject(error)
   }
 }
 
@@ -45,7 +45,7 @@ async function deleteTaskById(id: number) {
 
     return response.data as {message: string}
   } catch (error) {
-    return Promise.reject("Failed")
+    return Promise.reject(error)
   }
 }
 
@@ -57,7 +57,7 @@ async function updateTaskById({id, task}: {id: number; task: string}) {
 
     return response.data as {message: string}
   } catch (error) {
-    return Promise.reject("Failed")
+    return Promise.reject(error)
   }
 }
 
@@ -67,7 +67,7 @@ async function toggleTaskCompletedById(id: number) {
 
     return response.data as {message: string}
   } catch (error) {
-    return Promise.reject("Failed")
+    return Promise.reject(error)
   }
 }
 
@@ -77,7 +77,7 @@ async function toggleTaskImportanceById(id: number) {
 
     return response.data as {message: string}
   } catch (error) {
-    return Promise.reject("Failed")
+    return Promise.reject(error)
   }
 }
 
@@ -87,7 +87,7 @@ async function toggleTaskAddToMyDayById(id: number) {
 
     return response.data as {message: string}
   } catch (error) {
-    return Promise.reject("Failed")
+    return Promise.reject(error)
   }
 }
 
@@ -99,7 +99,7 @@ async function updateTaskDueDateById(id: number, dueDate: string) {
 
     return response.data as {message: string}
   } catch (error) {
-    return Promise.reject("Failed")
+    return Promise.reject(error)
   }
 }
 
@@ -148,6 +148,20 @@ async function checkServerHealth({
     .catch(() => notifyServerStatus(false))
 }
 
+async function fetchWebPageTitle(link: string) {
+  try {
+    const response = await axios.get("/api/v1/fetch-title", {
+      params: {
+        url: link,
+      },
+    })
+
+    return response.data.data as string
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -159,4 +173,5 @@ export const API = {
   updateTaskDueDateById,
   getTask,
   checkServerHealth,
+  fetchWebPageTitle,
 }

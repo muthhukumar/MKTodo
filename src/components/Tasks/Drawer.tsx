@@ -151,6 +151,32 @@ export default function Drawer({
   )
 }
 
+interface ExternalLinkProps extends React.ComponentProps<"a"> {
+  href: string
+}
+
+function ExternalLink(props: ExternalLinkProps) {
+  const [title, setTitle] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    async function fetchWebPageTitle() {
+      try {
+        const title = await API.fetchWebPageTitle(props.href)
+
+        if (title) setTitle(title)
+      } catch (error) {
+        setTitle("")
+      }
+    }
+
+    if (title === null) {
+      fetchWebPageTitle()
+    }
+  }, [props.href])
+
+  return <a {...props}>{title ? title : props.href}</a>
+}
+
 function Links({links}: {links: Array<string>}) {
   return (
     <div className="border-border py-3 my-3 p-3 border rounded-md">
@@ -158,14 +184,14 @@ function Links({links}: {links: Array<string>}) {
         {links.map(link => {
           return (
             <div className="justify-between flex items-center gap-3">
-              <a
+              <ExternalLink
                 href={link}
                 key={link}
                 target="_blank"
                 className="text-blue-400 truncate flex-[0.9]"
               >
                 {link}
-              </a>
+              </ExternalLink>
               <div className="flex-[0.1]">
                 <CopyToClipboardButton content={link} />
               </div>
