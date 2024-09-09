@@ -71,21 +71,21 @@ function DueDateOptions(props: DueDateOptionsProps) {
 
   return (
     <div className="border border-border rounded-md bg-background p-1">
-      <DueDateOptionProps
+      <DueDateOption
         Icon={BsCalendar4Event}
         title="Today"
         onSelect={() => onSelect(getTodayDate())}
         info={getDayFromDate(getTodayDate())}
         setShow={setShow}
       />
-      <DueDateOptionProps
+      <DueDateOption
         Icon={BsCalendar4Week}
         title="Tomorrow"
         onSelect={() => onSelect(getTomorrowDate())}
         info={getDayFromDate(getTomorrowDate())}
         setShow={setShow}
       />
-      <DueDateOptionProps
+      <DueDateOption
         Icon={LuCalendarRange}
         title="Next Week"
         onSelect={() => onSelect(getComingMondayDate())}
@@ -94,7 +94,7 @@ function DueDateOptions(props: DueDateOptionsProps) {
       />
       {/* TODO: change the bg color here */}
       <div className="h-[1px] bg-border m-[5px]" />
-      <DueDateOptionProps
+      <DueDateOption
         Icon={IoCalendarClearOutline}
         title="Pick a Date"
         onSelect={() => undefined}
@@ -129,7 +129,7 @@ function DueDateOptions(props: DueDateOptionsProps) {
             setDate(e.target.value)
           }}
         />
-      </DueDateOptionProps>
+      </DueDateOption>
     </div>
   )
 }
@@ -145,7 +145,7 @@ interface DueDateOptionProps {
   setShow: (show: boolean) => void
 }
 
-function DueDateOptionProps(props: DueDateOptionProps) {
+function DueDateOption(props: DueDateOptionProps) {
   const {title, Icon, children, onSelect, autoClose = true, action, info, setShow} = props
 
   return (
