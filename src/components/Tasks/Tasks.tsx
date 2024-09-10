@@ -11,16 +11,22 @@ import CreateTaskInput from "./CreateTaskInput"
 import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
 import MobileCreateTaskInput from "./MobileCreateTaskInput"
-import {Loader, MobileSearchBar, Options} from ".."
+import {Loader, MobileSearchBar, Options, Select} from ".."
 import {useAudioPlayer, useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
+import {options} from "../Select/data"
+import {getMetaTags, removeDuplicates} from "./Drawer"
 
 interface TasksProps {
   showFilters?: boolean
   title?: string
   tasks: Array<TTask>
   type: TaskTypes
+}
+
+const extractTagsFromTasks = (tasks: Array<TTask>) => {
+  return removeDuplicates(tasks.map(t => getMetaTags(t.metadata)).flat(), options)
 }
 
 export default function Tasks(props: TasksProps) {
@@ -31,6 +37,7 @@ export default function Tasks(props: TasksProps) {
     Array<{name: string; status: "started" | "failed" | "retrying"}>
   >([])
   const [taskType, setTaskType] = React.useState(props.type)
+  const [tagFilters, setTagFilters] = React.useState<Array<string>>([])
 
   const [task, setTask] = React.useState("")
 
@@ -130,7 +137,21 @@ export default function Tasks(props: TasksProps) {
 
   const divRef = React.useRef<HTMLDivElement>(null)
 
-  const {completedTasks, pendingTasks} = React.useMemo(() => separateTasks(tasks), [tasks])
+  const {completedTasks, pendingTasks} = React.useMemo(() => {
+    if (tagFilters.length > 0) {
+      return separateTasks(
+        tasks.filter(t => {
+          if (!t.metadata) return false
+
+          return tagFilters.some(option => t.metadata.includes(option))
+        }),
+      )
+    }
+
+    return separateTasks(tasks)
+  }, [tasks, tagFilters])
+
+  const tagFilterOptions = React.useMemo(() => extractTagsFromTasks(tasks), [tasks])
 
   return (
     <div className="bg-background w-full">
@@ -148,6 +169,11 @@ export default function Tasks(props: TasksProps) {
                 <MobileOnly>
                   <MobileSearchBar />
                 </MobileOnly>
+                <Select
+                  data={tagFilterOptions}
+                  selectedOptions={tagFilters}
+                  setSelectedOptions={setTagFilters}
+                />
                 <Options />
               </div>
             </div>

@@ -2,16 +2,16 @@ import {MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown} from "react-icons/
 
 interface SelectedOptionsDisplayProps {
   selectedOptions: Array<any>
-  label: string
+  label?: string
   showOptions: boolean
 }
 
 export default function SelectedOptionsDisplay(props: SelectedOptionsDisplayProps) {
   return (
     <>
-      {props.selectedOptions.length === 0 ? (
+      {props.selectedOptions.length === 0 && props.label ? (
         <div className="flex items-center justify-between">
-          <label className="top-1 left-3">Select {props.label}</label>
+          <label className="text-sm top-1 left-3">Select {props.label}</label>
         </div>
       ) : (
         <div className="max-w-[90%] truncate">

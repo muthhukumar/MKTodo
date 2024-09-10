@@ -170,8 +170,8 @@ export function getMetaTags(metadata: string): Array<string> {
   return metadata.split(",")
 }
 
-export function removeDuplicates<T1, T2>(array1: Array<T1>, array2: Array<T2>) {
-  return [...new Set([...array1, ...array2])]
+export function removeDuplicates(...args: Array<any>) {
+  return [...new Set([...args].flat())]
 }
 
 function TaskMetaTag({

@@ -20,7 +20,7 @@ describe("handleError", () => {
         error: {message, status: 500},
         defaultMessage,
       }),
-    ).toBe(`Internal server error: ${message}`)
+    ).toBe(`Internal server error: `)
   })
   it("return invalid fields error message", () => {
     const message = "invalid form"

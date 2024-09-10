@@ -9,7 +9,7 @@ import {
 import {isEveryItemSelected} from "./utils"
 
 interface SelectProps {
-  label: string
+  label?: string
   data: Array<string>
   setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>
   selectedOptions: Array<string>
@@ -47,7 +47,7 @@ export default function Select(props: SelectProps) {
 
   useOutsideAlerter(containerRef, {onClickOutside: () => setShowOptions(false)})
 
-  function handleSearchSubmit(e: React.FormEvent) {
+  function handleSearchSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     // Create new tag if the search is empty
@@ -66,7 +66,7 @@ export default function Select(props: SelectProps) {
 
   return (
     <div ref={containerRef}>
-      <div className="relative border border-border p-3 rounded-md">
+      <div className="relative border border-border px-2 py-1 rounded-md">
         <div className="flex items-center justify-between" onClick={() => setShowOptions(true)}>
           {!showOptions ? (
             <SelectedOptionsDisplay
