@@ -1,6 +1,6 @@
 // TODO: refactor this component later
 import * as React from "react"
-import {invariants} from "~/utils/invariants"
+import {invariant} from "~/utils/invariants"
 import {LiaExternalLinkAltSolid} from "react-icons/lia"
 
 function Linkify({
@@ -10,7 +10,7 @@ function Linkify({
   children: React.ReactNode
   preventNavigation?: boolean
 }) {
-  invariants(typeof children === "string", "children should be a link")
+  invariant(typeof children === "string", "children should be a link")
 
   // TODO: validate the children here
   const urlRegex = /(https?:\/\/[^\s]+)/g // TODO: we have to find another want to match url

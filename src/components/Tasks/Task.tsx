@@ -17,6 +17,7 @@ import {GoDotFill} from "react-icons/go"
 import Linkify from "../Linkify"
 import {handleError} from "~/utils/error"
 import {getMetaTags} from "./Drawer"
+import {getTagColor} from "../Select/data"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
@@ -125,7 +126,7 @@ function Task(props: TaskProps) {
                   {metatags.map(tag => (
                     <div
                       key={tag}
-                      className="px-1 text-xs border border-green-400 text-green-400 rounded-md"
+                      className={clsx("px-1 text-xs border rounded-md", getTagColor(tag))}
                     >
                       {tag}
                     </div>

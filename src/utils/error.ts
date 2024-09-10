@@ -1,4 +1,5 @@
 import toast from "react-hot-toast"
+import {invariant} from "./invariants"
 
 export type ErrorType =
   | {
@@ -15,12 +16,24 @@ export type ErrorType =
     }
   | {message: string; status: number; code: "error_message"}
 
-export function handleError({error: e, defaultMessage}: {error: unknown; defaultMessage: string}) {
+export function getErrorMessage({
+  error: e,
+  defaultMessage,
+}: {
+  error: unknown
+  defaultMessage: string
+}) {
+  invariant(Boolean(defaultMessage), "Default message should not be empty")
+
   const error = e as ErrorType
 
   let message = ""
 
-  if (error.code) {
+  if (!error) {
+    message = defaultMessage
+  }
+
+  if (error && error.code) {
     switch (error.code) {
       case "validation_failed": {
         message = error.invalid_fields.map(f => f.error_message).join(", ")
@@ -33,9 +46,13 @@ export function handleError({error: e, defaultMessage}: {error: unknown; default
     }
   }
 
-  if (error.status >= 500) {
+  if (error && error.status >= 500) {
     message = `Internal server error: ${message}`
   }
 
-  toast.error(message || defaultMessage)
+  return message
+}
+
+export function handleError({error: e, defaultMessage}: {error: unknown; defaultMessage: string}) {
+  toast.error(getErrorMessage({error: e, defaultMessage}))
 }

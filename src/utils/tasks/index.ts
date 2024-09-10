@@ -7,7 +7,7 @@ import {
   getTodayDateIOSString,
   getTodayDate,
 } from "~/utils/date"
-import {invariants} from "../invariants"
+import {invariant} from "../invariants"
 
 export function getDueDateDisplayStr(dueDate: string) {
   if (isDateSameAsToday(dueDate)) {
@@ -107,13 +107,15 @@ export function selectNext<T, VT>({
   current: VT
   match: (props: {iterator: T; value: VT}) => boolean
 }) {
+  invariant(Boolean(data.length), "Data should not be empty")
+
   const index = data.findIndex(t => match({iterator: t as T, value: current}))
 
-  invariants(index !== -1, "Index should never be -1")
+  invariant(index !== -1, "Index should never be -1")
 
   const result = data[(index + 1) % data.length]
 
-  invariants(Boolean(result), "Result should not be null or undefined")
+  invariant(Boolean(result), "Result should not be null or undefined")
 
   return result
 }

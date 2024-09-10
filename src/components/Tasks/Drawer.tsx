@@ -16,6 +16,7 @@ import {extractLinks} from "~/utils/url"
 import {useAudioPlayer} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
+import {options} from "../Select/data"
 
 export default function Drawer({
   metadata,
@@ -192,7 +193,7 @@ function TaskMetaTag({
 
   return (
     <Select
-      data={removeDuplicates(["p1", "p2", "p3", "notes", "bug", "watch"], initialOptions)}
+      data={removeDuplicates(options, initialOptions)}
       label="Metadata"
       setSelectedOptions={options => {
         let updatedOptions = null

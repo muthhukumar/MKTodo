@@ -1,4 +1,4 @@
-export function invariants(condition: boolean, format: string, ...args: any[]): asserts condition {
+export function invariant(condition: boolean, format: string, ...args: any[]): asserts condition {
   if (format === undefined) {
     throw new Error("assert requires error message format argument")
   }
@@ -16,7 +16,7 @@ export function invariants(condition: boolean, format: string, ...args: any[]): 
     error.name = "AssertionError"
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(error, invariants) // This will omit assert from the stack trace
+      Error.captureStackTrace(error, invariant) // This will omit invariant from the stack trace
     }
 
     throw error
