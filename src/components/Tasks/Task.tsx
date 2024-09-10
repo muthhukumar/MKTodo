@@ -16,6 +16,7 @@ import clsx from "clsx"
 import {GoDotFill} from "react-icons/go"
 import Linkify from "../Linkify"
 import {handleError} from "~/utils/error"
+import {getMetaTags} from "./Drawer"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
@@ -64,6 +65,8 @@ function Task(props: TaskProps) {
 
   const to = `/tasks/${tasksType}/$taskId` as const
 
+  const metatags = React.useMemo(() => getMetaTags(props.metadata), [props.metadata])
+
   return (
     <div
       className={twMerge(
@@ -104,7 +107,7 @@ function Task(props: TaskProps) {
             >
               <Linkify preventNavigation>{props.name}</Linkify>
             </p>
-            <div className="flex items-center gap-x-2">
+            <div className="relative flex items-center gap-x-2">
               {isDateSameAsToday(props.marked_today) && (
                 <div className="text-xs flex items-center gap-1 text-gray-400">
                   <MdSunny size={10} />
@@ -116,6 +119,19 @@ function Task(props: TaskProps) {
               )}
 
               {Boolean(props.due_date) && <DueDateTag value={props.due_date} />}
+
+              {metatags.length > 0 && (
+                <div className="ml-auto flex items-center justify-start gap-1">
+                  {metatags.map(tag => (
+                    <div
+                      key={tag}
+                      className="px-1 text-xs border border-green-400 text-green-400 rounded-md"
+                    >
+                      {tag}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

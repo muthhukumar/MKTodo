@@ -162,6 +162,18 @@ async function fetchWebPageTitle(link: string) {
   }
 }
 
+async function updateTaskMetadata({id, metadata}: {id: number; metadata: string}) {
+  try {
+    const response = await axios.post(`/api/v1/task/${id}/metadata`, {
+      metadata,
+    })
+
+    return response.data as {message: string}
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -174,4 +186,5 @@ export const API = {
   getTask,
   checkServerHealth,
   fetchWebPageTitle,
+  updateTaskMetadata,
 }

@@ -11,13 +11,14 @@ import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
-import {AutoResizeTextarea, CopyToClipboardButton} from ".."
+import {AutoResizeTextarea, CopyToClipboardButton, Select} from ".."
 import {extractLinks} from "~/utils/url"
 import {useAudioPlayer} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
 
 export default function Drawer({
+  metadata,
   name,
   completed,
   created_at,
@@ -73,6 +74,16 @@ export default function Drawer({
     }
   }
 
+  async function updateTaskMetadata({id, metadata}: {id: number; metadata: string}) {
+    try {
+      await API.updateTaskMetadata({id, metadata})
+
+      router.invalidate()
+    } catch (error) {
+      handleError({error, defaultMessage: "Updating task metadata failed"})
+    }
+  }
+
   async function deleteTask(id: number) {
     try {
       await API.deleteTaskById(id)
@@ -122,6 +133,7 @@ export default function Drawer({
       </div>
       <AddToMyDay id={id} markedToday={marked_today} onToggleAddToMyDay={toggleTaskAddToMyDay} />
       <DueDateInput onSelect={dueDate => updateTaskDueDate(id, dueDate)} dueDate={due_date} />
+      <TaskMetaTag metadata={metadata} id={id} updateMetadata={updateTaskMetadata} key={id} />
       {links.length > 0 && <Links links={links} />}
 
       <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
@@ -148,6 +160,55 @@ export default function Drawer({
         onDismiss={() => setShowDeleteModal(false)}
       />
     </div>
+  )
+}
+
+export function getMetaTags(metadata: string): Array<string> {
+  if (metadata === "") return []
+
+  return metadata.split(",")
+}
+
+export function removeDuplicates<T1, T2>(array1: Array<T1>, array2: Array<T2>) {
+  return [...new Set([...array1, ...array2])]
+}
+
+function TaskMetaTag({
+  metadata,
+  updateMetadata,
+  id,
+}: {
+  metadata: string
+  updateMetadata: (props: {id: number; metadata: string}) => void
+  id: number
+}) {
+  const initialOptions = React.useMemo(() => getMetaTags(metadata), [metadata])
+
+  const [selectedOptions, setSelectedOptions] = React.useState<Array<string>>(initialOptions)
+
+  const [update] = useDelay((metadata: string) => {
+    updateMetadata({id, metadata})
+  }, 1500)
+
+  return (
+    <Select
+      data={removeDuplicates(["p1", "p2", "p3", "notes", "bug", "watch"], initialOptions)}
+      label="Metadata"
+      setSelectedOptions={options => {
+        let updatedOptions = null
+
+        if (typeof options === "function") {
+          updatedOptions = options(selectedOptions)
+        } else {
+          updatedOptions = options
+        }
+
+        setSelectedOptions(updatedOptions)
+
+        update(updatedOptions.join(",").trim())
+      }}
+      selectedOptions={selectedOptions}
+    />
   )
 }
 

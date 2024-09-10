@@ -7,6 +7,7 @@ export type TTask = {
   is_important: string
   marked_today: string
   due_date: string
+  metadata: string
 }
 
 export type DueDateFilters =
