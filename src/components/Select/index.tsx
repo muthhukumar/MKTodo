@@ -13,10 +13,12 @@ interface SelectProps {
   data: Array<string>
   setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>
   selectedOptions: Array<string>
+  showOptions?: boolean
+  closeOnSelect?: boolean
 }
 
 export default function Select(props: SelectProps) {
-  const [showOptions, setShowOptions] = React.useState(false)
+  const [showOptions, setShowOptions] = React.useState(props.showOptions || false)
   const [searchText, setSearchText] = React.useState("")
 
   const {label, data, selectedOptions, setSelectedOptions} = props
@@ -26,6 +28,8 @@ export default function Select(props: SelectProps) {
     : data
 
   function handleOptionToggle(item: SelectProps["data"][number]) {
+    if (props?.closeOnSelect) setShowOptions(false)
+
     setSelectedOptions(oldOptions => {
       if (item === "all") {
         if (isEveryItemSelected(data, selectedOptions)) {
@@ -78,7 +82,7 @@ export default function Select(props: SelectProps) {
             <form onSubmit={handleSearchSubmit} className="w-full">
               <input
                 type="text"
-                className="w-full bg-background"
+                className="w-full bg-inherit"
                 value={searchText}
                 onChange={e => setSearchText(e.target.value.trim())}
               />

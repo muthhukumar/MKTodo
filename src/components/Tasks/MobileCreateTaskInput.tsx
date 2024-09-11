@@ -11,6 +11,7 @@ interface CreateTaskInputProps {
   setTaskType: (value: TaskTypes) => void
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
   taskType: TaskTypes
+  tags: Array<string>
 }
 
 export default function MobileCreateTaskInput(props: CreateTaskInputProps) {

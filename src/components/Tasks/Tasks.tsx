@@ -17,6 +17,8 @@ import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
 import {options} from "../Select/data"
 import {getMetaTags, removeDuplicates} from "./Drawer"
+import {IoArrowBack} from "react-icons/io5"
+import {MdFilterList} from "react-icons/md"
 
 interface TasksProps {
   showFilters?: boolean
@@ -27,6 +29,49 @@ interface TasksProps {
 
 const extractTagsFromTasks = (tasks: Array<TTask>) => {
   return removeDuplicates(tasks.map(t => getMetaTags(t.metadata)).flat(), options)
+}
+
+function TagFilter({
+  tags,
+  selectedFilters,
+  setSelectedFilters,
+}: {
+  tags: Array<string>
+  selectedFilters: Array<string>
+  setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>
+}) {
+  const [showFilters, setShowFilters] = React.useState(false)
+
+  return (
+    <>
+      <button onClick={() => setShowFilters(true)}>
+        <MdFilterList size={20} />
+      </button>
+      {showFilters && (
+        <div className="py-1 bg-background fixed top-2 w-[96%] mx-auto left-0 right-0">
+          <div className="focus-within:ring-2 focus-within:ring-blue-500 px-4 md:px-1 flex items-center gap-3 border border-zinc-700 rounded-md bg-item-background">
+            <button
+              onClick={() => {
+                setShowFilters(false)
+                setSelectedFilters([])
+              }}
+            >
+              <IoArrowBack size={20} />
+            </button>
+            <div className="w-full">
+              <Select
+                closeOnSelect
+                showOptions
+                data={tags}
+                selectedOptions={selectedFilters}
+                setSelectedOptions={setSelectedFilters}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
 }
 
 export default function Tasks(props: TasksProps) {
@@ -158,7 +203,7 @@ export default function Tasks(props: TasksProps) {
       <div className="w-full relative">
         <div className="px-3">
           <div className="sticky top-0 py-1 left-0 right-0 bg-background z-10">
-            <div className="flex items-center justify-between py-2">
+            <div className="flex items-center justify-between py-2 relative">
               <h1 className="flex items-center gap-2 text-2xl font-bold">
                 <span>{title ? title : "Tasks"}</span>
                 <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
@@ -167,13 +212,22 @@ export default function Tasks(props: TasksProps) {
               </h1>
               <div className="flex items-center gap-3">
                 <MobileOnly>
+                  <TagFilter
+                    tags={tagFilterOptions}
+                    setSelectedFilters={setTagFilters}
+                    selectedFilters={tagFilters}
+                  />
+                </MobileOnly>
+                <DesktopOnly>
+                  <Select
+                    data={tagFilterOptions}
+                    setSelectedOptions={setTagFilters}
+                    selectedOptions={tagFilters}
+                  />
+                </DesktopOnly>
+                <MobileOnly>
                   <MobileSearchBar />
                 </MobileOnly>
-                <Select
-                  data={tagFilterOptions}
-                  selectedOptions={tagFilters}
-                  setSelectedOptions={setTagFilters}
-                />
                 <Options />
               </div>
             </div>
@@ -260,6 +314,7 @@ export default function Tasks(props: TasksProps) {
 
           <MobileOnly>
             <MobileCreateTaskInput
+              tags={tagFilterOptions}
               taskType={taskType}
               setTaskType={setTaskType}
               task={task}
