@@ -3,13 +3,15 @@ import * as React from "react"
 import {invariant} from "~/utils/invariants"
 import {LiaExternalLinkAltSolid} from "react-icons/lia"
 import {API} from "~/service"
+import {taskQueue} from "~/utils/task-queue"
 
 function Link({href, preventNavigation = false}: {href: string; preventNavigation?: boolean}) {
   const [title, setTitle] = React.useState("")
 
   React.useEffect(() => {
     if (!title) {
-      API.fetchWebPageTitle(href)
+      taskQueue
+        .enqueue(API.fetchWebPageTitle.bind(null, href))
         .then(title => {
           setTitle(title)
         })
