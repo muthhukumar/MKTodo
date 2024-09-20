@@ -1,5 +1,6 @@
 import baseAxios, {AxiosError} from "axios"
 import toast from "react-hot-toast"
+import {unreachable} from "~/utils/invariants"
 import {APIStore} from "~/utils/tauri-store"
 
 const axios = baseAxios.create({
@@ -21,6 +22,15 @@ axios.interceptors.request.use(async config => {
 axios.interceptors.response.use(
   response => response,
   error => {
+    if (error.response.status === 404) {
+      toast.error("Error 404: The API you're trying to reach does not exist.")
+
+      unreachable(
+        "We should not hit a API endpoint that does not exist. But hitting %s",
+        error?.response?.request?.responseURL,
+      )
+    }
+
     if (isNetworkError(error)) {
       toast.error(error.message)
     }

@@ -36,7 +36,7 @@ export function unreachable(format: string, ...args: any[]) {
     return
   }
 
-  const error = new Error("This code path should be unreachable." + message)
+  const error = new Error("This code path should be unreachable. " + message)
   error.name = "UnreachableBlockError"
 
   if (Error.captureStackTrace) {
