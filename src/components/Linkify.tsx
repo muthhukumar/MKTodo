@@ -13,7 +13,8 @@ function Link({href, preventNavigation = false}: {href: string; preventNavigatio
       taskQueue
         .enqueue(API.fetchWebPageTitle.bind(null, href))
         .then(title => {
-          setTitle(title)
+          if (title) setTitle(title)
+          else setTitle(href)
         })
         .catch(() => setTitle(href))
     }

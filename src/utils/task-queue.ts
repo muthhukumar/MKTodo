@@ -8,6 +8,7 @@ class TaskQueue {
   }> = []
   private activeRequests: number = 0
   private readonly maxConcurrentRequests: number
+  private subscribeCallback: ((activeRequests: number) => void) | null = null
 
   constructor(maxConcurrentRequests: number) {
     this.maxConcurrentRequests = maxConcurrentRequests
@@ -19,13 +20,13 @@ class TaskQueue {
     }
 
     const {task, resolve, reject} = this.queue.shift()!
-    this.activeRequests++
+    this.setActiveRequest(this.activeRequests + 1)
 
     task()
       .then(resolve)
       .catch(reject)
       .finally(() => {
-        this.activeRequests--
+        this.setActiveRequest(this.activeRequests - 1)
         this.processQueue()
       })
   }
@@ -36,6 +37,28 @@ class TaskQueue {
       this.processQueue()
     })
   }
+
+  private notifySubscriber() {
+    if (this.subscribeCallback) this.subscribeCallback(this.activeRequests)
+  }
+
+  setActiveRequest(value: number) {
+    this.activeRequests = value
+
+    this.notifySubscriber()
+  }
+
+  subscribe(subscribe: TaskQueue["subscribeCallback"]) {
+    this.subscribeCallback = subscribe
+  }
 }
 
-export const taskQueue = new TaskQueue(5)
+export const taskQueue = new TaskQueue(3)
+
+taskQueue.subscribe(count => {
+  const el = document.getElementById("activeRequestCount")
+
+  if (!el) return
+
+  el.textContent = String(count)
+})

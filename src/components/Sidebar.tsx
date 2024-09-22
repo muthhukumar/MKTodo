@@ -59,6 +59,7 @@ export default function Sidebar({className}: {className?: string}) {
         </div>
         <p className="mt-4">{location.href}</p>
       </div>
+      <p id="activeRequestCount"></p>
       {online !== null && !online && (
         <p
           className={clsx(
