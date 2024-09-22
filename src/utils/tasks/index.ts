@@ -40,7 +40,13 @@ export function separateTasks(tasks: Array<TTask>) {
 }
 
 export class NewTask {
-  constructor(public name: string) {}
+  metadata: string = ""
+  constructor(public name: string) {
+    const {tags, modifiedStr} = extractTags(name)
+
+    this.metadata = tags.join(",")
+    this.name = modifiedStr
+  }
 }
 
 export class MyDayTask extends NewTask {
@@ -147,3 +153,26 @@ export const taskTypes: Array<TaskType> = [
     title: "Tomorrow",
   },
 ]
+
+export function extractTags(value: string): {modifiedStr: string; tags: Array<{}>} {
+  if (!value) return {modifiedStr: "", tags: []}
+
+  let inputStr = value
+
+  let strs = inputStr.split(" ")
+
+  strs = strs.filter(s => {
+    if (s[0] === "!") {
+      inputStr = inputStr.replace(s, "")
+
+      return true
+    }
+
+    return false
+  })
+
+  return {
+    modifiedStr: inputStr,
+    tags: strs.map(s => s.substring(1, s.length)),
+  }
+}
