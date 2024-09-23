@@ -9,6 +9,7 @@ export const features = {
   TagFilter: true,
   TaskTypeInputInCreateTask: true,
   CopyTaskTextInDrawer: true,
+  SyncingNotifier: true,
 }
 
 export type Features = typeof features
