@@ -6,7 +6,7 @@ import {MdOutlineArrowForwardIos, MdOutlineDeleteForever, MdSunny, MdClose} from
 
 import {TTask} from "~/@types"
 import {timeAgo, isDateSameAsToday} from "~/utils/date"
-import {useDelay} from "~/utils/hooks"
+import {useDelay, useOnKeyPress} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
@@ -42,6 +42,11 @@ export default function Drawer({
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
 
   const {togglePlay} = useAudioPlayer(doneAudio)
+
+  useOnKeyPress({
+    callback: onDismiss,
+    validateKey: e => e.key === "Escape",
+  })
 
   async function updateTaskName(value: string) {
     if (name === value) return
