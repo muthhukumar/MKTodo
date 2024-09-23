@@ -56,9 +56,13 @@ class TaskQueue {
 export const taskQueue = new TaskQueue(3)
 
 taskQueue.subscribe(count => {
-  const el = document.getElementById("activeRequestCount")
+  const el = document.getElementById("syncing")
 
   if (!el) return
 
-  el.textContent = String(count)
+  if (count === 0) {
+    el.style.display = "none"
+  } else {
+    el.style.display = "block"
+  }
 })

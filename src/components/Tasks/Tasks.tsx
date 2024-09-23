@@ -11,7 +11,7 @@ import CreateTaskInput from "./CreateTaskInput"
 import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
 import MobileCreateTaskInput from "./MobileCreateTaskInput"
-import {Loader, MobileSearchBar, Options, Select} from ".."
+import {FeatureFlag, Loader, MobileSearchBar, Options, Select} from ".."
 import {useAudioPlayer, useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
@@ -206,25 +206,37 @@ export default function Tasks(props: TasksProps) {
             <div className="flex items-center justify-between py-2 relative">
               <h1 className="flex items-center gap-2 text-2xl font-bold">
                 <span>{title ? title : "Tasks"}</span>
-                <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
-                  {pendingTasks.length} / {tasks.length}
-                </span>
+                <FeatureFlag feature="TasksCountInTitle">
+                  <FeatureFlag.Feature>
+                    <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
+                      {pendingTasks.length} / {tasks.length}
+                    </span>
+                  </FeatureFlag.Feature>
+                </FeatureFlag>
               </h1>
               <div className="flex items-center gap-3">
-                <MobileOnly>
-                  <TagFilter
-                    tags={tagFilterOptions}
-                    setSelectedFilters={setTagFilters}
-                    selectedFilters={tagFilters}
-                  />
-                </MobileOnly>
-                <DesktopOnly>
-                  <Select
-                    data={tagFilterOptions}
-                    setSelectedOptions={setTagFilters}
-                    selectedOptions={tagFilters}
-                  />
-                </DesktopOnly>
+                <FeatureFlag feature="TagFilter">
+                  <FeatureFlag.Feature>
+                    <MobileOnly>
+                      <TagFilter
+                        tags={tagFilterOptions}
+                        setSelectedFilters={setTagFilters}
+                        selectedFilters={tagFilters}
+                      />
+                    </MobileOnly>
+                  </FeatureFlag.Feature>
+                </FeatureFlag>
+                <FeatureFlag feature="TagFilter">
+                  <FeatureFlag.Feature>
+                    <DesktopOnly>
+                      <Select
+                        data={tagFilterOptions}
+                        setSelectedOptions={setTagFilters}
+                        selectedOptions={tagFilters}
+                      />
+                    </DesktopOnly>
+                  </FeatureFlag.Feature>
+                </FeatureFlag>
                 <MobileOnly>
                   <MobileSearchBar />
                 </MobileOnly>

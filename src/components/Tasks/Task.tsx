@@ -18,6 +18,7 @@ import Linkify from "../Linkify"
 import {handleError} from "~/utils/error"
 import {getMetaTags} from "./Drawer"
 import {getTagColor} from "../Select/data"
+import FeatureFlag from "../FeatureFlag"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
@@ -106,7 +107,12 @@ function Task(props: TaskProps) {
               key={props.id}
               className="text-white m-0 text-base md:text-sm font-medium break-words text-left"
             >
-              <Linkify preventNavigation>{props.name}</Linkify>
+              <FeatureFlag feature="LinkifyLinkInTask">
+                <FeatureFlag.Feature>
+                  <Linkify preventNavigation>{props.name}</Linkify>
+                </FeatureFlag.Feature>
+                <FeatureFlag.Fallback>{props.name}</FeatureFlag.Fallback>
+              </FeatureFlag>
             </p>
             <div className="relative flex items-center gap-x-2">
               {isDateSameAsToday(props.marked_today) && (
@@ -121,38 +127,46 @@ function Task(props: TaskProps) {
 
               {Boolean(props.due_date) && <DueDateTag value={props.due_date} />}
 
-              {metatags.length > 0 && (
-                <div className="ml-auto flex items-center justify-start gap-1">
-                  {metatags.map(tag => (
-                    <div
-                      key={tag}
-                      className={clsx("px-1 text-xs border rounded-md", getTagColor(tag))}
-                    >
-                      {tag}
+              <FeatureFlag feature="TaskTagsView">
+                <FeatureFlag.Feature>
+                  {metatags.length > 0 && (
+                    <div className="ml-auto flex items-center justify-start gap-1">
+                      {metatags.map(tag => (
+                        <div
+                          key={tag}
+                          className={clsx("px-1 text-xs border rounded-md", getTagColor(tag))}
+                        >
+                          {tag}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                  )}
+                </FeatureFlag.Feature>
+              </FeatureFlag>
             </div>
           </div>
         </div>
       </Link>
-      <div className="flex items-center ml-auto w-[24px]">
-        <button
-          className="w-full"
-          onClick={e => {
-            toggleTaskImportance(props.id)
+      <FeatureFlag feature="ToggleTaskImportant">
+        <FeatureFlag.Feature>
+          <div className="flex items-center ml-auto w-[24px]">
+            <button
+              className="w-full"
+              onClick={e => {
+                toggleTaskImportance(props.id)
 
-            e.stopPropagation()
-          }}
-        >
-          {!props.is_important ? (
-            <FaRegStar size={18} className="text-zinc-500" />
-          ) : (
-            <FaStar size={18} className="text-zinc-500" />
-          )}
-        </button>
-      </div>
+                e.stopPropagation()
+              }}
+            >
+              {!props.is_important ? (
+                <FaRegStar size={18} className="text-zinc-500" />
+              ) : (
+                <FaStar size={18} className="text-zinc-500" />
+              )}
+            </button>
+          </div>
+        </FeatureFlag.Feature>
+      </FeatureFlag>
     </div>
   )
 }

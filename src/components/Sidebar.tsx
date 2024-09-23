@@ -6,7 +6,7 @@ import {TbHomeCheck} from "react-icons/tb"
 import {CiCalendarDate} from "react-icons/ci"
 import {Link, useLocation} from "@tanstack/react-router"
 import {twMerge} from "tailwind-merge"
-import {SearchBar} from "."
+import {FeatureFlag, SearchBar} from "."
 import {usePing} from "~/utils/hooks"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
@@ -53,7 +53,11 @@ export default function Sidebar({className}: {className?: string}) {
         </div>
         <div className="flex-col flex gap-2 md:mt-5">
           <IconLink Icon={MdOutlineWbSunny} title="My Day" path="/tasks/my-day" />
-          <IconLink Icon={CiStar} title="Important" path="/tasks/important" />
+          <FeatureFlag feature="ImportantTaskView">
+            <FeatureFlag.Feature>
+              <IconLink Icon={CiStar} title="Important" path="/tasks/important" />
+            </FeatureFlag.Feature>
+          </FeatureFlag>
           <IconLink Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />
           <IconLink Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
         </div>

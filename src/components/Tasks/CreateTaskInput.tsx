@@ -4,6 +4,7 @@ import {TaskTypes} from "~/@types"
 import {useDeviceCallback, useOnKeyDown} from "~/utils/hooks"
 import {selectNext, taskTypes} from "~/utils/tasks"
 import {isActiveElement} from "~/utils/ui"
+import FeatureFlag from "../FeatureFlag"
 
 interface CreateTaskInputProps {
   task: string
@@ -53,19 +54,23 @@ const CreateTaskInput = React.forwardRef<HTMLInputElement, CreateTaskInputProps>
         className="border border-border focus-within:ring-2 focus-within:ring-blue-500 rounded-md flex items-center w-full bg-item-background"
       >
         <FaPlus className="mx-3" />
-        <select
-          className="reset-select rounded-md py-1 text-white"
-          value={taskType}
-          onChange={e => setTaskType(e.target.value as TaskTypes)}
-        >
-          {taskTypes.map(t => {
-            return (
-              <option key={t.value} value={t.value}>
-                {t.title}
-              </option>
-            )
-          })}
-        </select>
+        <FeatureFlag feature="TaskTypeInputInCreateTask">
+          <FeatureFlag.Feature>
+            <select
+              className="reset-select rounded-md py-1 text-white"
+              value={taskType}
+              onChange={e => setTaskType(e.target.value as TaskTypes)}
+            >
+              {taskTypes.map(t => {
+                return (
+                  <option key={t.value} value={t.value}>
+                    {t.title}
+                  </option>
+                )
+              })}
+            </select>
+          </FeatureFlag.Feature>
+        </FeatureFlag>
         <input
           ref={inputRef}
           value={task}

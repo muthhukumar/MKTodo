@@ -4,6 +4,7 @@ import {FaPlus} from "react-icons/fa6"
 import {TaskTypes} from "~/@types"
 import {useOutsideAlerter} from "~/utils/hooks"
 import {BsFillFileArrowUpFill} from "react-icons/bs"
+import FeatureFlag from "../FeatureFlag"
 
 interface CreateTaskInputProps {
   task: string
@@ -71,19 +72,23 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
           </div>
           <div className="w-full h-[1px] bg-border my-1" />
           <div className="bg-item-background flex items-center p-1">
-            <div className="rounded-md border-border border inline-block py-1 text-white">
-              <select
-                className="reset-select px-1"
-                value={taskType}
-                onChange={e => setTaskType(e.target.value as TaskTypes)}
-              >
-                <option value="all">Default</option>
-                <option value="my-day">My Day</option>
-                <option value="important">Important</option>
-                <option value="planned:today">Today</option>
-                <option value="planned:tomorrow">Tomorrow</option>
-              </select>
-            </div>
+            <FeatureFlag feature="TaskTypeInputInCreateTask">
+              <FeatureFlag.Feature>
+                <div className="rounded-md border-border border inline-block py-1 text-white">
+                  <select
+                    className="reset-select px-1"
+                    value={taskType}
+                    onChange={e => setTaskType(e.target.value as TaskTypes)}
+                  >
+                    <option value="all">Default</option>
+                    <option value="my-day">My Day</option>
+                    <option value="important">Important</option>
+                    <option value="planned:today">Today</option>
+                    <option value="planned:tomorrow">Tomorrow</option>
+                  </select>
+                </div>
+              </FeatureFlag.Feature>
+            </FeatureFlag>
             <button
               type="button"
               className="ml-auto border px-3 py-1 border-border rounded-md"
