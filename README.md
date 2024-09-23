@@ -22,6 +22,8 @@
 - Shortcut to focus the task input(desktop only)
 - Auth using API key
 - TaskQueue/AsyncQueue to process (request count) at a time
+- Play sound when a task is marked as completed
+- Syncing indicator when TaskQueue is active
 
 ## Philosophy
 
