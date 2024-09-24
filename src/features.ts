@@ -10,6 +10,7 @@ export const features = {
   TaskTypeInputInCreateTask: true,
   CopyTaskTextInDrawer: true,
   SyncingNotifier: true,
+  TaskStaleTag: true,
 }
 
 export type Features = typeof features

@@ -1,4 +1,15 @@
-export const options = ["p1", "p2", "notes", "bug", "watch", "feature", "learn", "idea", "thought"]
+export const options = [
+  "p1",
+  "p2",
+  "notes",
+  "bug",
+  "watch",
+  "feature",
+  "learn",
+  "idea",
+  "thought",
+  "stale",
+]
 
 export const tagColors = {
   p1: "bg-green-400 text-green-900 border border-green-500",
@@ -10,6 +21,7 @@ export const tagColors = {
   learn: "bg-indigo-400 text-indigo-900 border border-indigo-500",
   idea: "bg-pink-400 text-pink-900 border border-pink-500",
   thought: "bg-orange-400 text-orange-900 border border-orange-500",
+  stale: "bg-gray-500 text-gray-300 border border-gray-600",
   default: "bg-gray-200 text-gray-800 border border-gray-300",
 }
 

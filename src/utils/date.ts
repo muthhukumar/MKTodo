@@ -74,3 +74,8 @@ export function getTodayDateIOSString() {
 export function isDateInPast(date: string | Date | moment.Moment): boolean {
   return moment(date).isBefore(moment(), "day")
 }
+
+export function isTaskMoreThanOneMonthOld(taskDate: string): boolean {
+  const oneMonthAgo = moment().subtract(1, "months")
+  return moment(taskDate).isBefore(oneMonthAgo)
+}

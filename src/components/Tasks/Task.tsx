@@ -9,7 +9,7 @@ import {FaRegCircle} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
 import {Link, useParams, useRouter, useSearch} from "@tanstack/react-router"
 import {MdSunny} from "react-icons/md"
-import {isDateInPast, isDateSameAsToday} from "~/utils/date"
+import {isDateInPast, isDateSameAsToday, isTaskMoreThanOneMonthOld} from "~/utils/date"
 import {CiCalendar} from "react-icons/ci"
 import {getDueDateDisplayStr} from "~/utils/tasks"
 import clsx from "clsx"
@@ -140,6 +140,15 @@ function Task(props: TaskProps) {
                         </div>
                       ))}
                     </div>
+                  )}
+                </FeatureFlag.Feature>
+              </FeatureFlag>
+              <FeatureFlag feature="TaskStaleTag">
+                <FeatureFlag.Feature>
+                  {!props.completed && isTaskMoreThanOneMonthOld(props.due_date) && (
+                    <p className={clsx("px-1 text-xs border rounded-md", getTagColor("stale"))}>
+                      stale
+                    </p>
                   )}
                 </FeatureFlag.Feature>
               </FeatureFlag>
