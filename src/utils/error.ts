@@ -1,20 +1,23 @@
 import toast from "react-hot-toast"
 import {invariant} from "./invariants"
 
-export type ErrorType =
-  | {
-      "status": number
-      "object": "error"
-      "code": "validation_failed"
-      "message": string
-      "request_id": string
-      "invalid_fields": Array<{
-        "error_message": string
-        "field": string
-        "is_invalid": boolean
-      }>
-    }
-  | {message: string; status: number; code: "error_message"}
+export type ErrorType = {
+  error:
+    | {
+        "status": number
+        "object": "error"
+        "code": "validation_failed"
+        "message": string
+        "request_id": string
+        "invalid_fields": Array<{
+          "error_message": string
+          "field": string
+          "is_invalid": boolean
+        }>
+      }
+    | {message: string; status: number; code: "error_message"}
+  status: number
+}
 
 export function getErrorMessage({
   error: e,
@@ -25,7 +28,7 @@ export function getErrorMessage({
 }) {
   invariant(Boolean(defaultMessage), "Default message should not be empty")
 
-  const error = e as ErrorType
+  const {error} = e as ErrorType
 
   let message = ""
 

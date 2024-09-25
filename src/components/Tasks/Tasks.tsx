@@ -19,6 +19,7 @@ import {options} from "../Select/data"
 import {getMetaTags, removeDuplicates} from "./Drawer"
 import {IoArrowBack} from "react-icons/io5"
 import {MdFilterList} from "react-icons/md"
+import {taskQueue} from "~/utils/task-queue"
 
 interface TasksProps {
   showFilters?: boolean
@@ -160,7 +161,7 @@ export default function Tasks(props: TasksProps) {
     setNewTasks(state => [...state, {name: currentTask, status: "started"}])
 
     try {
-      await API.createTask(createTask(taskType, currentTask))
+      await taskQueue.enqueue(API.createTask.bind(null, createTask(taskType, currentTask)))
 
       setNewTasks(state => state.filter(t => t.name !== currentTask))
 

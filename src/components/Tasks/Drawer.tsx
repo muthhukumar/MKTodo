@@ -17,6 +17,7 @@ import {useAudioPlayer} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
 import {options} from "../Select/data"
+import {taskQueue} from "~/utils/task-queue"
 
 export default function Drawer({
   metadata,
@@ -104,7 +105,7 @@ export default function Drawer({
     if (!completed) togglePlay()
 
     try {
-      await API.toggleTaskCompletedById(id)
+      await taskQueue.enqueue(API.toggleTaskCompletedById.bind(null, id))
 
       router.invalidate()
     } catch (error) {

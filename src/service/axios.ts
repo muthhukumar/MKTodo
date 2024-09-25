@@ -39,7 +39,10 @@ axios.interceptors.response.use(
       toast.error(error.message)
     }
 
-    return Promise.reject(error.response.data)
+    return Promise.reject({
+      error: error.response.data,
+      status: error.response.status,
+    })
   },
 )
 

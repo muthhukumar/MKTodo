@@ -7,7 +7,7 @@ describe("handleError", () => {
   it("if error is null or undefined it should show default message", () => {
     expect(
       getErrorMessage({
-        error: null,
+        error: {erro: null},
         defaultMessage,
       }),
     ).toBe(defaultMessage)
@@ -17,7 +17,7 @@ describe("handleError", () => {
 
     expect(
       getErrorMessage({
-        error: {message, status: 500},
+        error: {error: {message, status: 500}},
         defaultMessage,
       }),
     ).toBe(`Internal server error: `)
@@ -28,10 +28,12 @@ describe("handleError", () => {
     expect(
       getErrorMessage({
         error: {
-          message,
-          status: 400,
-          code: "validation_failed",
-          invalid_fields: [{error_message: "name is invalid", field: "name", is_invalid: true}],
+          error: {
+            message,
+            status: 400,
+            code: "validation_failed",
+            invalid_fields: [{error_message: "name is invalid", field: "name", is_invalid: true}],
+          },
         },
         defaultMessage,
       }),
@@ -43,9 +45,11 @@ describe("handleError", () => {
     expect(
       getErrorMessage({
         error: {
-          message,
-          status: 400,
-          code: "error_message",
+          error: {
+            message,
+            status: 400,
+            code: "error_message",
+          },
         },
         defaultMessage,
       }),

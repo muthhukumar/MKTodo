@@ -19,6 +19,7 @@ import {handleError} from "~/utils/error"
 import {getMetaTags} from "./Drawer"
 import {getTagColor} from "../Select/data"
 import FeatureFlag from "../FeatureFlag"
+import {taskQueue} from "~/utils/task-queue"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
@@ -50,7 +51,7 @@ function Task(props: TaskProps) {
     props.onToggle(props.id, completed)
 
     try {
-      await API.toggleTaskCompletedById(id)
+      await taskQueue.enqueue(API.toggleTaskCompletedById.bind(null, id))
     } catch (error) {
       setLocalToggle(false)
       handleError({error, defaultMessage: "Toggle Completion failed"})

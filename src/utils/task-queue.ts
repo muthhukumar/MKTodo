@@ -1,8 +1,46 @@
+import toast from "react-hot-toast"
+import {ErrorType} from "./error"
+
 type Task<T> = () => Promise<T>
 
-class TaskQueue {
+class APITask<T> {
+  private _task: Task<T>
+  retries = 0
+
+  constructor(task: Task<T>) {
+    this._task = task
+  }
+
+  async execute(): Promise<T> {
+    if (this.retries === 1) {
+      await new Promise(res => setTimeout(res, 500))
+    } else if (this.retries === 2) {
+      await new Promise(res => setTimeout(res, 1000))
+    } else if (this.retries >= 3) {
+      await new Promise(res => setTimeout(res, 2000))
+    }
+
+    return this._task()
+  }
+}
+
+function retry(e: unknown): boolean {
+  const error = e as ErrorType
+
+  if (error.error.code === "validation_failed") {
+    return false
+  }
+
+  if (error.status === 422) {
+    return false
+  }
+
+  return true
+}
+
+class AsyncAPITaskQueue {
   private queue: Array<{
-    task: Task<any>
+    task: APITask<any>
     resolve: (value: any) => void
     reject: (reason?: any) => void
   }> = []
@@ -14,7 +52,7 @@ class TaskQueue {
     this.maxConcurrentRequests = maxConcurrentRequests
   }
 
-  private processQueue() {
+  private async processQueue() {
     if (this.queue.length === 0 || this.activeRequests >= this.maxConcurrentRequests) {
       return
     }
@@ -22,18 +60,31 @@ class TaskQueue {
     const {task, resolve, reject} = this.queue.shift()!
     this.setActiveRequest(this.activeRequests + 1)
 
-    task()
-      .then(resolve)
-      .catch(reject)
-      .finally(() => {
-        this.setActiveRequest(this.activeRequests - 1)
-        this.processQueue()
-      })
+    try {
+      resolve(await task.execute())
+    } catch (error) {
+      if (!retry(error)) {
+        return reject(error)
+      }
+
+      if (task.retries >= 3) {
+        toast.error("Task failed after 3 tries")
+        reject(error)
+      } else {
+        task.retries++
+        toast.error("Request failed. Retrying...")
+
+        this.queue.push({task, resolve, reject})
+      }
+    } finally {
+      this.setActiveRequest(this.activeRequests - 1)
+      this.processQueue()
+    }
   }
 
   enqueue<T>(task: Task<T>): Promise<T> {
     return new Promise<T>((resolve, reject) => {
-      this.queue.push({task, resolve, reject})
+      this.queue.push({task: new APITask(task), resolve, reject})
       this.processQueue()
     })
   }
@@ -48,12 +99,12 @@ class TaskQueue {
     this.notifySubscriber()
   }
 
-  subscribe(subscribe: TaskQueue["subscribeCallback"]) {
+  subscribe(subscribe: AsyncAPITaskQueue["subscribeCallback"]) {
     this.subscribeCallback = subscribe
   }
 }
 
-export const taskQueue = new TaskQueue(3)
+export const taskQueue = new AsyncAPITaskQueue(3)
 
 taskQueue.subscribe(count => {
   const el = document.getElementById("syncing")
