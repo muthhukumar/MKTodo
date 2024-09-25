@@ -9,6 +9,36 @@ import {
 } from "~/utils/date"
 import {invariant} from "../invariants"
 
+type TaskType = {
+  value: TaskTypes
+  title: string
+}
+
+export const taskTypes: Array<TaskType> = [
+  {
+    value: "all",
+    title: "Default",
+  },
+  {
+    value: "my-day",
+    title: "My Day",
+  },
+  {
+    value: "important",
+    title: "Important",
+  },
+  {
+    value: "planned:today",
+    title: "Today",
+  },
+  {
+    value: "planned:tomorrow",
+    title: "Tomorrow",
+  },
+]
+
+const taskTypeTags = ["myday", "important", "all", "today", "tomorrow"]
+
 export function getDueDateDisplayStr(dueDate: string) {
   if (isDateSameAsToday(dueDate)) {
     return "Today"
@@ -44,7 +74,7 @@ export class NewTask {
   constructor(public name: string) {
     const {tags, modifiedStr} = extractTags(name)
 
-    this.metadata = tags.join(",")
+    this.metadata = tags.filter(t => !taskTypeTags.includes(t as TaskTypes)).join(",")
     this.name = modifiedStr
   }
 }
@@ -87,7 +117,27 @@ export class PlannedTask extends NewTask {
   }
 }
 
-export const createTask = (taskType: TaskTypes, task: string) => {
+export function extractTaskTags(metadata: string) {
+  const {tags, modifiedStr} = extractTags(metadata)
+
+  for (let i = 0; i < tags.length; i++) {
+    if (taskTypeTags.includes(tags[i] as TaskTypes))
+      return {taskType: tags[i] as TaskTypes, modifiedStr}
+  }
+
+  return null
+}
+
+const reverseMapTaskType = {
+  "tomorrow": "planned:tomorrow",
+  "today": "planned:today",
+  "myday": "my-day",
+}
+
+export const createTask = (
+  taskType: string,
+  task: string,
+): NewTask | ImportantTask | PlannedTask => {
   switch (taskType) {
     case "my-day":
       return new MyDayTask({name: task, myDay: getTodayDateIOSString()})
@@ -99,8 +149,17 @@ export const createTask = (taskType: TaskTypes, task: string) => {
       return new PlannedTask({dueDate: getTomorrowDate(), name: task})
     case "planned":
     case "all":
-    default:
+    default: {
+      const taskTypeFromTag = extractTaskTags(task)
+
+      if (taskTypeFromTag) {
+        const tag = reverseMapTaskType[taskTypeFromTag.taskType as keyof typeof reverseMapTaskType]
+
+        return createTask(tag ? tag : taskTypeFromTag.taskType, taskTypeFromTag.modifiedStr)
+      }
+
       return new NewTask(task)
+    }
   }
 }
 
@@ -126,35 +185,7 @@ export function selectNext<T, VT>({
   return result
 }
 
-type TaskType = {
-  value: TaskTypes
-  title: string
-}
-
-export const taskTypes: Array<TaskType> = [
-  {
-    value: "all",
-    title: "Default",
-  },
-  {
-    value: "my-day",
-    title: "My Day",
-  },
-  {
-    value: "important",
-    title: "Important",
-  },
-  {
-    value: "planned:today",
-    title: "Today",
-  },
-  {
-    value: "planned:tomorrow",
-    title: "Tomorrow",
-  },
-]
-
-export function extractTags(value: string): {modifiedStr: string; tags: Array<{}>} {
+export function extractTags(value: string): {modifiedStr: string; tags: Array<string>} {
   if (!value) return {modifiedStr: "", tags: []}
 
   let inputStr = value
