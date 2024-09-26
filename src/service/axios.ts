@@ -1,11 +1,25 @@
-import baseAxios, {AxiosError} from "axios"
+import baseAxios, {
+  AxiosError,
+  AxiosInstance,
+  CancelTokenSource,
+  CancelTokenStatic,
+  isCancel,
+} from "axios"
 import toast from "react-hot-toast"
 import {unreachable} from "~/utils/invariants"
 import {APIStore} from "~/utils/tauri-store"
 
-const axios = baseAxios.create({
+interface CustomAxiosInstance extends AxiosInstance {
+  CancelToken: CancelTokenStatic
+  isCancel: (value: any) => boolean
+}
+
+const axios: CustomAxiosInstance = baseAxios.create({
   timeout: 30 * 1000, // 30 seconds
-})
+}) as CustomAxiosInstance
+
+axios.CancelToken = baseAxios.CancelToken
+axios.isCancel = baseAxios.isCancel
 
 axios.interceptors.request.use(async config => {
   try {
@@ -22,6 +36,20 @@ axios.interceptors.request.use(async config => {
 axios.interceptors.response.use(
   response => response,
   error => {
+    if (isCancel(error)) {
+      return Promise.reject({
+        error: {message: "Request is cancelled", code: "request_cancelled"},
+        status: 400,
+      })
+    }
+
+    if (isNetworkError(error)) {
+      return Promise.reject({
+        error: {message: "Request rate limited", code: "request_rate_limited"},
+        status: 400,
+      })
+    }
+
     if (error.response.status === 404) {
       toast.error(
         `Error 404: The API you're trying to reach does not exist. ${
@@ -48,6 +76,10 @@ axios.interceptors.response.use(
 
 function isNetworkError(err: AxiosError) {
   return !!err.isAxiosError && !err.response
+}
+
+export function getCancelTokenSource(): CancelTokenSource {
+  return axios.CancelToken.source()
 }
 
 export default axios

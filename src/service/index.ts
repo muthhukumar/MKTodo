@@ -1,16 +1,26 @@
 import {TTask} from "~/@types"
 import axios from "./axios"
-import defaultAxios from "axios"
+import defaultAxios, {CancelTokenSource} from "axios"
 import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
 import {OptionsStore} from "~/utils/tauri-store"
 import {ErrorType} from "~/utils/error"
 
-async function getTasks(filter: "my-day" | "important" | null, query?: string, random?: boolean) {
+async function getTasks(
+  filter: "my-day" | "important" | null,
+  query?: string,
+  random?: boolean,
+  cancelTokenSource?: CancelTokenSource,
+) {
   try {
     const options = (await OptionsStore.get()) ?? {}
 
     const response = await axios.get(`/api/v1/tasks`, {
       params: {filter, random, query, ...options},
+      ...(cancelTokenSource
+        ? {
+            cancelToken: cancelTokenSource.token,
+          }
+        : {}),
     })
 
     return response.data.data as Array<TTask>
