@@ -2,6 +2,7 @@ import toast from "react-hot-toast"
 import {ErrorType} from "./error"
 import {CancelTokenSource} from "axios"
 import {v4 as uuidv4} from "uuid"
+import {throttle} from "./timing"
 
 type Task<T> = () => Promise<T>
 
@@ -160,19 +161,21 @@ class AsyncAPITaskQueue {
 
 export const taskQueue = new AsyncAPITaskQueue(4)
 
-taskQueue.subscribe(queue => {
-  const el = document.getElementById("syncing")
-  const taskCountEl = document.getElementById("tasksCount")
+taskQueue.subscribe(
+  throttle(queue => {
+    const el = document.getElementById("syncing")
+    const taskCountEl = document.getElementById("tasksCount")
 
-  if (!el || !taskCountEl) return
+    if (!el || !taskCountEl) return
 
-  const taskCount = queue.getTasksCount()
+    const taskCount = queue.getTasksCount()
 
-  if (taskCount === 0) {
-    el.style.display = "none"
-    taskCountEl.innerHTML = ""
-  } else {
-    el.style.display = "block"
-    taskCountEl.innerHTML = String(taskCount)
-  }
-})
+    if (taskCount === 0) {
+      el.style.display = "none"
+      taskCountEl.innerHTML = ""
+    } else {
+      el.style.display = "block"
+      taskCountEl.innerHTML = String(taskCount)
+    }
+  }, 500),
+)
