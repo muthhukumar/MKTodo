@@ -38,13 +38,13 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
           API.checkServerHealth({
             notifyServerStatus: isOnline => {
               if (!isOnline) {
-                toast.error("Unable to connect to server.")
+                toast.error("Unable to connect to server. Code: !O:41")
                 setCreds(creds)
               }
             },
             notifyInternetStatus: isOnline => {
               if (!isOnline) {
-                toast.error("You are offline. Please connect to the internet.")
+                toast.error("You are offline. Please connect to the internet. Code: OFF:47")
                 setCreds(creds)
               }
             },
@@ -52,7 +52,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
               creds,
               notify: isOnline => {
                 if (!isOnline) {
-                  toast.error("Login failed. Invalid credentials.")
+                  toast.error("Login failed. Invalid credentials. Code: LF:55")
                   setCreds(null)
                   logout()
                 }
@@ -79,7 +79,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
       setCreds(null)
     } catch (error) {
-      toast.error("Logout failed")
+      toast.error("Logout failed. Code: LF:82")
     }
   }
 
@@ -90,7 +90,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
       setCreds(creds)
     } catch (err) {
-      toast.error("Session start failed")
+      toast.error("Session start failed. Code: SSF:93")
     }
 
     return undefined

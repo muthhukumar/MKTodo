@@ -20,7 +20,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     // Update state so the next render will show the fallback UI.
-    toast.error(`Something unexpected happened: ${error.message}`)
+    toast.error(`Something unexpected happened: ${error.message}. Code: SUH:23`)
 
     return {hasError: true, error}
   }
@@ -29,7 +29,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     // You can also log the error to an error reporting service
     this.setState({error})
 
-    toast.error(`Something unexpected happened: ${error.message}. ${JSON.stringify(errorInfo)}`)
+    toast.error(
+      `Something unexpected happened: ${error.message}. ${JSON.stringify(errorInfo)}. Code: SUH:32`,
+    )
   }
 
   render() {

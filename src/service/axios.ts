@@ -54,17 +54,13 @@ axios.interceptors.response.use(
       toast.error(
         `Error 404: The API you're trying to reach does not exist. ${
           error?.response?.request?.responseURL
-        }`,
+        }. Code: 404:57`,
       )
 
       unreachable(
         "We should not hit a API endpoint that does not exist. But hitting %s",
         error?.response?.request?.responseURL,
       )
-    }
-
-    if (isNetworkError(error)) {
-      toast.error(error.message)
     }
 
     return Promise.reject({

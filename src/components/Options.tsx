@@ -41,7 +41,7 @@ export default function Options() {
         setShowOptions(false)
       }, 250)
     } catch {
-      toast.error("Changing option failed.")
+      toast.error(`Changing option failed. Code: OP:44`)
     }
   }
 

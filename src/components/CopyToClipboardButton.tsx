@@ -8,7 +8,7 @@ export default function CopyToClipboardButton({content}: {content: string}) {
       await writeText(content)
       toast.success("Copied to Clipboard!!")
     } catch (err) {
-      toast.error("Copying text failed")
+      toast.error("Copying text failed. Code: CCB:11")
     }
   }
 

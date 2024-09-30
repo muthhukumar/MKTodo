@@ -10,14 +10,14 @@ export const APIStore = {
     try {
       await store.set(CREDS, {host, apiKey})
     } catch (error) {
-      toast.error("Saving API key failed")
+      toast.error("Saving API key failed. Code: AS:13")
     }
   },
   async get() {
     try {
       return await store.get<{host: string; apiKey: string}>(CREDS)
     } catch (error) {
-      toast.error("Getting API key failed")
+      toast.error("Getting API key failed. Code: AS:20")
       return null
     }
   },
@@ -27,7 +27,7 @@ export const APIStore = {
 
       return true
     } catch (error) {
-      toast.error("Resetting API key failed")
+      toast.error("Resetting API key failed. Code: R:30")
 
       return false
     }
@@ -39,7 +39,7 @@ export const APIStore = {
 
       return true
     } catch (error) {
-      toast.error("Saving API key failed")
+      toast.error("Saving API key failed. Code: SAKF:42")
       return false
     }
   },
@@ -61,14 +61,14 @@ export const OptionsStore = {
         [key]: value,
       })
     } catch {
-      toast.error("Setting option failed")
+      toast.error("Setting option failed. Code: OS:64")
     }
   },
   async get(): Promise<OptionsType | null> {
     try {
       return await store.get("options")
     } catch {
-      toast.error("Getting option failed")
+      toast.error("Getting option failed. Code: OSG:71")
       return null
     }
   },
@@ -78,7 +78,7 @@ export const OptionsStore = {
 
       return true
     } catch (error) {
-      toast.error("Saving Options failed")
+      toast.error("Saving Options failed. Code: OSS:81")
       return false
     }
   },
@@ -88,7 +88,7 @@ export const OptionsStore = {
 
       return true
     } catch (error) {
-      toast.error("Resetting options failed")
+      toast.error("Resetting options failed. Code: OSR:91")
 
       return false
     }

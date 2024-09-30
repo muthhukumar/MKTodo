@@ -30,28 +30,27 @@ class APITask<T> {
   }
 }
 
+// For known error do not retry. For unknown error retry.
 function retry(e: unknown): boolean {
   const error = e as ErrorType
 
-  if (error.status === 422) {
-    return false
-  }
+  try {
+    if (error.status === 422) {
+      return false
+    }
 
-  if (!("code" in error.error)) {
-    return false
-  }
+    if (error.error.code === "request_rate_limited") {
+      return false
+    }
 
-  if (error.error.code === "request_rate_limited") {
-    return false
-  }
+    if (error.error.code === "validation_failed") {
+      return false
+    }
 
-  if (error.error.code === "validation_failed") {
-    return false
-  }
-
-  if (error.error.code === "request_cancelled") {
-    return false
-  }
+    if (error.error.code === "request_cancelled") {
+      return false
+    }
+  } catch (error) {}
 
   return true
 }
@@ -64,11 +63,15 @@ class AsyncAPITaskQueue {
   }> = []
   private activeRequestsCount: number = 0
   private readonly maxConcurrentRequests: number
-  private subscribeCallback: ((activeRequests: number) => void) | null = null
+  private subscribeCallback: ((value: this) => void) | null = null
   private activeRequests: Array<{id: string; task: APITask<any>}> = []
 
   constructor(maxConcurrentRequests: number) {
     this.maxConcurrentRequests = maxConcurrentRequests
+  }
+
+  getTasksCount() {
+    return this.queue.length
   }
 
   private async processQueue() {
@@ -91,11 +94,11 @@ class AsyncAPITaskQueue {
       }
 
       if (task.retries >= 3) {
-        toast.error("Task failed after 3 tries")
+        toast.error("Task failed after 3 tries. Code: R:91")
         reject(error)
       } else {
         task.retries++
-        toast.error("Request failed. Retrying...")
+        toast.error("Request failed. Retrying... Code: RF:101")
 
         this.queue.push({task, resolve, reject})
       }
@@ -142,7 +145,7 @@ class AsyncAPITaskQueue {
   }
 
   private notifySubscriber() {
-    if (this.subscribeCallback) this.subscribeCallback(this.activeRequestsCount)
+    if (this.subscribeCallback) this.subscribeCallback(this)
   }
 
   setActiveRequest(value: number) {
@@ -157,14 +160,19 @@ class AsyncAPITaskQueue {
 
 export const taskQueue = new AsyncAPITaskQueue(4)
 
-taskQueue.subscribe(count => {
+taskQueue.subscribe(queue => {
   const el = document.getElementById("syncing")
+  const taskCountEl = document.getElementById("tasksCount")
 
-  if (!el) return
+  if (!el || !taskCountEl) return
 
-  if (count === 0) {
+  const taskCount = queue.getTasksCount()
+
+  if (taskCount === 0) {
     el.style.display = "none"
+    taskCountEl.innerHTML = ""
   } else {
     el.style.display = "block"
+    taskCountEl.innerHTML = String(taskCount)
   }
 })

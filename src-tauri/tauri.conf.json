@@ -1,6 +1,6 @@
 {
   "productName": "mktodo",
-  "version": "0.4.6",
+  "version": "0.4.8",
   "identifier": "com.muthukumar.mktodo.mktodo",
   "build": {
     "beforeDevCommand": "yarn dev",

@@ -59,5 +59,5 @@ export function getErrorMessage({
 }
 
 export function handleError({error: e, defaultMessage}: {error: unknown; defaultMessage: string}) {
-  toast.error(getErrorMessage({error: e, defaultMessage}))
+  toast.error(`${getErrorMessage({error: e, defaultMessage})}. Code: HE:62`)
 }
