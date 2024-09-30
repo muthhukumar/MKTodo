@@ -20,11 +20,11 @@ class APITask<T> {
 
   async execute(): Promise<T> {
     if (this.retries === 1) {
-      await new Promise(res => setTimeout(res, 500))
-    } else if (this.retries === 2) {
       await new Promise(res => setTimeout(res, 1000))
-    } else if (this.retries >= 3) {
+    } else if (this.retries === 2) {
       await new Promise(res => setTimeout(res, 2000))
+    } else if (this.retries >= 3) {
+      await new Promise(res => setTimeout(res, 5000))
     }
 
     return this._task()

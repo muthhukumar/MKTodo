@@ -49,7 +49,7 @@ describe("extractTaskTags", () => {
   })
   it("should return the first task tag that matches", () => {
     expect(extractTaskTags("!feature !bug !myday !important !all")).toStrictEqual({
-      modifiedStr: "    ",
+      modifiedStr: "     !feature !bug !important !all",
       taskType: "myday",
     })
   })

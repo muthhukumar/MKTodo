@@ -121,8 +121,14 @@ export function extractTaskTags(metadata: string) {
   const {tags, modifiedStr} = extractTags(metadata)
 
   for (let i = 0; i < tags.length; i++) {
-    if (taskTypeTags.includes(tags[i] as TaskTypes))
-      return {taskType: tags[i] as TaskTypes, modifiedStr}
+    if (taskTypeTags.includes(tags[i] as TaskTypes)) {
+      const otherTags = tags
+        .filter(t => t !== tags[i])
+        .map(t => `!${t}`)
+        .join(" ")
+
+      return {taskType: tags[i] as TaskTypes, modifiedStr: modifiedStr + " " + otherTags}
+    }
   }
 
   return null
