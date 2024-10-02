@@ -7,7 +7,7 @@ import baseAxios, {
 } from "axios"
 import toast from "react-hot-toast"
 import {unreachable} from "~/utils/invariants"
-import {APIStore} from "~/utils/tauri-store"
+import {getCreds} from "~/utils/tauri-store"
 
 interface CustomAxiosInstance extends AxiosInstance {
   CancelToken: CancelTokenStatic
@@ -23,7 +23,7 @@ axios.isCancel = baseAxios.isCancel
 
 axios.interceptors.request.use(async config => {
   try {
-    const creds = await APIStore.get()
+    const creds = await getCreds()
 
     config.baseURL = creds?.host
 

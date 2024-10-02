@@ -54,8 +54,6 @@ export const OptionsStore = {
     try {
       const allOptions = (await OptionsStore.get()) ?? {}
 
-      console.log("allloptions", allOptions)
-
       await store.set("options", {
         ...allOptions,
         [key]: value,
@@ -93,4 +91,14 @@ export const OptionsStore = {
       return false
     }
   },
+}
+
+let creds: {host: string; apiKey: string} | null = null
+
+export async function getCreds() {
+  if (!creds) {
+    creds = await APIStore.get()
+  }
+
+  return creds
 }
