@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Feature, features} from "~/features"
+import {Feature, useFeature} from "~/feature-context"
 
 interface FeatureFlagProps {
   feature: Feature
@@ -14,8 +14,11 @@ function FeatureFlag({children, feature}: FeatureFlagProps) {
 
 FeatureFlag.Feature = function Feature({children}: {children: React.ReactNode}) {
   const {feature} = useFeatureFlag()
+  const {features} = useFeature()
 
-  if (features[feature]) {
+  const currFeature = features.find(f => f.id === feature)
+
+  if (currFeature && currFeature.enable) {
     return children
   }
 
@@ -24,8 +27,11 @@ FeatureFlag.Feature = function Feature({children}: {children: React.ReactNode}) 
 
 FeatureFlag.Fallback = function Fallback({children}: {children: React.ReactNode}) {
   const {feature} = useFeatureFlag()
+  const {features} = useFeature()
 
-  if (!features[feature]) {
+  const currFeature = features.find(f => f.id === feature)
+
+  if (!currFeature || !currFeature.enable) {
     return children
   }
 

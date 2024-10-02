@@ -2,7 +2,7 @@ import clsx from "clsx"
 import {MdOutlineWbSunny} from "react-icons/md"
 import {CiStar} from "react-icons/ci"
 import {IconType} from "react-icons"
-import {TbHomeCheck} from "react-icons/tb"
+import {TbHomeCheck, TbSettings} from "react-icons/tb"
 import {CiCalendarDate} from "react-icons/ci"
 import {Link, useLocation} from "@tanstack/react-router"
 import {twMerge} from "tailwind-merge"
@@ -60,6 +60,7 @@ export default function Sidebar({className}: {className?: string}) {
           </FeatureFlag>
           <IconLink Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />
           <IconLink Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
+          <IconLink Icon={TbSettings} title="Settings" path="/settings" />
         </div>
         <p className="mt-4">{location.href}</p>
       </div>

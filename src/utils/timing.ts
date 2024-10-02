@@ -1,3 +1,4 @@
+// TODO: it should call the final call.
 export function throttle<T extends (...args: any[]) => void>(
   func: T,
   limit: number,

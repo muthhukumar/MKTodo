@@ -10,7 +10,7 @@ import {useAuth, AuthProvider} from "./auth-context"
 
 import {routeTree} from "./routeTree.gen"
 import {FeatureFlag, SplashScreen, Syncing} from "~/components"
-import {ErrorBoundary} from "~/components/screens"
+import {FeatureContextProvider} from "./feature-context"
 
 export const router = createRouter({
   routeTree,
@@ -36,7 +36,7 @@ function InnerApp() {
   }, [])
 
   return (
-    <ErrorBoundary>
+    <>
       <FeatureFlag feature="SyncingNotifier">
         <FeatureFlag.Feature>
           <Syncing />
@@ -44,14 +44,16 @@ function InnerApp() {
       </FeatureFlag>
       <Toaster position="top-center" />
       {showSplashScreen ? <SplashScreen /> : <RouterProvider router={router} context={{auth}} />}
-    </ErrorBoundary>
+    </>
   )
 }
 
 function App() {
   return (
     <AuthProvider>
-      <InnerApp />
+      <FeatureContextProvider>
+        <InnerApp />
+      </FeatureContextProvider>
     </AuthProvider>
   )
 }

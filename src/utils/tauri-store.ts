@@ -1,5 +1,6 @@
 import {Store} from "@tauri-apps/plugin-store"
 import toast from "react-hot-toast"
+import {FeatureSetting} from "~/feature-context"
 
 export const store = new Store(".settings.dat")
 
@@ -101,4 +102,32 @@ export async function getCreds() {
   }
 
   return creds
+}
+
+export const SettingsStore = {
+  async set(settings: Array<FeatureSetting>) {
+    try {
+      await store.set("settings", settings)
+    } catch (error) {
+      toast.error("Saving settings failed. Code: AS:112")
+    }
+  },
+  async get() {
+    try {
+      return await store.get<Array<FeatureSetting>>("settings")
+    } catch (error) {
+      toast.error("Getting API key failed. Code: AS:20")
+      return null
+    }
+  },
+  async save(): Promise<boolean> {
+    try {
+      await store.save()
+
+      return true
+    } catch (error) {
+      toast.error("Saving settings failed. Code: OSS:81")
+      return false
+    }
+  },
 }
