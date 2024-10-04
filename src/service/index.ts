@@ -2,7 +2,7 @@ import {TTask} from "~/@types"
 import axios from "./axios"
 import defaultAxios, {CancelTokenSource} from "axios"
 import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
-import {OptionsStore} from "~/utils/tauri-store"
+import {OptionsStore, TasksOfflineStore} from "~/utils/tauri-store"
 import {ErrorType} from "~/utils/error"
 
 async function getTasks(
@@ -23,7 +23,12 @@ async function getTasks(
         : {}),
     })
 
-    return response.data.data as Array<TTask>
+    const tasks = response.data.data as Array<TTask>
+
+    await TasksOfflineStore.set(tasks)
+    TasksOfflineStore.save()
+
+    return tasks
   } catch (error) {
     return Promise.reject(error)
   }

@@ -1,5 +1,6 @@
 import {Store} from "@tauri-apps/plugin-store"
 import toast from "react-hot-toast"
+import {TTask} from "~/@types"
 import {FeatureSetting} from "~/feature-context"
 
 export const store = new Store(".settings.dat")
@@ -127,6 +128,34 @@ export const SettingsStore = {
       return true
     } catch (error) {
       toast.error("Saving settings failed. Code: OSS:81")
+      return false
+    }
+  },
+}
+
+export const TasksOfflineStore = {
+  async set(settings: Array<TTask>) {
+    try {
+      await store.set("tasks", settings)
+    } catch (error) {
+      toast.error("Saving tasks failed. Code: AS:141")
+    }
+  },
+  async get() {
+    try {
+      return await store.get<Array<TTask>>("tasks")
+    } catch (error) {
+      toast.error("Getting tasks failed. Code: AS:148")
+      return null
+    }
+  },
+  async save(): Promise<boolean> {
+    try {
+      await store.save()
+
+      return true
+    } catch (error) {
+      toast.error("Saving tasks failed. Code: OSS:158")
       return false
     }
   },

@@ -26,6 +26,7 @@ interface TasksProps {
   title?: string
   tasks: Array<TTask>
   type: TaskTypes
+  source?: "online" | "offline"
 }
 
 const extractTagsFromTasks = (tasks: Array<TTask>) => {
@@ -76,7 +77,7 @@ function TagFilter({
 }
 
 export default function Tasks(props: TasksProps) {
-  const {showFilters, title} = props
+  const {showFilters, title, source} = props
   const [tasks, setTasks] = React.useState(props.tasks)
 
   const [newTasks, setNewTasks] = React.useState<
@@ -206,7 +207,10 @@ export default function Tasks(props: TasksProps) {
           <div className="sticky top-0 py-1 left-0 right-0 bg-background z-10">
             <div className="flex items-center justify-between py-2 relative">
               <h1 className="flex items-center gap-2 text-2xl font-bold">
-                <span>{title ? title : "Tasks"}</span>
+                <span>
+                  {title ? title : "Tasks"}
+                  <span className="font-normal text-xs ml-2">{source ? source : null}</span>
+                </span>
                 <FeatureFlag feature="TasksCountInTitle">
                   <FeatureFlag.Feature>
                     <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
