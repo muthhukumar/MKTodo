@@ -14,8 +14,8 @@
     "check-types": "tsc",
     "build:dmg": "tauri build --bundles dmg",
     "test": "vitest",
-    "bump:minor": "npm version minor && node ./scripts/updateVersion.cjs && git add package.json ./src-tauri/tauri.conf.json ./src-tauri/tauri.conf.prod.json && git commit -m 'Bump version to $(node -p \"require('./package.json').version\")'",
-    "bump:patch": "npm version patch && node ./scripts/updateVersion.cjs && git add package.json ./src-tauri/tauri.conf.json ./src-tauri/tauri.conf.prod.json && git commit -m 'Bump version to $(node -p \"require('./package.json').version\")'"
+    "bump:minor": "npm version minor && node ./scripts/updateVersion.cjs && git add package.json ./src-tauri/tauri.conf.json ./src-tauri/tauri.conf.prod.json && git commit -m \"Bump version to $(node -p \\\"require('./package.json').version\\\")\"",
+    "bump:patch": "npm version patch && node ./scripts/updateVersion.cjs && git add package.json ./src-tauri/tauri.conf.json ./src-tauri/tauri.conf.prod.json && git commit -m \"Bump version to $(node -p \\\"require('./package.json').version\\\")\""
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
