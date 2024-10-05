@@ -1,7 +1,7 @@
 {
   "name": "mktodo",
   "private": true,
-  "version": "0.2.5",
+  "version": "0.7.5",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,9 @@
     "build:android": "tauri android build --apk",
     "check-types": "tsc",
     "build:dmg": "tauri build --bundles dmg",
-    "test": "vitest"
+    "test": "vitest",
+    "bump:minor": "npm version minor && node ./scripts/updateVersion.cjs && git add package.json ./src-tauri/tauri.conf.json ./src-tauri/tauri.conf.prod.json && git commit -m 'Bump version'",
+    "bump:patch": "npm version patch && node ./scripts/updateVersion.cjs && git add package.json ./src-tauri/tauri.conf.json ./src-tauri/tauri.conf.prod.json && git commit -m .Bump version'"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
