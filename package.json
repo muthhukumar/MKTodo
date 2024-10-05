@@ -15,7 +15,7 @@
     "build:dmg": "tauri build --bundles dmg",
     "test": "vitest",
     "bump:minor": "npm version minor && node updateVersion.js",
-    "bump:patch": "npm version path && node updateVersion.js"
+    "bump:patch": "npm version patch && node updateVersion.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
