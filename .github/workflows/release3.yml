@@ -13,9 +13,9 @@ jobs:
       matrix:
         include:
           - platform: "macos-latest"
-            args: "--target aarch64-apple-darwin  --config ./src-tauri/tauri.conf.prod.json"
+            args: "--target aarch64-apple-darwin --config tauri.conf.prod.json"
           - platform: "macos-latest"
-            args: "--target x86_64-apple-darwin  --config ./src-tauri/tauri.conf.prod.json"
+            args: "--target x86_64-apple-darwin --config tauri.conf.prod.json"
           - platform: "ubuntu-22.04"
             args: ""
           - platform: "windows-latest"
@@ -59,4 +59,4 @@ jobs:
           releaseBody: "See the assets to download this version and install."
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.args }} --appVersion ${{ steps.get_version.outputs.VERSION }}
+          args: ${{ matrix.args }}
