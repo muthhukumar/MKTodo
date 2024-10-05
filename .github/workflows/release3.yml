@@ -16,13 +16,9 @@ jobs:
       matrix:
         include:
           - platform: "macos-latest" # for Arm based macs (M1 and above).
-            args:
-              "--target aarch64-apple-darwin  --config ./src-tauri/tauri.conf.prod.json --appVersion
-              ${TAG_NAME}"
+            args: "--target aarch64-apple-darwin  --config ./src-tauri/tauri.conf.prod.json"
           - platform: "macos-latest" # for Intel based macs.
-            args:
-              "--target x86_64-apple-darwin  --config ./src-tauri/tauri.conf.prod.json --appVersion
-              ${TAG_NAME}"
+            args: "--target x86_64-apple-darwin  --config ./src-tauri/tauri.conf.prod.json"
           - platform: "ubuntu-22.04" # for Tauri v1 you could replace this with ubuntu-20.04.
             args: ""
           - platform: "windows-latest"
@@ -65,4 +61,4 @@ jobs:
           releaseBody: "See the assets to download this version and install."
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.args }}
+          args: ${{ matrix.args }} --appVersion ${TAG_NAME}
