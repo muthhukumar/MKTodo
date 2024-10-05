@@ -87,7 +87,7 @@ jobs:
         run: yarn install # change this to npm, pnpm or bun depending on which one you use.
 
       - name: Build Tauri App with custom config
-        run: cargo tauri build --config ./src-tauri/tauri.conf.prod.json
+        run: cargo tauri build --config ./src-tauri/tauri.conf.prod.json --appVersion ${TAG_NAME}
 
       - uses: tauri-apps/tauri-action@v0
         env:
