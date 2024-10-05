@@ -13,7 +13,9 @@
     "build:android": "tauri android build --apk",
     "check-types": "tsc",
     "build:dmg": "tauri build --bundles dmg",
-    "test": "vitest"
+    "test": "vitest",
+    "bump:minor": "npm version minor && node updateVersion.js",
+    "bump:patch": "npm version path && node updateVersion.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
