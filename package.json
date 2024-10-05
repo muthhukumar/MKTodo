@@ -1,7 +1,7 @@
 {
   "name": "mktodo",
   "private": true,
-  "version": "0.7.1",
+  "version": "0.7.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,8 +14,8 @@
     "check-types": "tsc",
     "build:dmg": "tauri build --bundles dmg",
     "test": "vitest",
-    "bump:minor": "npm version minor && node updateVersion.js",
-    "bump:patch": "npm version patch && node updateVersion.js"
+    "bump:minor": "npm version minor && node ./scripts/updateVersion.js",
+    "bump:patch": "npm version patch && node ./scripts/updateVersion.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
