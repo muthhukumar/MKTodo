@@ -14,8 +14,8 @@
     "check-types": "tsc",
     "build:dmg": "tauri build --bundles dmg",
     "test": "vitest",
-    "bump:minor": "npm version minor && node ./scripts/updateVersion.js",
-    "bump:patch": "npm version patch && node ./scripts/updateVersion.js"
+    "bump:minor": "npm version minor && node ./scripts/updateVersion.cjs",
+    "bump:patch": "npm version patch && node ./scripts/updateVersion.cjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
