@@ -26,3 +26,11 @@ export type TaskTypes =
   | "planned"
   | "planned:today"
   | "planned:tomorrow"
+
+export type Log = {
+  id: number
+  log: string
+  level: string
+  created_at: string
+  updated_at: string
+}

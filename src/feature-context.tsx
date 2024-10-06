@@ -1,5 +1,5 @@
 import * as React from "react"
-import {SettingsStore} from "./utils/tauri-store"
+import {SettingsStore} from "./utils/persistent-storage"
 
 const allFeatures = [
   {id: "TaskTagsView", title: "Show Task Tags"},
@@ -14,6 +14,7 @@ const allFeatures = [
   {id: "CopyTaskTextInDrawer", title: "Copy Task Text in Drawer"},
   {id: "SyncingNotifier", title: "Show Syncing Notifier"},
   {id: "TaskStaleTag", title: "Show Stale Task Tag"},
+  {id: "ShowCompletedTasks", title: "Show Completed Tasks"},
 ] as const
 
 export type Feature = (typeof allFeatures)[number]["id"]
@@ -46,7 +47,9 @@ export function FeatureContextProvider({children}: {children: React.ReactNode}) 
       const features = await SettingsStore.get()
 
       if (!features) setFeatures(defaultFeatureSettings)
-      else setFeatures(features)
+      else {
+        setFeatures(ensureValidFeatures(features))
+      }
     }
 
     getSavedSettings()
@@ -92,4 +95,24 @@ export const useFeature = () => {
   }
 
   return context
+}
+
+function ensureValidFeatures(features: Array<FeatureSetting>) {
+  if (features.length !== defaultFeatureSettings.length) {
+    const featuresIds = features.map(f => f.id)
+
+    const missingSettings = defaultFeatureSettings.filter(df => !featuresIds.includes(df.id))
+
+    const unique = {} as Record<Feature, FeatureSetting>
+
+    for (let item of [...features, ...missingSettings]) {
+      if (!unique[item.id]) {
+        unique[item.id] = item
+      }
+    }
+
+    return Object.values(unique)
+  }
+
+  return features
 }

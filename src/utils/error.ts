@@ -18,6 +18,7 @@ export type ErrorType = {
     | {message: string; status: number; code: "error_message"}
     | {message: string; status: 400; code: "request_cancelled"}
     | {message: string; status: 422; code: "request_rate_limited"}
+    | {message: string; status: 404; code: "404"}
   status: number
 }
 

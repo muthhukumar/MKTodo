@@ -1,9 +1,10 @@
-import {TTask} from "~/@types"
+import {Log, TTask} from "~/@types"
 import axios from "./axios"
 import defaultAxios, {CancelTokenSource} from "axios"
 import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
-import {OptionsStore, TasksOfflineStore} from "~/utils/tauri-store"
+import {getCreds} from "~/utils/tauri-store"
 import {ErrorType} from "~/utils/error"
+import {SettingsStore, TasksStore} from "~/utils/persistent-storage"
 
 async function getTasks(
   filter: "my-day" | "important" | null,
@@ -12,10 +13,13 @@ async function getTasks(
   cancelTokenSource?: CancelTokenSource,
 ) {
   try {
-    const options = (await OptionsStore.get()) ?? {}
+    const store = await SettingsStore.get()
+
+    const showCompletedTask = store?.find(f => f.id === "ShowCompletedTasks")
+    console.log(showCompletedTask?.enable)
 
     const response = await axios.get(`/api/v1/tasks`, {
-      params: {filter, random, query, ...options},
+      params: {filter, random, query, showCompleted: Boolean(showCompletedTask?.enable)},
       ...(cancelTokenSource
         ? {
             cancelToken: cancelTokenSource.token,
@@ -25,8 +29,8 @@ async function getTasks(
 
     const tasks = response.data.data as Array<TTask>
 
-    await TasksOfflineStore.set(tasks)
-    TasksOfflineStore.save()
+    TasksStore.set(tasks)
+    TasksStore.save()
 
     return tasks
   } catch (error) {
@@ -189,6 +193,33 @@ async function updateTaskMetadata({id, metadata}: {id: number; metadata: string}
   }
 }
 
+async function getLogs() {
+  try {
+    const response = await axios.get(`/api/v1/log`)
+
+    return response.data.data as Array<Log>
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+function log(logs: Array<{level: string; log: string}>) {
+  console.log("logging", logs.length)
+  try {
+    getCreds().then(creds => {
+      defaultAxios.post(
+        `${creds?.host}/api/v1/log`,
+        {data: logs},
+        {
+          headers: {
+            "x-api-key": creds?.apiKey,
+          },
+        },
+      )
+    })
+  } catch (error) {}
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -202,4 +233,6 @@ export const API = {
   checkServerHealth,
   fetchWebPageTitle,
   updateTaskMetadata,
+  getLogs,
+  log,
 }

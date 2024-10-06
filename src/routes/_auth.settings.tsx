@@ -1,4 +1,4 @@
-import {createFileRoute} from "@tanstack/react-router"
+import {Link, createFileRoute} from "@tanstack/react-router"
 import {useAuth} from "~/auth-context"
 import {useFeature} from "~/feature-context"
 
@@ -44,6 +44,15 @@ function Settings() {
           })}
         </div>
       </div>
+      <Link
+        to="/logs"
+        search={{
+          from: "/settings",
+        }}
+        className="px-3 py-1 bg-yellow-600 mt-3 inline-block rounded-md"
+      >
+        Show Logs
+      </Link>
     </div>
   )
 }

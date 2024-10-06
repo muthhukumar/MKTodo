@@ -12,8 +12,10 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
+import { Route as StandaloneImport } from './routes/_standalone'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth.index'
+import { Route as StandaloneLogsImport } from './routes/_standalone.logs'
 import { Route as AuthSettingsImport } from './routes/_auth.settings'
 import { Route as AuthTasksPlannedImport } from './routes/_auth.tasks.planned'
 import { Route as AuthTasksMyDayImport } from './routes/_auth.tasks.my-day'
@@ -31,6 +33,11 @@ const LoginRoute = LoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const StandaloneRoute = StandaloneImport.update({
+  id: '/_standalone',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AuthRoute = AuthImport.update({
   id: '/_auth',
   getParentRoute: () => rootRoute,
@@ -39,6 +46,11 @@ const AuthRoute = AuthImport.update({
 const AuthIndexRoute = AuthIndexImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
+} as any)
+
+const StandaloneLogsRoute = StandaloneLogsImport.update({
+  path: '/logs',
+  getParentRoute: () => StandaloneRoute,
 } as any)
 
 const AuthSettingsRoute = AuthSettingsImport.update({
@@ -97,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
+    '/_standalone': {
+      id: '/_standalone'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof StandaloneImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -110,6 +129,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings'
       preLoaderRoute: typeof AuthSettingsImport
       parentRoute: typeof AuthImport
+    }
+    '/_standalone/logs': {
+      id: '/_standalone/logs'
+      path: '/logs'
+      fullPath: '/logs'
+      preLoaderRoute: typeof StandaloneLogsImport
+      parentRoute: typeof StandaloneImport
     }
     '/_auth/': {
       id: '/_auth/'
@@ -196,6 +222,7 @@ export const routeTree = rootRoute.addChildren({
       AuthTasksPlannedTaskIdRoute,
     }),
   }),
+  StandaloneRoute: StandaloneRoute.addChildren({ StandaloneLogsRoute }),
   LoginRoute,
 })
 
@@ -208,6 +235,7 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/_auth",
+        "/_standalone",
         "/login"
       ]
     },
@@ -222,12 +250,22 @@ export const routeTree = rootRoute.addChildren({
         "/_auth/tasks/planned"
       ]
     },
+    "/_standalone": {
+      "filePath": "_standalone.tsx",
+      "children": [
+        "/_standalone/logs"
+      ]
+    },
     "/login": {
       "filePath": "login.tsx"
     },
     "/_auth/settings": {
       "filePath": "_auth.settings.tsx",
       "parent": "/_auth"
+    },
+    "/_standalone/logs": {
+      "filePath": "_standalone.logs.tsx",
+      "parent": "/_standalone"
     },
     "/_auth/": {
       "filePath": "_auth.index.tsx",
