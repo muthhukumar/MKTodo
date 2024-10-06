@@ -1,13 +1,19 @@
-import {Link, createFileRoute, redirect} from "@tanstack/react-router"
+import {createFileRoute, redirect} from "@tanstack/react-router"
 import clsx from "clsx"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
-import {IoArrowBackSharp} from "react-icons/io5"
+import {LogsSchema} from "~/utils/schema"
+import {StandAlonePage} from "~/components"
 
-export const Route = createFileRoute("/_auth/logs")({
+export const Route = createFileRoute("/_standalone/logs")({
+  validateSearch: LogsSchema,
+  loaderDeps: ({search: {from}}) => ({from}),
   component: Logs,
-  loader: async () => {
-    return await API.getLogs()
+  loader: async ({deps: {from}}) => {
+    return {
+      logs: await API.getLogs(),
+      from,
+    }
   },
   beforeLoad: ({context, location}) => {
     if (!context.auth.isAuthenticated) {
@@ -24,17 +30,16 @@ export const Route = createFileRoute("/_auth/logs")({
 })
 
 function Logs() {
-  const logs = Route.useLoaderData()
+  const {logs, from} = Route.useLoaderData()
 
   return (
-    <div className="p-3">
-      <div className="flex items-center gap-3 mb-3">
-        <Link to="/settings">
-          <IoArrowBackSharp />
-        </Link>
-        <h3 className="font-bold text-xl">Logs</h3>
-      </div>
-      <div className="flex flex-col gap-3">
+    <StandAlonePage title="Logs" goBackTo={from}>
+      <div
+        className="flex flex-col gap-3"
+        onDrag={() => {
+          console.log("dragging")
+        }}
+      >
         {logs.map(l => {
           const level = l.level.toLowerCase()
           return (
@@ -55,7 +60,6 @@ function Logs() {
           )
         })}
       </div>
-    </div>
+    </StandAlonePage>
   )
 }
-

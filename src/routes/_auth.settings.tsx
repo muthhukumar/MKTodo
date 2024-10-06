@@ -44,7 +44,13 @@ function Settings() {
           })}
         </div>
       </div>
-      <Link to="/logs" className="px-3 py-1 bg-yellow-600 mt-3 inline-block rounded-md">
+      <Link
+        to="/logs"
+        search={{
+          from: "/settings",
+        }}
+        className="px-3 py-1 bg-yellow-600 mt-3 inline-block rounded-md"
+      >
         Show Logs
       </Link>
     </div>

@@ -1,5 +1,5 @@
 import {API} from "~/service"
-import {logQueue} from "./log-queue"
+import {Batcher} from "./batcher"
 
 enum LogLevel {
   DEBUG = "DEBUG",
@@ -10,7 +10,10 @@ enum LogLevel {
 
 class Logger {
   private level: LogLevel
-  private logs: Array<{level: string; log: string}> = []
+  private batcher: Batcher<{level: string; log: string}> = new Batcher({
+    size: 50,
+    onFull: (logs: Array<{level: string; log: string}>) => API.log(logs),
+  })
 
   constructor(level: LogLevel = LogLevel.INFO) {
     this.level = level
@@ -21,7 +24,7 @@ class Logger {
 
     console.log(`[${timestamp}] [${level || this.level}] ${message} `, ...args)
 
-    this.logs.push({
+    this.batcher.add({
       level,
       log: `${message}. ${args
         .map(d => {
@@ -33,17 +36,6 @@ class Logger {
         })
         .join(", ")}`,
     })
-
-    if (this.logs.length > 100) {
-      const logs = this.logs
-
-      logQueue.enqueue(() =>
-        // @ts-ignore
-        API.log(logs),
-      )
-
-      this.logs = []
-    }
   }
 
   debug(message: string, ...args: any[]): void {
@@ -67,6 +59,6 @@ class Logger {
   }
 }
 
-const logger = new Logger()
+const logger = new Logger(LogLevel.INFO)
 
 export {logger, LogLevel}

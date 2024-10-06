@@ -200,6 +200,7 @@ async function getLogs() {
 }
 
 function log(logs: Array<{level: string; log: string}>) {
+  console.log("logging", logs.length)
   try {
     getCreds().then(creds => {
       defaultAxios.post(
