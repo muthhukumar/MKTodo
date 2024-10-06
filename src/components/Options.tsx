@@ -1,42 +1,28 @@
 import * as React from "react"
 import {CgOptions} from "react-icons/cg"
 import {FaRegCheckCircle} from "react-icons/fa"
-import {OptionsStore, OptionsType} from "~/utils/tauri-store"
 import {useRouter} from "@tanstack/react-router"
 import Logout from "./Logout"
 import toast from "react-hot-toast"
+import {useFeature} from "~/feature-context"
 
 export default function Options() {
   const [showOptions, setShowOptions] = React.useState(false)
-  const [options, setOptions] = React.useState<OptionsType | null>(null)
+  const {features, toggleFeature} = useFeature()
 
   const router = useRouter()
-
-  async function getOptions() {
-    try {
-      setOptions(await OptionsStore.get())
-    } catch {
-      setOptions(null)
-    }
-  }
-
-  React.useEffect(() => {
-    getOptions()
-  }, [])
 
   const divRef = React.useRef<HTMLDivElement>(null)
   const buttonRef = React.useRef<HTMLButtonElement>(null)
 
-  async function onToggleShowCompleted() {
-    const showCompleted = options?.showCompleted === true ? true : false
+  const showCompletedTasksFeature = features.find(f => f.id === "ShowCompletedTasks")
 
+  async function onToggleShowCompleted() {
     try {
-      await OptionsStore.set({key: "showCompleted", value: !showCompleted})
-      await OptionsStore.save()
+      toggleFeature("ShowCompletedTasks")
 
       setTimeout(() => {
         router.invalidate()
-        getOptions()
 
         setShowOptions(false)
       }, 250)
@@ -57,7 +43,7 @@ export default function Options() {
         >
           <button className="w-full flex items-center gap-2" onClick={onToggleShowCompleted}>
             <FaRegCheckCircle />
-            <span>{options?.showCompleted === true ? "Hide" : "Show"} Completed Tasks</span>
+            <span>{showCompletedTasksFeature?.enable ? "Hide" : "Show"} Completed Tasks</span>
           </button>
           <Logout />
         </div>
