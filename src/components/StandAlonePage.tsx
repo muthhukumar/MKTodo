@@ -16,7 +16,7 @@ export default function StandAlonePage(props: StandAlonePageProps) {
         <Link to={goBackTo}>
           <IoArrowBackSharp />
         </Link>
-        <h3 className="ml-3 font-bold text-xl">Logs</h3>
+        <h3 className="ml-3 font-bold text-xl">{title}</h3>
       </div>
       {children}
     </div>
