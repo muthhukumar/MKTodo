@@ -14,6 +14,7 @@ const tauriConfig = JSON.parse(fs.readFileSync(tauriConfigPath, "utf8"))
 tauriProdConfig.version = newVersion
 tauriConfig.version = newVersion
 
+fs.writeFileSync(tauriProdConfigPath, JSON.stringify(tauriProdConfig, null, 2), "utf8")
 fs.writeFileSync(tauriConfigPath, JSON.stringify(tauriConfig, null, 2), "utf8")
 
 console.log(`Updated version to ${newVersion} in tauri.conf.prod.json`)
