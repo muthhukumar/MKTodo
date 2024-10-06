@@ -45,7 +45,11 @@ function Linkify({
   children: React.ReactNode
   preventNavigation?: boolean
 }) {
-  invariant(typeof children === "string", "children should be a link")
+  invariant(
+    typeof children === "string",
+    `children should be a link. Got ${JSON.stringify(children)}`,
+    children,
+  )
 
   const urlRegex = /(https?:\/\/[^\s]+)/g // TODO: we have to find another want to match url
 

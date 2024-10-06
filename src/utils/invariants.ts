@@ -8,21 +8,21 @@ export function invariant(condition: boolean, format: string, ...args: any[]): a
   let argIndex = 0
   const message = format.replace(/%s/g, () => String(args[argIndex++]))
 
-  if (process.env.NODE_ENV === "production") {
-    logger.error(`AssertionError: ${message}`)
-
-    return
-  }
-
   if (!condition) {
-    const error = new Error(message)
-    error.name = "AssertionError"
+    if (process.env.NODE_ENV === "production") {
+      logger.error(`AssertionError: ${message}`)
 
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(error, invariant) // This will omit invariant from the stack trace
+      return
+    } else {
+      const error = new Error(message)
+      error.name = "AssertionError"
+
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(error, invariant) // This will omit invariant from the stack trace
+      }
+
+      throw error
     }
-
-    throw error
   }
 }
 
