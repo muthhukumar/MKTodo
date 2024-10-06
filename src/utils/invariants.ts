@@ -1,3 +1,5 @@
+import {logger} from "./logger"
+
 export function invariant(condition: boolean, format: string, ...args: any[]): asserts condition {
   if (format === undefined) {
     throw new Error("assert requires error message format argument")
@@ -7,7 +9,8 @@ export function invariant(condition: boolean, format: string, ...args: any[]): a
   const message = format.replace(/%s/g, () => String(args[argIndex++]))
 
   if (process.env.NODE_ENV === "production") {
-    console.warn(`Assertion failed: ${message}`)
+    logger.error(`AssertionError: ${message}`)
+
     return
   }
 
@@ -32,7 +35,8 @@ export function unreachable(format: string, ...args: any[]) {
   const message = format.replace(/%s/g, () => String(args[argIndex++]))
 
   if (process.env.NODE_ENV === "production") {
-    console.warn(`Unreachable: ${message}`)
+    logger.error(`Unreachable: ${message}`)
+
     return
   }
 

@@ -1,20 +1,36 @@
 import {Link, createFileRoute} from "@tanstack/react-router"
+import clsx from "clsx"
 import {useAuth} from "~/auth-context"
+import {Divider, Logout, StandAlonePage} from "~/components"
 import {useFeature} from "~/feature-context"
+import {usePing} from "~/utils/hooks"
 
-export const Route = createFileRoute("/_auth/settings")({
+export const Route = createFileRoute("/_standalone/settings")({
   component: Settings,
 })
 
 function Settings() {
   const auth = useAuth()
+  const online = usePing()
+
   const {features, toggleFeature} = useFeature()
 
   return (
-    <div className="p-6">
-      <h2 className="font-bold mb-3 text-xl">Settings</h2>
-      <div className="py-3 border-y border-border">
-        <strong>Server</strong>
+    <StandAlonePage title="Settings" goBackTo="/tasks/all">
+      <div className="py-3">
+        <div className="flex items-center justify-between">
+          <strong>Server</strong>
+          {online && (
+            <p
+              className={clsx("px-4 py-1 border border-border rounded-full", {
+                "text-green-400 border-green-400": online.server,
+                "text-red-400 border-red-400": !online.server,
+              })}
+            >
+              {online.server ? "Online" : "Offline"}
+            </p>
+          )}
+        </div>
         <div className="mt-3 flex-col flex gap-2">
           <div>
             <p>Host</p>
@@ -26,7 +42,8 @@ function Settings() {
           </div>
         </div>
       </div>
-      <div className="mt-3 pb-3 border-b border-border">
+      <Divider />
+      <div>
         <strong>General</strong>
         <div className="mt-3 flex-col flex">
           {features.map(sf => {
@@ -44,15 +61,21 @@ function Settings() {
           })}
         </div>
       </div>
+      <Divider />
       <Link
         to="/logs"
         search={{
           from: "/settings",
         }}
-        className="px-3 py-1 bg-yellow-600 mt-3 inline-block rounded-md"
+        className="px-3 py-1 bg-yellow-600 inline-block rounded-md"
       >
         Show Logs
       </Link>
-    </div>
+
+      <Divider />
+
+      <Logout />
+      <Divider />
+    </StandAlonePage>
   )
 }

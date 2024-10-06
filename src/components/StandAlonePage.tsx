@@ -10,15 +10,16 @@ interface StandAlonePageProps {
 
 export default function StandAlonePage(props: StandAlonePageProps) {
   const {title, children, goBackTo} = props
+
   return (
-    <div className="p-3">
-      <div className="bg-background py-3 sticky top-0 left-0 right-0 flex items-center gap-3">
+    <div className="pb-3">
+      <div className="border-border border-b px-3 bg-background py-3 sticky top-0 left-0 right-0 flex items-center gap-3">
         <Link to={goBackTo}>
           <IoArrowBackSharp />
         </Link>
         <h3 className="ml-3 font-bold text-xl">{title}</h3>
       </div>
-      {children}
+      <div className="p-6">{children}</div>
     </div>
   )
 }

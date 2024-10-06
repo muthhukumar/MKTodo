@@ -64,6 +64,15 @@ axios.interceptors.response.use(
       })
     }
 
+    if (error.response.status === 500) {
+      logger.error("500: Internal server error", JSON.stringify(error))
+
+      return Promise.reject({
+        error: {message: `Internal server error. ${error.response.data.message}.`},
+        status: 500,
+      })
+    }
+
     logger.info("Unknown error", JSON.stringify(error))
 
     return Promise.reject({

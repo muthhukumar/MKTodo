@@ -2,7 +2,7 @@ import {Link} from "@tanstack/react-router"
 
 import {MdOutlineWbSunny} from "react-icons/md"
 import {CiStar} from "react-icons/ci"
-import {TbHomeCheck, TbSettings} from "react-icons/tb"
+import {TbHomeCheck} from "react-icons/tb"
 import {CiCalendarDate} from "react-icons/ci"
 import clsx from "clsx"
 import {IconType} from "react-icons"
@@ -36,7 +36,6 @@ export default function MobileBottomNavbar() {
       </FeatureFlag>
       <NavItem Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />
       <NavItem Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
-      <NavItem Icon={TbSettings} title="Settings" path="/settings" />
     </div>
   )
 }

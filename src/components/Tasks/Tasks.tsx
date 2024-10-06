@@ -11,7 +11,7 @@ import CreateTaskInput from "./CreateTaskInput"
 import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
 import MobileCreateTaskInput from "./MobileCreateTaskInput"
-import {FeatureFlag, Loader, MobileSearchBar, Options, Select} from ".."
+import {FeatureFlag, Loader, MobileSearchBar, Select} from ".."
 import {useAudioPlayer, useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
@@ -20,6 +20,7 @@ import {getMetaTags, removeDuplicates} from "./Drawer"
 import {IoArrowBack} from "react-icons/io5"
 import {MdFilterList} from "react-icons/md"
 import {taskQueue} from "~/utils/task-queue"
+import {TbSettings} from "react-icons/tb"
 
 interface TasksProps {
   showFilters?: boolean
@@ -245,7 +246,9 @@ export default function Tasks(props: TasksProps) {
                 <MobileOnly>
                   <MobileSearchBar />
                 </MobileOnly>
-                <Options />
+                <Link to="/settings">
+                  <TbSettings size={21} />
+                </Link>
               </div>
             </div>
 

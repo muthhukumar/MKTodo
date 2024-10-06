@@ -41,9 +41,14 @@ function retry(e: unknown): boolean {
   const error = e as ErrorType
 
   try {
-    if (error.status === 422) {
+    if (error?.status === 422) {
       logger.info("Check Retry: status 422")
 
+      return false
+    }
+
+    if (error.status === 500) {
+      logger.info("Check Retry: 500")
       return false
     }
 
