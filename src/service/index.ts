@@ -1,8 +1,8 @@
-import {TTask} from "~/@types"
+import {Log, TTask} from "~/@types"
 import axios from "./axios"
 import defaultAxios, {CancelTokenSource} from "axios"
 import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
-import {OptionsStore, TasksOfflineStore} from "~/utils/tauri-store"
+import {OptionsStore, TasksOfflineStore, getCreds} from "~/utils/tauri-store"
 import {ErrorType} from "~/utils/error"
 
 async function getTasks(
@@ -189,6 +189,32 @@ async function updateTaskMetadata({id, metadata}: {id: number; metadata: string}
   }
 }
 
+async function getLogs() {
+  try {
+    const response = await axios.get(`/api/v1/log`)
+
+    return response.data.data as Array<Log>
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+function log(logs: Array<{level: string; log: string}>) {
+  try {
+    getCreds().then(creds => {
+      defaultAxios.post(
+        `${creds?.host}/api/v1/log`,
+        {data: logs},
+        {
+          headers: {
+            "x-api-key": creds?.apiKey,
+          },
+        },
+      )
+    })
+  } catch (error) {}
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -202,4 +228,6 @@ export const API = {
   checkServerHealth,
   fetchWebPageTitle,
   updateTaskMetadata,
+  getLogs,
+  log,
 }

@@ -1,7 +1,6 @@
 import {ErrorType} from "./error"
 import {CancelTokenSource} from "axios"
 import {v4 as uuidv4} from "uuid"
-import {logger} from "./logger"
 
 type Task<T> = () => Promise<T>
 
@@ -19,16 +18,10 @@ class APITask<T> {
 
   async execute(): Promise<T> {
     if (this.retries === 1) {
-      logger.info("First retry")
-
       await new Promise(res => setTimeout(res, 1000))
     } else if (this.retries === 2) {
-      logger.info("Second retry")
-
       await new Promise(res => setTimeout(res, 2000))
     } else if (this.retries >= 3) {
-      logger.info("Third retry")
-
       await new Promise(res => setTimeout(res, 5000))
     }
 
@@ -42,33 +35,21 @@ function retry(e: unknown): boolean {
 
   try {
     if (error.status === 422) {
-      logger.info("Check Retry: status 422")
-
       return false
     }
 
     if (error.error.code === "request_rate_limited") {
-      logger.info("Check Retry: Request late limited")
-
       return false
     }
 
     if (error.error.code === "validation_failed") {
-      logger.info("Check Retry: Request late limited")
-
       return false
     }
 
     if (error.error.code === "request_cancelled") {
-      logger.info("Check Retry: Request cancelled")
-
       return false
     }
-  } catch (error) {
-    logger.error("Retry fn thrown:", JSON.stringify(error))
-  }
-
-  logger.info("Request failed due to unknown error. Retrying...")
+  } catch (error) {}
 
   return true
 }
@@ -108,18 +89,13 @@ class AsyncAPITaskQueue {
       resolve(await task.execute())
     } catch (error) {
       if (!retry(error)) {
-        logger.info("Known error. Rejecting the request.", JSON.stringify(error))
-
         return reject(error)
       }
 
       if (task.retries >= 3) {
-        logger.info("Task failed after 3 tires.")
-
         reject(error)
       } else {
         task.retries++
-        logger.info("Request failed. Retrying...")
 
         this.queue.push({task, resolve, reject})
       }
@@ -142,7 +118,6 @@ class AsyncAPITaskQueue {
         if (t.task.id === id) {
           t.task.cancelTokenSource?.cancel()
 
-          logger.info("Similar request found. Cancelling existing one.")
           return true
         }
 
@@ -151,8 +126,6 @@ class AsyncAPITaskQueue {
 
       this.activeRequests.forEach(aq => {
         if (aq.task.id === id) {
-          logger.info("Similar active request found. Cancelling existing one.")
-
           aq.task.cancelTokenSource?.cancel()
         }
       })
@@ -185,21 +158,4 @@ class AsyncAPITaskQueue {
   }
 }
 
-export const taskQueue = new AsyncAPITaskQueue(4)
-
-taskQueue.subscribe(queue => {
-  const el = document.getElementById("syncing")
-  const taskCountEl = document.getElementById("tasksCount")
-
-  if (!el || !taskCountEl) return
-
-  const taskCount = queue.getTasksCount()
-
-  if (taskCount === 0) {
-    el.style.display = "none"
-    taskCountEl.innerHTML = ""
-  } else {
-    el.style.display = "block"
-    taskCountEl.innerHTML = String(taskCount)
-  }
-})
+export const logQueue = new AsyncAPITaskQueue(3)

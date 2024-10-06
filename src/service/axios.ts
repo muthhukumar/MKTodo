@@ -5,8 +5,7 @@ import baseAxios, {
   CancelTokenStatic,
   isCancel,
 } from "axios"
-import toast from "react-hot-toast"
-import {unreachable} from "~/utils/invariants"
+import {logger} from "~/utils/logger"
 import {getCreds} from "~/utils/tauri-store"
 
 interface CustomAxiosInstance extends AxiosInstance {
@@ -28,7 +27,9 @@ axios.interceptors.request.use(async config => {
     config.baseURL = creds?.host
 
     config.headers.set("x-api-key", creds?.apiKey)
-  } catch {}
+  } catch (error) {
+    logger.error("Axios request interceptor throw error", error)
+  }
 
   return config
 })
@@ -37,6 +38,8 @@ axios.interceptors.response.use(
   response => response,
   error => {
     if (isCancel(error)) {
+      logger.info("Request cancelled", JSON.stringify(error))
+
       return Promise.reject({
         error: {message: "Request is cancelled", code: "request_cancelled"},
         status: 400,
@@ -44,6 +47,8 @@ axios.interceptors.response.use(
     }
 
     if (isNetworkError(error)) {
+      logger.info("Network error or axios error or rate limited", JSON.stringify(error))
+
       return Promise.reject({
         error: {message: "Request rate limited", code: "request_rate_limited"},
         status: 400,
@@ -51,17 +56,15 @@ axios.interceptors.response.use(
     }
 
     if (error.response.status === 404) {
-      toast.error(
-        `Error 404: The API you're trying to reach does not exist. ${
-          error?.response?.request?.responseURL
-        }. Code: 404:57`,
-      )
+      logger.error("404: The API you're trying to reach does not exist", JSON.stringify(error))
 
-      unreachable(
-        "We should not hit a API endpoint that does not exist. But hitting %s",
-        error?.response?.request?.responseURL,
-      )
+      return Promise.reject({
+        error: {message: "API not found.", code: "404"},
+        status: 404,
+      })
     }
+
+    logger.info("Unknown error", JSON.stringify(error))
 
     return Promise.reject({
       error: error.response.data,
