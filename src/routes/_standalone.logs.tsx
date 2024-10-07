@@ -5,6 +5,7 @@ import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
 import {LogsSchema} from "~/utils/schema"
 import {Divider, StandAlonePage} from "~/components"
+import {format24Hour} from "~/utils/date"
 
 export const Route = createFileRoute("/_standalone/logs")({
   validateSearch: LogsSchema,
@@ -59,7 +60,7 @@ function Logs() {
           const level = l.level.toLowerCase()
           return (
             <p key={l.id}>
-              [{l.created_at}]{" "}
+              <span className="font-bold">[{format24Hour(l.created_at)}] </span>
               <span
                 className={clsx("font-bold", {
                   "text-blue-400": level === "debug",
@@ -70,7 +71,7 @@ function Logs() {
               >
                 [{level}]
               </span>{" "}
-              [{l.log}]
+              <span className="text-zinc-300">{l.log}</span>
             </p>
           )
         })}

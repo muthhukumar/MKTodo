@@ -79,3 +79,9 @@ export function isTaskMoreThanOneMonthOld(taskDate: string): boolean {
   const oneMonthAgo = moment().subtract(1, "months")
   return moment(taskDate).isBefore(oneMonthAgo)
 }
+
+export function format24Hour(date: string | Date) {
+  date = new Date(date)
+
+  return date.toISOString().split("T")[0] + " " + date.toTimeString().split(" ")[0]
+}

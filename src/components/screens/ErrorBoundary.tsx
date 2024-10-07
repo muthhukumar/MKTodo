@@ -1,7 +1,7 @@
 // TODO: refactor this later
 import * as React from "react"
 import ErrorMessage from "./ErrorMessage"
-import toast from "react-hot-toast"
+import {logger} from "~/utils/logger"
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
@@ -19,19 +19,15 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    // Update state so the next render will show the fallback UI.
-    toast.error(`Something unexpected happened: ${error.message}. Code: SUH:23`)
+    logger.error(`Error Boundary: ${error.message}. ${JSON.stringify(error)}`)
 
     return {hasError: true, error}
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    // You can also log the error to an error reporting service
     this.setState({error})
 
-    toast.error(
-      `Something unexpected happened: ${error.message}. ${JSON.stringify(errorInfo)}. Code: SUH:32`,
-    )
+    logger.error(`ErrorBoundary: ${error.message}. ${JSON.stringify({errorInfo, error})}`)
   }
 
   render() {

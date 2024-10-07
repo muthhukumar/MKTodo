@@ -10,9 +10,10 @@ enum LogLevel {
 
 class Logger {
   private level: LogLevel
-  private batcher: Batcher<{level: string; log: string}> = new Batcher({
+  private batcher: Batcher<{level: string; log: string; created_at: string}> = new Batcher({
     size: 50,
-    onFull: (logs: Array<{level: string; log: string}>) => API.log(logs),
+    onFull: (logs: Array<{level: string; log: string; created_at: string}>) => API.log(logs),
+    batchProcessingTimeoutDuration: 20,
   })
 
   constructor(level: LogLevel = LogLevel.INFO) {
@@ -35,6 +36,7 @@ class Logger {
           }
         })
         .join(", ")}`,
+      created_at: timestamp,
     })
   }
 

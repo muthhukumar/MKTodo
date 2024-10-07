@@ -21,6 +21,7 @@ import {IoArrowBack} from "react-icons/io5"
 import {MdFilterList} from "react-icons/md"
 import {taskQueue} from "~/utils/task-queue"
 import {TbSettings} from "react-icons/tb"
+import {logger} from "~/utils/logger"
 
 interface TasksProps {
   showFilters?: boolean
@@ -169,6 +170,8 @@ export default function Tasks(props: TasksProps) {
 
       router.invalidate()
     } catch (error) {
+      logger.error("Create Task: ", JSON.stringify(error))
+
       handleError({error, defaultMessage: "Creating Task failed."})
 
       setNewTasks(state => {
