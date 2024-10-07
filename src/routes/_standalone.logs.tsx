@@ -1,5 +1,5 @@
 import * as React from "react"
-import {createFileRoute, redirect} from "@tanstack/react-router"
+import {createFileRoute, redirect, useRouter} from "@tanstack/react-router"
 import clsx from "clsx"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
@@ -35,6 +35,8 @@ function Logs() {
   const {logs, from} = Route.useLoaderData()
   const [logLevel, setLogLevel] = React.useState("")
 
+  const router = useRouter()
+
   const filteredLogs = logLevel
     ? logs.filter(l => {
         return l.level.toLowerCase() === logLevel
@@ -56,6 +58,12 @@ function Logs() {
           <option value="warn">warn</option>
           <option value="error">error</option>
         </select>
+        <button
+          onClick={() => router.invalidate()}
+          className="text-black bg-white rounded-md px-3 ml-2"
+        >
+          Refresh
+        </button>
       </div>
       <Divider />
       <div className="flex flex-col gap-3">
