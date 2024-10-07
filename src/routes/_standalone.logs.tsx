@@ -43,6 +43,9 @@ function Logs() {
 
   return (
     <StandAlonePage title="Logs" goBackTo={from}>
+      <p className="text-center my-2">
+        Total <strong>{filteredLogs.length}</strong> logs found
+      </p>
       <div className="w-full sticky top-12 left-0 right-0 bg-background py-1">
         <select value={logLevel} onChange={e => setLogLevel(e.target.value)}>
           <option value="" disabled>
