@@ -6,6 +6,7 @@ import {API} from "~/service"
 import {LogsSchema} from "~/utils/schema"
 import {Divider, StandAlonePage} from "~/components"
 import {format24Hour} from "~/utils/date"
+import {logger} from "~/utils/logger"
 
 export const Route = createFileRoute("/_standalone/logs")({
   validateSearch: LogsSchema,
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/_standalone/logs")({
   loader: async ({deps: {from}}) => {
     return {
       logs: await API.getLogs(),
+      queuedLogs: logger.queuedLogs(),
       from,
     }
   },
@@ -32,7 +34,7 @@ export const Route = createFileRoute("/_standalone/logs")({
 })
 
 function Logs() {
-  const {logs, from} = Route.useLoaderData()
+  const {logs, from, queuedLogs} = Route.useLoaderData()
   const [logLevel, setLogLevel] = React.useState("")
 
   const router = useRouter()
@@ -64,6 +66,32 @@ function Logs() {
         >
           Refresh
         </button>
+      </div>
+      <Divider />
+      <div>
+        <p className="font-bold text-lg mb-2">Queued Logs</p>
+        <div className="flex flex-col gap-3">
+          {queuedLogs.length === 0 && <p>No logs queued</p>}
+          {queuedLogs.map((l, idx) => {
+            const level = l.level.toLowerCase()
+            return (
+              <p key={idx}>
+                <span className="font-bold">[{format24Hour(l.created_at)}] </span>
+                <span
+                  className={clsx("font-bold", {
+                    "text-blue-400": level === "debug",
+                    "text-green-400": level === "info",
+                    "text-yellow-400": level === "warn",
+                    "text-red-400": level === "error",
+                  })}
+                >
+                  [{level}]
+                </span>{" "}
+                <span className="text-zinc-300">{l.log}</span>
+              </p>
+            )
+          })}
+        </div>
       </div>
       <Divider />
       <div className="flex flex-col gap-3">

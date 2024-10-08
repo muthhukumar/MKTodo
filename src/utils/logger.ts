@@ -59,6 +59,10 @@ class Logger {
   setLevel(level: LogLevel): void {
     this.level = level
   }
+
+  queuedLogs() {
+    return [...this.batcher.items]
+  }
 }
 
 const logger = new Logger(LogLevel.INFO)
