@@ -5,6 +5,6 @@ export const SearchQuerySchema = z.object({
   random: z.boolean().catch(false),
 })
 
-export const LogsSchema = z.object({
+export const FromSchema = z.object({
   from: z.string().catch(""),
 })

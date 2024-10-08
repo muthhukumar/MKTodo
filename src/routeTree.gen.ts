@@ -16,6 +16,7 @@ import { Route as StandaloneImport } from './routes/_standalone'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth.index'
 import { Route as StandaloneSettingsImport } from './routes/_standalone.settings'
+import { Route as StandaloneSearchImport } from './routes/_standalone.search'
 import { Route as StandaloneLogsImport } from './routes/_standalone.logs'
 import { Route as AuthTasksPlannedImport } from './routes/_auth.tasks.planned'
 import { Route as AuthTasksMyDayImport } from './routes/_auth.tasks.my-day'
@@ -50,6 +51,11 @@ const AuthIndexRoute = AuthIndexImport.update({
 
 const StandaloneSettingsRoute = StandaloneSettingsImport.update({
   path: '/settings',
+  getParentRoute: () => StandaloneRoute,
+} as any)
+
+const StandaloneSearchRoute = StandaloneSearchImport.update({
+  path: '/search',
   getParentRoute: () => StandaloneRoute,
 } as any)
 
@@ -128,6 +134,13 @@ declare module '@tanstack/react-router' {
       path: '/logs'
       fullPath: '/logs'
       preLoaderRoute: typeof StandaloneLogsImport
+      parentRoute: typeof StandaloneImport
+    }
+    '/_standalone/search': {
+      id: '/_standalone/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof StandaloneSearchImport
       parentRoute: typeof StandaloneImport
     }
     '/_standalone/settings': {
@@ -223,6 +236,7 @@ export const routeTree = rootRoute.addChildren({
   }),
   StandaloneRoute: StandaloneRoute.addChildren({
     StandaloneLogsRoute,
+    StandaloneSearchRoute,
     StandaloneSettingsRoute,
   }),
   LoginRoute,
@@ -255,6 +269,7 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_standalone.tsx",
       "children": [
         "/_standalone/logs",
+        "/_standalone/search",
         "/_standalone/settings"
       ]
     },
@@ -263,6 +278,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/_standalone/logs": {
       "filePath": "_standalone.logs.tsx",
+      "parent": "/_standalone"
+    },
+    "/_standalone/search": {
+      "filePath": "_standalone.search.tsx",
       "parent": "/_standalone"
     },
     "/_standalone/settings": {

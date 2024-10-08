@@ -11,13 +11,13 @@ import CreateTaskInput from "./CreateTaskInput"
 import SearchBar from "../SearchBar"
 import DesktopOnly from "../DesktopOnly"
 import MobileCreateTaskInput from "./MobileCreateTaskInput"
-import {FeatureFlag, Loader, MobileSearchBar, Select} from ".."
+import {FeatureFlag, Loader, Select} from ".."
 import {useAudioPlayer, useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
 import {options} from "../Select/data"
 import {getMetaTags, removeDuplicates} from "./Drawer"
-import {IoArrowBack} from "react-icons/io5"
+import {IoArrowBack, IoSearchOutline} from "react-icons/io5"
 import {MdFilterList} from "react-icons/md"
 import {taskQueue} from "~/utils/task-queue"
 import {TbSettings} from "react-icons/tb"
@@ -29,6 +29,8 @@ interface TasksProps {
   tasks: Array<TTask>
   type: TaskTypes
   source?: "online" | "offline"
+  showHeader?: boolean
+  showTaskCreate?: boolean
 }
 
 const extractTagsFromTasks = (tasks: Array<TTask>) => {
@@ -79,7 +81,7 @@ function TagFilter({
 }
 
 export default function Tasks(props: TasksProps) {
-  const {showFilters, title, source} = props
+  const {showFilters, title, source, showHeader = true, showTaskCreate = true} = props
   const [tasks, setTasks] = React.useState(props.tasks)
 
   const [newTasks, setNewTasks] = React.useState<
@@ -209,51 +211,62 @@ export default function Tasks(props: TasksProps) {
       <div className="w-full relative">
         <div className="px-3">
           <div className="sticky top-0 py-1 left-0 right-0 bg-background z-10">
-            <div className="flex items-center justify-between py-2 relative">
-              <h1 className="flex items-center gap-2 text-2xl font-bold">
-                <span>
-                  {title ? title : "Tasks"}
-                  <span className="font-normal text-xs ml-2">{source ? source : null}</span>
-                </span>
-                <FeatureFlag feature="TasksCountInTitle">
-                  <FeatureFlag.Feature>
-                    <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
-                      {pendingTasks.length} / {tasks.length}
-                    </span>
-                  </FeatureFlag.Feature>
-                </FeatureFlag>
-              </h1>
-              <div className="flex items-center gap-3">
-                <FeatureFlag feature="TagFilter">
-                  <FeatureFlag.Feature>
-                    <MobileOnly>
-                      <TagFilter
-                        tags={tagFilterOptions}
-                        setSelectedFilters={setTagFilters}
-                        selectedFilters={tagFilters}
-                      />
-                    </MobileOnly>
-                  </FeatureFlag.Feature>
-                </FeatureFlag>
-                <FeatureFlag feature="TagFilter">
-                  <FeatureFlag.Feature>
-                    <DesktopOnly>
-                      <Select
-                        data={tagFilterOptions}
-                        setSelectedOptions={setTagFilters}
-                        selectedOptions={tagFilters}
-                      />
-                    </DesktopOnly>
-                  </FeatureFlag.Feature>
-                </FeatureFlag>
-                <MobileOnly>
-                  <MobileSearchBar />
-                </MobileOnly>
-                <Link to="/settings">
-                  <TbSettings size={21} />
-                </Link>
+            {showHeader && (
+              <div className="flex items-center justify-between py-2 relative">
+                <h1 className="flex items-center gap-2 text-2xl font-bold">
+                  <span>
+                    {title ? title : "Tasks"}
+                    <span className="font-normal text-xs ml-2">{source ? source : null}</span>
+                  </span>
+                  <FeatureFlag feature="TasksCountInTitle">
+                    <FeatureFlag.Feature>
+                      <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
+                        {pendingTasks.length} / {tasks.length}
+                      </span>
+                    </FeatureFlag.Feature>
+                  </FeatureFlag>
+                </h1>
+                <div className="flex items-center gap-3">
+                  <FeatureFlag feature="TagFilter">
+                    <FeatureFlag.Feature>
+                      <MobileOnly>
+                        <TagFilter
+                          tags={tagFilterOptions}
+                          setSelectedFilters={setTagFilters}
+                          selectedFilters={tagFilters}
+                        />
+                      </MobileOnly>
+                    </FeatureFlag.Feature>
+                  </FeatureFlag>
+                  <FeatureFlag feature="TagFilter">
+                    <FeatureFlag.Feature>
+                      <DesktopOnly>
+                        <Select
+                          data={tagFilterOptions}
+                          setSelectedOptions={setTagFilters}
+                          selectedOptions={tagFilters}
+                        />
+                      </DesktopOnly>
+                    </FeatureFlag.Feature>
+                  </FeatureFlag>
+                  <MobileOnly>
+                    <Link
+                      to="/search"
+                      search={{
+                        from: "/tasks/all",
+                      }}
+                    >
+                      <IoSearchOutline size={20} />
+                    </Link>
+                    {/*<MobileSearchBar />
+                     */}
+                  </MobileOnly>
+                  <Link to="/settings">
+                    <TbSettings size={21} />
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
 
             <DesktopOnly>
               <div className="hidden my-1">
@@ -322,29 +335,33 @@ export default function Tasks(props: TasksProps) {
           </div>
 
           <div className="min-h-[20vh]" />
-          <DesktopOnly>
-            <div className="p-3 bg-background sticky w-full bottom-4 md:bottom-0 left-0 right-0">
-              <CreateTaskInput
-                ref={inputRef}
-                taskType={taskType}
-                setTaskType={setTaskType}
-                task={task}
-                setTask={value => setTask(value)}
-                onSubmit={onSubmit}
-              />
-            </div>
-          </DesktopOnly>
+          {showTaskCreate && (
+            <>
+              <DesktopOnly>
+                <div className="p-3 bg-background sticky w-full bottom-4 md:bottom-0 left-0 right-0">
+                  <CreateTaskInput
+                    ref={inputRef}
+                    taskType={taskType}
+                    setTaskType={setTaskType}
+                    task={task}
+                    setTask={value => setTask(value)}
+                    onSubmit={onSubmit}
+                  />
+                </div>
+              </DesktopOnly>
 
-          <MobileOnly>
-            <MobileCreateTaskInput
-              tags={tagFilterOptions}
-              taskType={taskType}
-              setTaskType={setTaskType}
-              task={task}
-              setTask={value => setTask(value)}
-              onSubmit={onSubmit}
-            />
-          </MobileOnly>
+              <MobileOnly>
+                <MobileCreateTaskInput
+                  tags={tagFilterOptions}
+                  taskType={taskType}
+                  setTaskType={setTaskType}
+                  task={task}
+                  setTask={value => setTask(value)}
+                  onSubmit={onSubmit}
+                />
+              </MobileOnly>
+            </>
+          )}
         </div>
       </div>
     </div>
