@@ -13,7 +13,7 @@ import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
 import {options} from "../Select/data"
 import {getMetaTags, removeDuplicates} from "./Drawer"
-import {Header} from "."
+import {CompletedTasks, Header} from "."
 
 interface TasksProps {
   showFilters?: boolean
@@ -175,22 +175,7 @@ export default function Tasks(props: TasksProps) {
                 type={props.type as "all" | "my-day" | "important" | "planned"}
               />
             ))}
-            {completedTasks.length > 0 && (
-              <h2 className="w-fit text-sm bg-hover-background rounded-md px-2 py-1 my-2">
-                Completed
-                <span className="font-normal text-xs px-2 py-1 rounded-md">
-                  {completedTasks.length}
-                </span>
-              </h2>
-            )}
-            {completedTasks.map(t => (
-              <Task
-                onToggle={onTaskToggle}
-                {...t}
-                key={t.id}
-                type={props.type as "all" | "my-day" | "important" | "planned"}
-              />
-            ))}
+            <CompletedTasks tasks={completedTasks} onTaskToggle={onTaskToggle} type={props.type} />
           </div>
 
           <div className="min-h-[20vh]" />
