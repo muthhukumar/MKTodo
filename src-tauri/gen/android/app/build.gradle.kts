@@ -19,8 +19,8 @@ android {
         applicationId = "com.muthukumar.mktodo.mktodo"
         minSdk = 24
         targetSdk = 33
-        versionCode = 48
-        versionName = "5.8"
+        versionCode = 50
+        versionName = "6.0"
     }
      signingConfigs {
         create("release") {
