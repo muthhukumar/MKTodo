@@ -11,19 +11,17 @@ const plannedFilter = z.object({
   filter: z
     .enum(["all-planned", "overdue", "today", "tomorrow", "this-week", "later"])
     .catch("all-planned"),
-  query: z.string().catch(""),
 })
 
 export const Route = createFileRoute("/_auth/tasks/planned")({
   validateSearch: plannedFilter,
-  loaderDeps: ({search: {query}}) => ({query}),
-  loader: async ({deps: {query}}) => {
+  loader: async () => {
     const cancelToken = getCancelTokenSource()
 
     return {
       tasks: await taskQueue.enqueueUnique({
         // TODO: get tasks by default should require cancel token
-        task: () => API.getTasks(null, query, false, cancelToken),
+        task: () => API.getTasks(null, "", false, cancelToken),
         id: "fetchPlannedTasks",
         cancelTokenSource: cancelToken,
       }),

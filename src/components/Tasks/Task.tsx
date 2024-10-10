@@ -7,7 +7,7 @@ import {FaRegStar} from "react-icons/fa"
 import {FaStar} from "react-icons/fa"
 import {FaRegCircle} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
-import {Link, useParams, useRouter, useSearch} from "@tanstack/react-router"
+import {Link, useParams, useRouter} from "@tanstack/react-router"
 import {MdSunny} from "react-icons/md"
 import {isDateInPast, isDateSameAsToday, isTaskMoreThanOneMonthOld} from "~/utils/date"
 import {CiCalendar} from "react-icons/ci"
@@ -22,7 +22,7 @@ import FeatureFlag from "../FeatureFlag"
 import {taskQueue} from "~/utils/task-queue"
 
 interface TaskProps extends TTask {
-  type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
+  type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today"> | "search"
   onToggle: (id: number, completed: boolean) => void
 }
 
@@ -30,8 +30,6 @@ function Task(props: TaskProps) {
   const [localToggle, setLocalToggle] = React.useState(false)
 
   const router = useRouter()
-
-  const search = useSearch({from: `/_auth/tasks/${props.type}`})
 
   const param = useParams({strict: false})
 
@@ -64,9 +62,10 @@ function Task(props: TaskProps) {
     }
   }
 
-  const tasksType = props.type || "all"
+  // TODO: refactor this later
+  const from = props.type === "search" ? "/search" : `/tasks/${props.type || "all"}`
 
-  const to = `/tasks/${tasksType}/$taskId` as const
+  const to = props.type === "search" ? "/search/$taskId" : (`/tasks/${props.type}/$taskId` as const)
 
   const metatags = React.useMemo(() => getMetaTags(props.metadata), [props.metadata])
 
@@ -94,10 +93,8 @@ function Task(props: TaskProps) {
         params={{taskId: String(props.id)}}
         preload={false}
         search={{
-          query: search.query,
-          // @ts-ignore
-          // TODO: - fix this later
-          filter: search.filter,
+          from: from,
+          query: "",
         }}
         key={props.id}
         className={twMerge("py-2 w-full flex items-center text-white")}

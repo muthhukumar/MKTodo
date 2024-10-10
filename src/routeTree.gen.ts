@@ -16,7 +16,9 @@ import { Route as StandaloneImport } from './routes/_standalone'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth.index'
 import { Route as StandaloneSettingsImport } from './routes/_standalone.settings'
+import { Route as StandaloneSearchImport } from './routes/_standalone.search'
 import { Route as StandaloneLogsImport } from './routes/_standalone.logs'
+import { Route as StandaloneSearchTaskIdImport } from './routes/_standalone.search.$taskId'
 import { Route as AuthTasksPlannedImport } from './routes/_auth.tasks.planned'
 import { Route as AuthTasksMyDayImport } from './routes/_auth.tasks.my-day'
 import { Route as AuthTasksImportantImport } from './routes/_auth.tasks.important'
@@ -53,9 +55,19 @@ const StandaloneSettingsRoute = StandaloneSettingsImport.update({
   getParentRoute: () => StandaloneRoute,
 } as any)
 
+const StandaloneSearchRoute = StandaloneSearchImport.update({
+  path: '/search',
+  getParentRoute: () => StandaloneRoute,
+} as any)
+
 const StandaloneLogsRoute = StandaloneLogsImport.update({
   path: '/logs',
   getParentRoute: () => StandaloneRoute,
+} as any)
+
+const StandaloneSearchTaskIdRoute = StandaloneSearchTaskIdImport.update({
+  path: '/$taskId',
+  getParentRoute: () => StandaloneSearchRoute,
 } as any)
 
 const AuthTasksPlannedRoute = AuthTasksPlannedImport.update({
@@ -130,6 +142,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StandaloneLogsImport
       parentRoute: typeof StandaloneImport
     }
+    '/_standalone/search': {
+      id: '/_standalone/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof StandaloneSearchImport
+      parentRoute: typeof StandaloneImport
+    }
     '/_standalone/settings': {
       id: '/_standalone/settings'
       path: '/settings'
@@ -171,6 +190,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/tasks/planned'
       preLoaderRoute: typeof AuthTasksPlannedImport
       parentRoute: typeof AuthImport
+    }
+    '/_standalone/search/$taskId': {
+      id: '/_standalone/search/$taskId'
+      path: '/$taskId'
+      fullPath: '/search/$taskId'
+      preLoaderRoute: typeof StandaloneSearchTaskIdImport
+      parentRoute: typeof StandaloneSearchImport
     }
     '/_auth/tasks/all/$taskId': {
       id: '/_auth/tasks/all/$taskId'
@@ -223,6 +249,9 @@ export const routeTree = rootRoute.addChildren({
   }),
   StandaloneRoute: StandaloneRoute.addChildren({
     StandaloneLogsRoute,
+    StandaloneSearchRoute: StandaloneSearchRoute.addChildren({
+      StandaloneSearchTaskIdRoute,
+    }),
     StandaloneSettingsRoute,
   }),
   LoginRoute,
@@ -255,6 +284,7 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_standalone.tsx",
       "children": [
         "/_standalone/logs",
+        "/_standalone/search",
         "/_standalone/settings"
       ]
     },
@@ -264,6 +294,13 @@ export const routeTree = rootRoute.addChildren({
     "/_standalone/logs": {
       "filePath": "_standalone.logs.tsx",
       "parent": "/_standalone"
+    },
+    "/_standalone/search": {
+      "filePath": "_standalone.search.tsx",
+      "parent": "/_standalone",
+      "children": [
+        "/_standalone/search/$taskId"
+      ]
     },
     "/_standalone/settings": {
       "filePath": "_standalone.settings.tsx",
@@ -300,6 +337,10 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/_auth/tasks/planned/$taskId"
       ]
+    },
+    "/_standalone/search/$taskId": {
+      "filePath": "_standalone.search.$taskId.tsx",
+      "parent": "/_standalone/search"
     },
     "/_auth/tasks/all/$taskId": {
       "filePath": "_auth.tasks.all.$taskId.tsx",

@@ -3,13 +3,13 @@ import {createFileRoute, redirect, useRouter} from "@tanstack/react-router"
 import clsx from "clsx"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
-import {LogsSchema} from "~/utils/schema"
+import {FromSchema} from "~/utils/schema"
 import {Divider, StandAlonePage} from "~/components"
 import {format24Hour} from "~/utils/date"
 import {logger} from "~/utils/logger"
 
 export const Route = createFileRoute("/_standalone/logs")({
-  validateSearch: LogsSchema,
+  validateSearch: FromSchema,
   loaderDeps: ({search: {from}}) => ({from}),
   component: Logs,
   loader: async ({deps: {from}}) => {

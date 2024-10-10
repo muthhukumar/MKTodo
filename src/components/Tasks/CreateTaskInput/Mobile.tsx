@@ -4,7 +4,7 @@ import {FaPlus} from "react-icons/fa6"
 import {TaskTypes} from "~/@types"
 import {useOutsideAlerter} from "~/utils/hooks"
 import {BsFillFileArrowUpFill} from "react-icons/bs"
-import FeatureFlag from "../FeatureFlag"
+import {FeatureFlag} from "~/components"
 
 interface CreateTaskInputProps {
   task: string
@@ -12,6 +12,7 @@ interface CreateTaskInputProps {
   setTaskType: (value: TaskTypes) => void
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
   taskType: TaskTypes
+  // TODO: Implement this or remove this dependency
   tags: Array<string>
 }
 

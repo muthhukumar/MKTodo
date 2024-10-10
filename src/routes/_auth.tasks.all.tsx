@@ -4,15 +4,12 @@ import {Tasks} from "~/components"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
 import {getCancelTokenSource} from "~/service/axios"
-import {SearchQuerySchema} from "~/utils/schema"
 import {taskQueue} from "~/utils/task-queue"
 // import {TasksStore} from "~/utils/persistent-storage"
 import {uuid} from "~/utils"
 
 export const Route = createFileRoute("/_auth/tasks/all")({
-  validateSearch: SearchQuerySchema,
-  loaderDeps: ({search: {query, random}}) => ({query, random}),
-  loader: async ({deps: {query, random}}) => {
+  loader: async () => {
     // const offlineTasks = await TasksStore.get()
 
     //if (Array.isArray(offlineTasks) && offlineTasks.length > 0)
@@ -28,7 +25,7 @@ export const Route = createFileRoute("/_auth/tasks/all")({
       id: uuid(),
       source: "online" as const,
       tasks: await taskQueue.enqueueUnique({
-        task: () => API.getTasks(null, query, random, cancelToken),
+        task: () => API.getTasks(null, "", false, cancelToken),
         id: "fetchAllTasks",
         cancelTokenSource: cancelToken,
       }),

@@ -2,9 +2,10 @@ import {z} from "zod"
 
 export const SearchQuerySchema = z.object({
   query: z.string().catch(""),
-  random: z.boolean().catch(false),
 })
 
-export const LogsSchema = z.object({
+export const FromSchema = z.object({
   from: z.string().catch(""),
 })
+
+export const SearchPageSchema = FromSchema.merge(SearchQuerySchema)

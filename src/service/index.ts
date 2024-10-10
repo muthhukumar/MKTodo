@@ -9,7 +9,7 @@ import {SettingsStore, TasksStore} from "~/utils/persistent-storage"
 async function getTasks(
   filter: "my-day" | "important" | null,
   query?: string,
-  random?: boolean,
+  random?: boolean, // TODO: remove random option backend
   cancelTokenSource?: CancelTokenSource,
 ) {
   try {
