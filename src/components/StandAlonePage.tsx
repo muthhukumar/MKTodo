@@ -9,6 +9,14 @@ interface StandAlonePageProps {
   children: React.ReactNode
 }
 
+function HeaderWrapper({children}: {children: React.ReactNode}) {
+  return (
+    <div className="border-border border-b p-5 bg-background sticky top-0 left-0 right-0 flex items-center gap-3">
+      {children}
+    </div>
+  )
+}
+
 function StandAlonePage(props: StandAlonePageProps) {
   const {title, children, goBackTo, header} = props
 
@@ -17,17 +25,19 @@ function StandAlonePage(props: StandAlonePageProps) {
       {header ? (
         header
       ) : (
-        <div className="border-border border-b p-5 bg-background sticky top-0 left-0 right-0 flex items-center gap-3">
+        <HeaderWrapper>
           <Link to={goBackTo}>
             <IoArrowBackSharp />
           </Link>
           <h3 className="ml-3 font-bold text-xl">{title}</h3>
-        </div>
+        </HeaderWrapper>
       )}
       <div className="p-6">{children}</div>
     </div>
   )
 }
+
+StandAlonePage.HeaderWrapper = HeaderWrapper
 
 StandAlonePage.GoBack = function GoBack({goBackTo}: {goBackTo: string}) {
   return (

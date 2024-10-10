@@ -44,14 +44,14 @@ function Search() {
     <StandAlonePage
       title="Search"
       header={
-        <div className="p-5 flex items-center">
+        <StandAlonePage.HeaderWrapper>
           <StandAlonePage.GoBack goBackTo={from} />
           <input
             autoFocus
             placeholder="search"
             className="outline-none text-white bg-inherit ml-5 text-lg w-full"
           />
-        </div>
+        </StandAlonePage.HeaderWrapper>
       }
     >
       <div className="flex flex-col gap-3">
