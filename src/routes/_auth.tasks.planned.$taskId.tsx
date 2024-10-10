@@ -22,8 +22,7 @@ function TaskDetail() {
 
   const search = useSearch({from: "/_auth/tasks/planned/$taskId"})
 
-  const goBack = () =>
-    navigate({to: "/tasks/planned", search: {filter: search.filter, query: search.query}})
+  const goBack = () => navigate({to: "/tasks/planned", search: {filter: search.filter}})
 
   return <Drawer {...task} onDismiss={goBack} />
 }

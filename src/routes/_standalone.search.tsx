@@ -1,23 +1,24 @@
-import {Link, createFileRoute, redirect} from "@tanstack/react-router"
-import {StandAlonePage, Tasks} from "~/components"
+import * as React from "react"
+import {Outlet, createFileRoute, redirect, useNavigate} from "@tanstack/react-router"
+import {StandAlonePage, Task} from "~/components"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
 import {getCancelTokenSource} from "~/service/axios"
-//import {FromSchema} from "~/utils/schema"
+import {useDelay} from "~/utils/hooks"
+import {SearchPageSchema} from "~/utils/schema"
 import {taskQueue} from "~/utils/task-queue"
 
 export const Route = createFileRoute("/_standalone/search")({
   component: Search,
-  //validateSearch: FromSchema,
-  //loaderDeps: ({search: {from}}) => ({from}),
-  //loader: async ({deps: {from}}) => {
-  loader: async () => {
+  validateSearch: SearchPageSchema,
+  loaderDeps: ({search: {query, from}}) => ({query, from}),
+  loader: async ({deps: {query, from}}) => {
     const cancelToken = getCancelTokenSource()
 
     return {
-      from: "/settings",
+      from: from || "/tasks/all",
       tasks: await taskQueue.enqueueUnique({
-        task: () => API.getTasks(null, "", false, cancelToken),
+        task: () => API.getTasks(null, query, false, cancelToken),
         id: "fetchAllTasks",
         cancelTokenSource: cancelToken,
       }),
@@ -39,32 +40,52 @@ export const Route = createFileRoute("/_standalone/search")({
 
 function Search() {
   const {from, tasks} = Route.useLoaderData()
+  const navigate = useNavigate({from: location.pathname})
+
+  const [search, cancel] = useDelay((query: string) => {
+    navigate({search: {query}})
+  }, 1200)
+
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  function onSubmit(event: React.FormEvent) {
+    event.preventDefault()
+
+    if (inputRef.current) {
+      cancel()
+      navigate({search: {query: inputRef.current.value}})
+    }
+  }
 
   return (
-    <StandAlonePage
-      title="Search"
-      header={
-        <StandAlonePage.HeaderWrapper>
-          <StandAlonePage.GoBack goBackTo={from} />
-          <input
-            autoFocus
-            placeholder="search"
-            className="outline-none text-white bg-inherit ml-5 text-lg w-full"
-          />
-        </StandAlonePage.HeaderWrapper>
-      }
-    >
-      <div className="flex flex-col gap-3">
-        {tasks.map(t => {
-          return (
-            <Link to={`/tasks/all/${t.id}`}>
-              <p key={t.id} className="border border-border rounded-md px-3 py-1">
-                {t.name}
-              </p>
-            </Link>
-          )
-        })}
-      </div>
-    </StandAlonePage>
+    <>
+      <Outlet />
+      <StandAlonePage
+        title="Search"
+        header={
+          <StandAlonePage.HeaderWrapper>
+            <StandAlonePage.GoBack goBackTo={from} />
+            <form onSubmit={onSubmit}>
+              <input
+                ref={inputRef}
+                autoFocus
+                placeholder="search"
+                className="outline-none text-white bg-inherit ml-5 text-lg w-full"
+                onChange={e => {
+                  search(e.target.value)
+                }}
+              />
+            </form>
+          </StandAlonePage.HeaderWrapper>
+        }
+      >
+        <div className="flex flex-col gap-1">
+          {tasks.map(t => {
+            return <Task onToggle={() => undefined} {...t} key={t.id} type={"search"} />
+          })}
+        </div>
+        <div className="min-h-[20vh]" />
+      </StandAlonePage>
+    </>
   )
 }

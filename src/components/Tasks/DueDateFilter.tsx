@@ -19,7 +19,7 @@ function DueDateFilters() {
       {filters.map(f => (
         <Link
           to="/tasks/planned"
-          search={{filter: f.filter, query: ""}}
+          search={{filter: f.filter}}
           key={f.id}
           className={clsx(
             "inline-block w-fit hover:bg-hover-background rounded-md px-3 py-2 text-sm no-break",

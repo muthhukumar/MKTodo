@@ -1,9 +1,10 @@
-import {TTask} from "~/@types"
+import {TTask, TaskTypes} from "~/@types"
 import {DesktopOnly, FeatureFlag, MobileOnly, SearchBar, Select} from ".."
 import {TagFilter, DueDateFilter} from "."
 import {Link} from "@tanstack/react-router"
 import {IoSearchOutline} from "react-icons/io5"
 import {TbSettings} from "react-icons/tb"
+import {invariant} from "~/utils/invariants"
 
 interface TaskHeaderProps {
   title: string
@@ -14,6 +15,7 @@ interface TaskHeaderProps {
   setTagFilters: React.Dispatch<React.SetStateAction<string[]>>
   tagFilters: string[]
   showFilters?: boolean
+  taskType: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
 }
 
 function TaskHeader(props: TaskHeaderProps) {
@@ -26,7 +28,9 @@ function TaskHeader(props: TaskHeaderProps) {
     setTagFilters,
     tagFilters,
     showFilters,
+    taskType,
   } = props
+  invariant((taskType as string) !== "search", "Task type cannot be search. Got ", taskType)
 
   return (
     <div className="sticky top-0 py-1 left-0 right-0 bg-background z-10">
@@ -71,7 +75,8 @@ function TaskHeader(props: TaskHeaderProps) {
             <Link
               to="/search"
               search={{
-                from: "/tasks/all",
+                from: `/tasks/${taskType}`,
+                query: "",
               }}
             >
               <IoSearchOutline size={20} />

@@ -123,6 +123,7 @@ export default function Tasks(props: TasksProps) {
         <div className="px-3">
           {showHeader && (
             <Header
+              taskType={props.type as Exclude<TaskTypes, "planned:tomorrow" | "planned:today">}
               showFilters={showFilters}
               tagFilters={tagFilters}
               setTagFilters={setTagFilters}
