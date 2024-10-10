@@ -1,4 +1,3 @@
-// TODO: focus on search on mount
 import {Link, createFileRoute, redirect} from "@tanstack/react-router"
 import {StandAlonePage, Tasks} from "~/components"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
@@ -47,7 +46,11 @@ function Search() {
       header={
         <div className="p-5 flex items-center">
           <StandAlonePage.GoBack goBackTo={from} />
-          <input placeholder="search" className="text-white bg-inherit ml-5 text-lg w-full" />
+          <input
+            autoFocus
+            placeholder="search"
+            className="outline-none text-white bg-inherit ml-5 text-lg w-full"
+          />
         </div>
       }
     >
@@ -65,4 +68,3 @@ function Search() {
     </StandAlonePage>
   )
 }
-

@@ -3,25 +3,17 @@ import * as React from "react"
 import {TTask, TaskTypes} from "~/@types"
 import Task from "./Task"
 import clsx from "clsx"
-import {Link, useRouter, useSearch} from "@tanstack/react-router"
+import {useRouter} from "@tanstack/react-router"
 import {API} from "~/service"
 import {createTask, separateTasks} from "~/utils/tasks"
-import MobileOnly from "../MobileOnly"
 import CreateTaskInput from "./CreateTaskInput"
-import SearchBar from "../SearchBar"
-import DesktopOnly from "../DesktopOnly"
-import MobileCreateTaskInput from "./MobileCreateTaskInput"
-import {FeatureFlag, Loader, Select} from ".."
+import {Loader} from ".."
 import {useAudioPlayer, useDeviceCallback, useOnKeyPress} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
 import {options} from "../Select/data"
 import {getMetaTags, removeDuplicates} from "./Drawer"
-import {IoArrowBack, IoSearchOutline} from "react-icons/io5"
-import {MdFilterList} from "react-icons/md"
-import {taskQueue} from "~/utils/task-queue"
-import {TbSettings} from "react-icons/tb"
-import {logger} from "~/utils/logger"
+import {Header} from "."
 
 interface TasksProps {
   showFilters?: boolean
@@ -37,49 +29,6 @@ const extractTagsFromTasks = (tasks: Array<TTask>) => {
   return removeDuplicates(tasks.map(t => getMetaTags(t.metadata)).flat(), options)
 }
 
-function TagFilter({
-  tags,
-  selectedFilters,
-  setSelectedFilters,
-}: {
-  tags: Array<string>
-  selectedFilters: Array<string>
-  setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>
-}) {
-  const [showFilters, setShowFilters] = React.useState(false)
-
-  return (
-    <>
-      <button onClick={() => setShowFilters(true)}>
-        <MdFilterList size={20} />
-      </button>
-      {showFilters && (
-        <div className="py-1 bg-background fixed top-2 w-[96%] mx-auto left-0 right-0">
-          <div className="focus-within:ring-2 focus-within:ring-blue-500 px-4 md:px-1 flex items-center gap-3 border border-zinc-700 rounded-md bg-item-background">
-            <button
-              onClick={() => {
-                setShowFilters(false)
-                setSelectedFilters([])
-              }}
-            >
-              <IoArrowBack size={20} />
-            </button>
-            <div className="w-full">
-              <Select
-                closeOnSelect
-                showOptions
-                data={tags}
-                selectedOptions={selectedFilters}
-                setSelectedOptions={setSelectedFilters}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  )
-}
-
 export default function Tasks(props: TasksProps) {
   const {showFilters, title, source, showHeader = true, showTaskCreate = true} = props
   const [tasks, setTasks] = React.useState(props.tasks)
@@ -89,8 +38,6 @@ export default function Tasks(props: TasksProps) {
   >([])
   const [taskType, setTaskType] = React.useState(props.type)
   const [tagFilters, setTagFilters] = React.useState<Array<string>>([])
-
-  const [task, setTask] = React.useState("")
 
   const router = useRouter()
 
@@ -154,40 +101,6 @@ export default function Tasks(props: TasksProps) {
     }
   }
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-
-    if (!task) return
-
-    let currentTask = task
-
-    setTask("")
-
-    setNewTasks(state => [...state, {name: currentTask, status: "started"}])
-
-    try {
-      await taskQueue.enqueue(API.createTask.bind(null, createTask(taskType, currentTask)))
-
-      setNewTasks(state => state.filter(t => t.name !== currentTask))
-
-      router.invalidate()
-    } catch (error) {
-      logger.error("Create Task: ", JSON.stringify(error))
-
-      handleError({error, defaultMessage: "Creating Task failed."})
-
-      setNewTasks(state => {
-        const clone = [...state]
-
-        const idx = clone.findIndex(t => t.name === currentTask)
-
-        clone[idx] = {...clone[idx], status: "failed"}
-
-        return clone
-      })
-    }
-  }
-
   const divRef = React.useRef<HTMLDivElement>(null)
 
   const {completedTasks, pendingTasks} = React.useMemo(() => {
@@ -210,72 +123,18 @@ export default function Tasks(props: TasksProps) {
     <div className="bg-background w-full">
       <div className="w-full relative">
         <div className="px-3">
-          <div className="sticky top-0 py-1 left-0 right-0 bg-background z-10">
-            {showHeader && (
-              <div className="flex items-center justify-between py-2 relative">
-                <h1 className="flex items-center gap-2 text-2xl font-bold">
-                  <span>
-                    {title ? title : "Tasks"}
-                    <span className="font-normal text-xs ml-2">{source ? source : null}</span>
-                  </span>
-                  <FeatureFlag feature="TasksCountInTitle">
-                    <FeatureFlag.Feature>
-                      <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
-                        {pendingTasks.length} / {tasks.length}
-                      </span>
-                    </FeatureFlag.Feature>
-                  </FeatureFlag>
-                </h1>
-                <div className="flex items-center gap-3">
-                  <FeatureFlag feature="TagFilter">
-                    <FeatureFlag.Feature>
-                      <MobileOnly>
-                        <TagFilter
-                          tags={tagFilterOptions}
-                          setSelectedFilters={setTagFilters}
-                          selectedFilters={tagFilters}
-                        />
-                      </MobileOnly>
-                    </FeatureFlag.Feature>
-                  </FeatureFlag>
-                  <FeatureFlag feature="TagFilter">
-                    <FeatureFlag.Feature>
-                      <DesktopOnly>
-                        <Select
-                          data={tagFilterOptions}
-                          setSelectedOptions={setTagFilters}
-                          selectedOptions={tagFilters}
-                        />
-                      </DesktopOnly>
-                    </FeatureFlag.Feature>
-                  </FeatureFlag>
-                  <MobileOnly>
-                    <Link
-                      to="/search"
-                      search={{
-                        from: "/tasks/all",
-                      }}
-                    >
-                      <IoSearchOutline size={20} />
-                    </Link>
-                    {/*<MobileSearchBar />
-                     */}
-                  </MobileOnly>
-                  <Link to="/settings">
-                    <TbSettings size={21} />
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            <DesktopOnly>
-              <div className="hidden my-1">
-                <SearchBar />
-              </div>
-            </DesktopOnly>
-            {showFilters && <DueDateFilters />}
-          </div>
-
+          {showHeader && (
+            <Header
+              showFilters={showFilters}
+              tagFilters={tagFilters}
+              setTagFilters={setTagFilters}
+              tasks={tasks}
+              pendingTasks={pendingTasks}
+              tagFilterOptions={tagFilterOptions}
+              title={title || "Tasks"}
+              source={source}
+            />
+          )}
           <div className={clsx("min-h-screen my-1 flex flex-col gap-[2px]")} ref={divRef}>
             {newTasks.map(t => (
               <div
@@ -336,67 +195,15 @@ export default function Tasks(props: TasksProps) {
 
           <div className="min-h-[20vh]" />
           {showTaskCreate && (
-            <>
-              <DesktopOnly>
-                <div className="p-3 bg-background sticky w-full bottom-4 md:bottom-0 left-0 right-0">
-                  <CreateTaskInput
-                    ref={inputRef}
-                    taskType={taskType}
-                    setTaskType={setTaskType}
-                    task={task}
-                    setTask={value => setTask(value)}
-                    onSubmit={onSubmit}
-                  />
-                </div>
-              </DesktopOnly>
-
-              <MobileOnly>
-                <MobileCreateTaskInput
-                  tags={tagFilterOptions}
-                  taskType={taskType}
-                  setTaskType={setTaskType}
-                  task={task}
-                  setTask={value => setTask(value)}
-                  onSubmit={onSubmit}
-                />
-              </MobileOnly>
-            </>
+            <CreateTaskInput
+              tagFilterOptions={tagFilterOptions}
+              taskType={props.type}
+              setTaskType={setTaskType}
+              setNewTasks={setNewTasks}
+            />
           )}
         </div>
       </div>
-    </div>
-  )
-}
-
-const filters = [
-  {id: 1, filter: "all-planned", name: "All Planned"},
-  {id: 2, filter: "overdue", name: "Overdue"},
-  {id: 3, filter: "today", name: "Today"},
-  {id: 4, filter: "tomorrow", name: "Tomorrow"},
-  {id: 5, filter: "this-week", name: "This Week"},
-  {id: 6, filter: "later", name: "Later"},
-] as const
-
-function DueDateFilters() {
-  const {filter} = useSearch({from: "/_auth/tasks/planned"})
-
-  return (
-    <div className="flex items-center gap-2 overflow-auto no-scrollbar">
-      {filters.map(f => (
-        <Link
-          to="/tasks/planned"
-          search={{filter: f.filter, query: ""}}
-          key={f.id}
-          className={clsx(
-            "inline-block w-fit hover:bg-hover-background rounded-md px-3 py-2 text-sm no-break",
-            {
-              "bg-hover-background": filter === f.filter,
-            },
-          )}
-        >
-          <span>{f.name}</span>
-        </Link>
-      ))}
     </div>
   )
 }

@@ -4,7 +4,7 @@ import {TaskTypes} from "~/@types"
 import {useDeviceCallback, useOnKeyDown} from "~/utils/hooks"
 import {selectNext, taskTypes} from "~/utils/tasks"
 import {isActiveElement} from "~/utils/ui"
-import FeatureFlag from "../FeatureFlag"
+import {FeatureFlag} from "~/components"
 
 interface CreateTaskInputProps {
   task: string
