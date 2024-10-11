@@ -94,8 +94,6 @@ function AllTasks() {
     tasks,
   })
 
-  throw new Error("thwoinwg")
-
   tasks = taskType === "planned" ? filteredTasks : tasks
 
   return (
