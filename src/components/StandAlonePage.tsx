@@ -11,7 +11,7 @@ interface StandAlonePageProps {
 
 function HeaderWrapper({children}: {children: React.ReactNode}) {
   return (
-    <div className="z-10 border-border border-b p-5 bg-background sticky top-0 left-0 right-0 flex items-center gap-3">
+    <div className="z-10 border-border border-b px-6 py-3 bg-background sticky top-0 left-0 right-0 flex items-center gap-3">
       {children}
     </div>
   )
@@ -32,7 +32,7 @@ function StandAlonePage(props: StandAlonePageProps) {
           <h3 className="ml-3 font-bold text-xl">{title}</h3>
         </HeaderWrapper>
       )}
-      <div className="p-6">{children}</div>
+      <div className="p-3">{children}</div>
     </div>
   )
 }
