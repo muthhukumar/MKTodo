@@ -15,6 +15,7 @@ const allFeatures = [
   {id: "SyncingNotifier", title: "Show Syncing Notifier"},
   {id: "TaskStaleTag", title: "Show Stale Task Tag"},
   {id: "ShowCompletedTasks", title: "Show Completed Tasks"},
+  {id: "PreLoadTasks", title: "Pre load tasks"},
 ] as const
 
 export type Feature = (typeof allFeatures)[number]["id"]
@@ -95,6 +96,16 @@ export const useFeature = () => {
   }
 
   return context
+}
+
+export const useFeatureEnabled = (featureId: Feature) => {
+  const {features} = useFeature()
+
+  const feature = React.useMemo(() => features.find(f => f.id === featureId), [featureId, features])
+
+  if (!feature) return false
+
+  return feature.enable
 }
 
 function ensureValidFeatures(features: Array<FeatureSetting>) {
