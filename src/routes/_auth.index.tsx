@@ -5,10 +5,12 @@ export const Route = createFileRoute("/_auth/")({
   beforeLoad: ({context}) => {
     if (context.auth.isAuthenticated) {
       throw redirect({
-        to: "/tasks/all",
+        to: "/tasks/$taskType",
+        params: {
+          taskType: "all",
+        },
         search: {
-          random: false,
-          query: "",
+          filter: "none",
         },
       })
     }
