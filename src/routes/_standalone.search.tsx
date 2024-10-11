@@ -14,9 +14,12 @@ export const Route = createFileRoute("/_standalone/search")({
   loaderDeps: ({search: {query, from}}) => ({query, from}),
   loader: async ({deps: {query, from}}) => {
     const cancelToken = getCancelTokenSource()
+    from = from || "/tasks/all"
+
+    if (!query) return {tasks: [], from}
 
     return {
-      from: from || "/tasks/all",
+      from,
       tasks: await taskQueue.enqueueUnique({
         task: () => API.getTasks(null, query, false, cancelToken),
         id: "fetchAllTasks",

@@ -11,15 +11,17 @@ export default function ErrorMessage(props: ErrorComponentProps) {
   const {logout} = useAuth()
 
   React.useEffect(() => {
-    logger.error(
-      `
+    if (props.error) {
+      logger.error(
+        `
 ErrorMessage: \n
-  [name: ${props.error.name}],
-  [message: ${props.error.message}],
-  [stack: ${props.error.stack}],
-  [info: ${props.info?.componentStack}],
-      `,
-    )
+[name: ${props.error.name}],
+[message: ${props.error.message}],
+[stack: ${props.error.stack}],
+[info: ${props.info?.componentStack}],
+`,
+      )
+    }
   }, [props])
 
   return (
