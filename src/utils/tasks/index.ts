@@ -213,3 +213,22 @@ export function extractTags(value: string): {modifiedStr: string; tags: Array<st
     tags: strs.map(s => s.substring(1, s.length)),
   }
 }
+
+export function getTaskPageMetaData(taskType: string): {
+  title: string
+  showFilters?: boolean
+  filter: "my-day" | "important" | null
+  type: TaskTypes
+} {
+  switch (taskType) {
+    case "my-day":
+      return {title: "My Day", type: "my-day", filter: "my-day"}
+    case "important":
+      return {title: "Important", type: "important", filter: "important"}
+    case "planned":
+      return {title: "Planned", type: "planned", showFilters: true, filter: null}
+    case "all":
+    default:
+      return {title: "Tasks", type: "all", filter: null}
+  }
+}

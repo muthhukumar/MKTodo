@@ -17,6 +17,7 @@ export type DueDateFilters =
   | "tomorrow"
   | "this-week"
   | "later"
+  | "none"
 
 // TODO: Change the all to default
 export type TaskTypes =

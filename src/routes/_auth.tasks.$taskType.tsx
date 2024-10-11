@@ -7,9 +7,20 @@ import {getCancelTokenSource} from "~/service/axios"
 import {taskQueue} from "~/utils/task-queue"
 // import {TasksStore} from "~/utils/persistent-storage"
 import {uuid} from "~/utils"
+import {getTaskPageMetaData} from "~/utils/tasks"
+import {useAsyncFilteredTasks} from "~/utils/tasks/hooks"
+import {z} from "zod"
 
-export const Route = createFileRoute("/_auth/tasks/all")({
-  loader: async () => {
+const plannedFilter = z.object({
+  filter: z
+    .enum(["all-planned", "overdue", "today", "tomorrow", "this-week", "later", "none"])
+    .catch("all-planned")
+    .default("all-planned"),
+})
+
+export const Route = createFileRoute("/_auth/tasks/$taskType")({
+  validateSearch: plannedFilter,
+  loader: async ({params: {taskType}}) => {
     // const offlineTasks = await TasksStore.get()
 
     //if (Array.isArray(offlineTasks) && offlineTasks.length > 0)
@@ -20,12 +31,13 @@ export const Route = createFileRoute("/_auth/tasks/all")({
     //  }
 
     const cancelToken = getCancelTokenSource()
+    const metadata = getTaskPageMetaData(taskType)
 
     return {
       id: uuid(),
       source: "online" as const,
       tasks: await taskQueue.enqueueUnique({
-        task: () => API.getTasks(null, "", false, cancelToken),
+        task: () => API.getTasks(metadata.filter, "", false, cancelToken),
         id: "fetchAllTasks",
         cancelTokenSource: cancelToken,
       }),
@@ -47,7 +59,8 @@ export const Route = createFileRoute("/_auth/tasks/all")({
 })
 
 function AllTasks() {
-  const loaderData = Route.useLoaderData()
+  let {tasks} = Route.useLoaderData()
+  const {taskType} = Route.useParams()
   // const [tasks, setTasks] = React.useState(loaderData.tasks)
   // const [source, setSource] = React.useState(loaderData.source)
 
@@ -72,10 +85,21 @@ function AllTasks() {
   //  }
   //}, [source, loaderData.id])
 
+  const props = getTaskPageMetaData(taskType)
+  const {filter} = Route.useSearch()
+
+  const filteredTasks = useAsyncFilteredTasks({
+    query: "",
+    dueDateFilter: filter,
+    tasks,
+  })
+
+  tasks = taskType === "planned" ? filteredTasks : tasks
+
   return (
     <>
       <Outlet />
-      <Tasks type="all" tasks={loaderData.tasks} source={"online"} />
+      <Tasks {...props} tasks={tasks} source={"online"} />
     </>
   )
 }

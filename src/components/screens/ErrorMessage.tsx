@@ -1,12 +1,26 @@
+import * as React from "react"
 import {ErrorComponentProps} from "@tanstack/react-router"
 import clsx from "clsx"
 import {useAuth} from "~/auth-context"
 import {usePing} from "~/utils/hooks"
 import ErrorBoundary from "./ErrorBoundary"
+import {logger} from "~/utils/logger"
 
 export default function ErrorMessage(props: ErrorComponentProps) {
   const online = usePing()
   const {logout} = useAuth()
+
+  React.useEffect(() => {
+    logger.error(
+      `
+ErrorMessage: \n
+  [name: ${props.error.name}],
+  [message: ${props.error.message}],
+  [stack: ${props.error.stack}],
+  [info: ${props.info?.componentStack}],
+      `,
+    )
+  }, [props])
 
   return (
     <ErrorBoundary>

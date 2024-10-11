@@ -3,7 +3,7 @@ import Drawer from "~/components/Tasks/Drawer"
 import {ErrorMessage} from "~/components/screens"
 import {API} from "~/service"
 
-export const Route = createFileRoute("/_auth/tasks/my-day/$taskId")({
+export const Route = createFileRoute("/_auth/tasks/$taskType/$taskId")({
   loader: async ({params: {taskId}}) => {
     return {
       ...(await API.getTask(Number(taskId))),
@@ -15,10 +15,12 @@ export const Route = createFileRoute("/_auth/tasks/my-day/$taskId")({
 
 function TaskDetail() {
   const task = Route.useLoaderData()
+  const {taskType} = Route.useParams()
 
-  const navigate = useNavigate({from: "/tasks/my-day/$taskId"})
+  const navigate = useNavigate({from: "/tasks/$taskType/$taskId"})
 
-  const goBack = () => navigate({to: "/tasks/my-day", search: {query: "", random: false}})
+  const goBack = () =>
+    navigate({to: "/tasks/$taskType", params: {taskType}, search: {filter: "none"}})
 
   return <Drawer {...task} onDismiss={goBack} />
 }
