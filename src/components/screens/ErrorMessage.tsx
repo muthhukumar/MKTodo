@@ -1,14 +1,13 @@
 import * as React from "react"
 import {ErrorComponentProps} from "@tanstack/react-router"
 import clsx from "clsx"
-import {useAuth} from "~/auth-context"
 import {usePing} from "~/utils/hooks"
 import ErrorBoundary from "./ErrorBoundary"
 import {logger} from "~/utils/logger"
+import Logout from "../Logout"
 
 export default function ErrorMessage(props: ErrorComponentProps) {
   const online = usePing()
-  const {logout} = useAuth()
 
   React.useEffect(() => {
     if (props.error) {
@@ -62,23 +61,14 @@ ErrorMessage: \n
         </div>
         <div className="flex items-center gap-3">
           <button
-            className="border border-blue-300 text-blue-300 rounded-md px-3 py-1 mt-8"
-            onClick={props.reset}
-          >
-            Retry
-          </button>
-          <button
-            className="border border-red-300 text-red-300 rounded-md px-3 py-1 mt-8"
-            onClick={logout}
-          >
-            Logout
-          </button>
-          <button
             className="border border-zinc-600 rounded-md px-3 py-1 mt-8"
             onClick={() => window.location.reload()}
           >
             Reload
           </button>
+          <div className="mt-8">
+            <Logout />
+          </div>
         </div>
       </div>
     </ErrorBoundary>
