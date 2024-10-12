@@ -2,7 +2,7 @@ import * as React from "react"
 import * as Dialog from "@radix-ui/react-dialog"
 
 import clsx from "clsx"
-import {MdOutlineArrowForwardIos, MdOutlineDeleteForever, MdSunny, MdClose} from "react-icons/md"
+import {MdOutlineDeleteForever, MdSunny, MdClose} from "react-icons/md"
 
 import {TTask} from "~/@types"
 import {timeAgo, isDateSameAsToday} from "~/utils/date"
@@ -11,7 +11,14 @@ import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
-import {AutoResizeTextarea, CopyToClipboardButton, FeatureFlag, Select} from ".."
+import {
+  AutoResizeTextarea,
+  CopyToClipboardButton,
+  FeatureFlag,
+  GoBack,
+  MobileOnly,
+  Select,
+} from ".."
 import {extractLinks} from "~/utils/url"
 import {useAudioPlayer} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
@@ -151,9 +158,6 @@ export default function Drawer({
 
       <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <button onClick={onDismiss}>
-            <MdOutlineArrowForwardIos size={18} />
-          </button>
           <FeatureFlag feature="CopyTaskTextInDrawer">
             <FeatureFlag.Feature>
               <CopyToClipboardButton content={name} />
@@ -176,6 +180,9 @@ export default function Drawer({
         open={showDeleteModal}
         onDismiss={() => setShowDeleteModal(false)}
       />
+      <MobileOnly>
+        <GoBack />
+      </MobileOnly>
     </div>
   )
 }

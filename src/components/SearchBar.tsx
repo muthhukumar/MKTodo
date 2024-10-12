@@ -7,7 +7,6 @@ export default function SearchBar() {
       className="py-1 flex focus-within:ring-2 focus-within:ring-blue-500 px-4 md:px-1 items-center gap-3 border border-zinc-700 rounded-md bg-item-background"
       to="/search"
       search={{
-        from: "/tasks/all", // TODO: fix this later. It should not send all here
         query: "",
       }}
     >

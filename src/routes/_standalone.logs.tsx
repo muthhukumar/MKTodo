@@ -3,7 +3,6 @@ import {createFileRoute, redirect, useNavigate, useRouter} from "@tanstack/react
 import clsx from "clsx"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
-import {FromSchema} from "~/utils/schema"
 import {Divider, StandAlonePage} from "~/components"
 import {format24Hour} from "~/utils/date"
 import {logger} from "~/utils/logger"
@@ -15,14 +14,11 @@ import toast from "react-hot-toast"
 import {invariant} from "~/utils/invariants"
 
 export const Route = createFileRoute("/_standalone/logs")({
-  validateSearch: FromSchema,
-  loaderDeps: ({search: {from}}) => ({from}),
   component: Logs,
-  loader: async ({deps: {from}}) => {
+  loader: async () => {
     return {
       logs: await API.getLogs(),
       queuedLogs: logger.queuedLogs(),
-      from: from || "/tasks/all",
     }
   },
   beforeLoad: ({context, location}) => {
@@ -40,7 +36,7 @@ export const Route = createFileRoute("/_standalone/logs")({
 })
 
 function Logs() {
-  const {logs, from, queuedLogs} = Route.useLoaderData()
+  const {logs, queuedLogs} = Route.useLoaderData()
   const [logLevel, setLogLevel] = React.useState("")
 
   const router = useRouter()
@@ -73,7 +69,7 @@ function Logs() {
   }
 
   return (
-    <StandAlonePage title="Logs" goBackTo={from}>
+    <StandAlonePage title="Logs">
       <p className="text-center my-2">
         Total <strong>{filteredLogs.length}</strong> logs found
       </p>

@@ -75,7 +75,6 @@ function TaskHeader(props: TaskHeaderProps) {
             <Link
               to="/search"
               search={{
-                from: `/tasks/${taskType}`,
                 query: "",
               }}
             >
@@ -83,10 +82,10 @@ function TaskHeader(props: TaskHeaderProps) {
             </Link>
             {/*<MobileSearchBar />
              */}
+            <Link to="/settings">
+              <TbSettings size={21} />
+            </Link>
           </MobileOnly>
-          <Link to="/settings">
-            <TbSettings size={21} />
-          </Link>
         </div>
       </div>
 

@@ -8,4 +8,4 @@ export const FromSchema = z.object({
   from: z.string().catch(""),
 })
 
-export const SearchPageSchema = FromSchema.merge(SearchQuerySchema)
+export const SearchPageSchema = SearchQuerySchema

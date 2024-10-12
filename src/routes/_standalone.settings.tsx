@@ -16,7 +16,7 @@ function Settings() {
   const {features, toggleFeature} = useFeature()
 
   return (
-    <StandAlonePage title="Settings" goBackTo="/tasks/all">
+    <StandAlonePage title="Settings">
       <div className="py-3">
         <div className="flex items-center justify-between">
           <strong>Server</strong>

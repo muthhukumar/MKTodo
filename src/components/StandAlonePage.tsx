@@ -1,11 +1,10 @@
 import * as React from "react"
-import {Link} from "@tanstack/react-router"
 import {IoArrowBackSharp} from "react-icons/io5"
+import {useGoBack} from "~/utils/navigation"
 
 interface StandAlonePageProps {
   title: string
   header?: React.ReactNode
-  goBackTo?: string
   children: React.ReactNode
 }
 
@@ -18,7 +17,8 @@ function HeaderWrapper({children}: {children: React.ReactNode}) {
 }
 
 function StandAlonePage(props: StandAlonePageProps) {
-  const {title, children, goBackTo, header} = props
+  const {title, children, header} = props
+  const goBack = useGoBack()
 
   return (
     <div className="pb-3">
@@ -26,9 +26,9 @@ function StandAlonePage(props: StandAlonePageProps) {
         header
       ) : (
         <HeaderWrapper>
-          <Link to={goBackTo} className="p-3 rounded-full">
+          <button className="p-3 rounded-full" onClick={goBack}>
             <IoArrowBackSharp size={20} />
-          </Link>
+          </button>
           <h3 className="ml-3 font-bold text-xl">{title}</h3>
         </HeaderWrapper>
       )}
@@ -39,11 +39,13 @@ function StandAlonePage(props: StandAlonePageProps) {
 
 StandAlonePage.HeaderWrapper = HeaderWrapper
 
-StandAlonePage.GoBack = function GoBack({goBackTo}: {goBackTo: string}) {
+StandAlonePage.GoBack = function GoBack() {
+  const goBack = useGoBack()
+
   return (
-    <Link to={goBackTo}>
+    <button onClick={goBack} className="p-3">
       <IoArrowBackSharp />
-    </Link>
+    </button>
   )
 }
 

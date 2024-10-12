@@ -11,15 +11,13 @@ import {taskQueue} from "~/utils/task-queue"
 export const Route = createFileRoute("/_standalone/search")({
   component: Search,
   validateSearch: SearchPageSchema,
-  loaderDeps: ({search: {query, from}}) => ({query, from}),
-  loader: async ({deps: {query, from}}) => {
+  loaderDeps: ({search: {query}}) => ({query}),
+  loader: async ({deps: {query}}) => {
     const cancelToken = getCancelTokenSource()
-    from = from || "/tasks/all"
 
-    if (!query) return {tasks: [], from}
+    if (!query) return {tasks: []}
 
     return {
-      from,
       tasks: await taskQueue.enqueueUnique({
         task: () => API.getTasks(null, query, false, cancelToken),
         id: "fetchAllTasks",
@@ -42,7 +40,7 @@ export const Route = createFileRoute("/_standalone/search")({
 })
 
 function Search() {
-  const {from, tasks} = Route.useLoaderData()
+  const {tasks} = Route.useLoaderData()
   const navigate = useNavigate({from: location.pathname})
 
   const [search, cancel] = useDelay((query: string) => {
@@ -67,7 +65,7 @@ function Search() {
         title="Search"
         header={
           <StandAlonePage.HeaderWrapper>
-            <StandAlonePage.GoBack goBackTo={from} />
+            <StandAlonePage.GoBack />
             <form onSubmit={onSubmit}>
               <input
                 ref={inputRef}
