@@ -118,7 +118,7 @@ export default function Drawer({
 
   return (
     <div
-      className="w-full border-l border-zinc-700 slide-in fixed right-0 h-screen md:max-w-xs z-50 min-w-72 max-h-[100vh] py-3 px-3 bg-background"
+      className="w-full border-l border-zinc-700 slide-in fixed right-0 h-screen md:max-w-xs z-[100] min-w-72 max-h-[100vh] py-3 px-3 bg-background"
       ref={containerRef}
     >
       <div className="flex items-center w-full mb-3">

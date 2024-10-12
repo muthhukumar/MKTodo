@@ -1,5 +1,5 @@
 import * as React from "react"
-import {createFileRoute, redirect, useRouter} from "@tanstack/react-router"
+import {createFileRoute, redirect, useNavigate, useRouter} from "@tanstack/react-router"
 import clsx from "clsx"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
@@ -7,6 +7,12 @@ import {FromSchema} from "~/utils/schema"
 import {Divider, StandAlonePage} from "~/components"
 import {format24Hour} from "~/utils/date"
 import {logger} from "~/utils/logger"
+import {AiOutlinePlus} from "react-icons/ai"
+import {Log} from "~/@types"
+import {handleError} from "~/utils/error"
+import {createTask} from "~/utils/tasks"
+import toast from "react-hot-toast"
+import {invariant} from "~/utils/invariants"
 
 export const Route = createFileRoute("/_standalone/logs")({
   validateSearch: FromSchema,
@@ -16,7 +22,7 @@ export const Route = createFileRoute("/_standalone/logs")({
     return {
       logs: await API.getLogs(),
       queuedLogs: logger.queuedLogs(),
-      from,
+      from: from || "/tasks/all",
     }
   },
   beforeLoad: ({context, location}) => {
@@ -38,12 +44,33 @@ function Logs() {
   const [logLevel, setLogLevel] = React.useState("")
 
   const router = useRouter()
+  const navigate = useNavigate()
 
   const filteredLogs = logLevel
     ? logs.filter(l => {
         return l.level.toLowerCase() === logLevel
       })
     : logs
+
+  async function createTaskFromLog(log: Log) {
+    try {
+      const response = await API.createTask(createTask("all", `${log.level}: ${log.log}`))
+
+      invariant(response.id >= 0, "Task id should not be empty. Got %s", response.id)
+
+      toast.success("Created Task from log successfully.")
+
+      setTimeout(() => {
+        navigate({
+          to: "/tasks/$taskType/$taskId",
+          params: {taskId: String(response.id), taskType: "all"},
+          search: {filter: "none"},
+        })
+      }, 500)
+    } catch (error) {
+      handleError({error, defaultMessage: "Failed to create task from log"})
+    }
+  }
 
   return (
     <StandAlonePage title="Logs" goBackTo={from}>
@@ -98,7 +125,10 @@ function Logs() {
         {filteredLogs.map(l => {
           const level = l.level.toLowerCase()
           return (
-            <p key={l.id}>
+            <div key={l.id}>
+              <button className="mr-1" onClick={() => createTaskFromLog(l)}>
+                <AiOutlinePlus />
+              </button>
               <span className="font-bold">[{format24Hour(l.created_at)}] </span>
               <span
                 className={clsx("font-bold", {
@@ -111,7 +141,7 @@ function Logs() {
                 [{level}]
               </span>{" "}
               <span className="text-zinc-300">{l.log}</span>
-            </p>
+            </div>
           )
         })}
       </div>

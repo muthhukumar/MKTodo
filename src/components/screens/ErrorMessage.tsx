@@ -10,7 +10,12 @@ export default function ErrorMessage(props: ErrorComponentProps) {
   const online = usePing()
 
   React.useEffect(() => {
-    if (props.error) {
+    if (
+      props.error?.name ||
+      props.error?.message ||
+      props.error?.stack ||
+      props.info?.componentStack
+    ) {
       logger.error(
         `
 ErrorMessage: \n

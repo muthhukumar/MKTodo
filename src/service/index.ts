@@ -52,7 +52,7 @@ async function createTask(task: NewTask | ImportantTask | MyDayTask | PlannedTas
   try {
     const response = await axios.post(`/api/v1/task/create`, task)
 
-    return response.data as {message: string}
+    return response.data as {message: string; id: number}
   } catch (error) {
     return Promise.reject(error)
   }
