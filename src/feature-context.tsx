@@ -16,6 +16,7 @@ const allFeatures = [
   {id: "TaskStaleTag", title: "Show Stale Task Tag"},
   {id: "ShowCompletedTasks", title: "Show Completed Tasks"},
   {id: "PreLoadTasks", title: "Pre load tasks"},
+  {id: "Font", title: "Change Font", defaultValue: "Inter"},
 ] as const
 
 export type Feature = (typeof allFeatures)[number]["id"]
@@ -24,19 +25,25 @@ export type FeatureSetting = {
   id: Feature
   enable: boolean
   title: string
+  value: string
 }
 
 const FeatureContext = React.createContext<{
   features: Array<FeatureSetting>
+  setFeatures: React.Dispatch<React.SetStateAction<FeatureSetting[]>>
   toggleFeature: (id: Feature) => void
+  setFeature: (props: {value: string; featureId: Feature}) => void
 }>({
   features: [],
   toggleFeature: () => undefined,
+  setFeatures: () => undefined,
+  setFeature: () => undefined,
 })
 
 export const defaultFeatureSettings = allFeatures.map(s => ({
   id: s.id,
   enable: true,
+  value: "defaultValue" in s ? s.defaultValue : "true",
   title: s.title as string,
 }))
 
@@ -64,6 +71,25 @@ export function FeatureContextProvider({children}: {children: React.ReactNode}) 
     }
   }, [features])
 
+  function setFeature({value, featureId}: {value: string; featureId: Feature}) {
+    setFeatures(state => {
+      const features = [...state]
+
+      const idx = features.findIndex(f => f.id === featureId)
+
+      if (idx === -1) return state
+
+      const updatedFeature = {
+        ...features[idx],
+        value,
+      }
+
+      features[idx] = updatedFeature
+
+      return features
+    })
+  }
+
   function toggleFeature(id: Feature) {
     setFeatures(state => {
       const features = [...state]
@@ -84,7 +110,9 @@ export function FeatureContextProvider({children}: {children: React.ReactNode}) 
   }
 
   return (
-    <FeatureContext.Provider value={{features, toggleFeature}}>{children}</FeatureContext.Provider>
+    <FeatureContext.Provider value={{features, toggleFeature, setFeatures, setFeature}}>
+      {children}
+    </FeatureContext.Provider>
   )
 }
 
@@ -98,14 +126,14 @@ export const useFeature = () => {
   return context
 }
 
-export const useFeatureEnabled = (featureId: Feature) => {
+export const useFeatureValue = (featureId: Feature): FeatureSetting | null => {
   const {features} = useFeature()
 
   const feature = React.useMemo(() => features.find(f => f.id === featureId), [featureId, features])
 
-  if (!feature) return false
+  if (!feature) return null
 
-  return feature.enable
+  return feature
 }
 
 function ensureValidFeatures(features: Array<FeatureSetting>) {

@@ -20,7 +20,7 @@ import {getMetaTags} from "./Drawer"
 import {getTagColor} from "../Select/data"
 import FeatureFlag from "../FeatureFlag"
 import {taskQueue} from "~/utils/task-queue"
-import {useFeatureEnabled} from "~/feature-context"
+import {useFeatureValue} from "~/feature-context"
 
 interface TaskProps extends TTask {
   type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today"> | "search"
@@ -70,7 +70,7 @@ function Task(props: TaskProps) {
 
   const metatags = React.useMemo(() => getMetaTags(props.metadata), [props.metadata])
 
-  const preLoadTasks = useFeatureEnabled("PreLoadTasks")
+  const preLoadTasks = useFeatureValue("PreLoadTasks")
 
   return (
     <div
@@ -94,8 +94,8 @@ function Task(props: TaskProps) {
       <Link
         to={to}
         params={{taskId: String(props.id)}}
-        preload={preLoadTasks ? "intent" : false}
-        preloadDelay={preLoadTasks ? 1000 : undefined}
+        preload={preLoadTasks?.enable ? "intent" : false}
+        preloadDelay={preLoadTasks?.enable ? 1000 : undefined}
         search={{
           from: from,
           query: "",

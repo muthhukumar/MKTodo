@@ -2,7 +2,7 @@ import {Link, createFileRoute} from "@tanstack/react-router"
 import clsx from "clsx"
 import {useAuth} from "~/auth-context"
 import {Divider, Logout, StandAlonePage} from "~/components"
-import {useFeature} from "~/feature-context"
+import {useFeature, useFeatureValue} from "~/feature-context"
 import {usePing} from "~/utils/hooks"
 
 export const Route = createFileRoute("/_standalone/settings")({
@@ -13,7 +13,13 @@ function Settings() {
   const auth = useAuth()
   const online = usePing()
 
-  const {features, toggleFeature} = useFeature()
+  const {features, toggleFeature, setFeature} = useFeature()
+  const fontFeature = useFeatureValue("Font")
+
+  function changeFont(value: string) {
+    document.documentElement.style.setProperty("--primary-font", value)
+    setFeature({featureId: "Font", value})
+  }
 
   return (
     <StandAlonePage title="Settings">
@@ -39,6 +45,27 @@ function Settings() {
           <div>
             <p>API Key</p>
             <p>{auth.creds?.apiKey}</p>
+          </div>
+        </div>
+      </div>
+      <Divider />
+      <div>
+        <strong>Appearance</strong>
+        <div className="flex flex-col mt-3">
+          <label>Change Font</label>
+          <div>
+            <select
+              className="mt-1"
+              value={fontFeature?.value ?? "Inter"}
+              onChange={e => changeFont(e.target.value)}
+              style={{
+                // @ts-ignore
+                "--primary-font": fontFeature?.value || "Inter",
+              }}
+            >
+              <option value="Inter">Open Sans</option>
+              <option value="OpenSans">Inter</option>
+            </select>
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@ import * as React from "react"
 import * as Dialog from "@radix-ui/react-dialog"
 
 import clsx from "clsx"
-import {MdOutlineDeleteForever, MdSunny, MdClose} from "react-icons/md"
+import {MdOutlineDeleteForever, MdSunny, MdClose, MdOutlineArrowForwardIos} from "react-icons/md"
 
 import {TTask} from "~/@types"
 import {timeAgo, isDateSameAsToday} from "~/utils/date"
@@ -25,6 +25,7 @@ import doneAudio from "~/assets/audio/ting.mp3"
 import {handleError} from "~/utils/error"
 import {options} from "../Select/data"
 import {taskQueue} from "~/utils/task-queue"
+import {useGoBack} from "~/utils/navigation"
 
 export default function Drawer({
   metadata,
@@ -42,6 +43,7 @@ export default function Drawer({
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
   const containerRef = React.useRef<HTMLDivElement>(null)
   const modalRef = React.useRef<HTMLDivElement>(null)
+  const goBack = useGoBack()
 
   const links = React.useMemo(() => extractLinks(name), [name])
 
@@ -158,6 +160,9 @@ export default function Drawer({
 
       <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
+          <button onClick={goBack}>
+            <MdOutlineArrowForwardIos size={18} />
+          </button>
           <FeatureFlag feature="CopyTaskTextInDrawer">
             <FeatureFlag.Feature>
               <CopyToClipboardButton content={name} />

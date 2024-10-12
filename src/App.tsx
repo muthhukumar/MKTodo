@@ -9,7 +9,7 @@ import {createRouter, RouterProvider} from "@tanstack/react-router"
 import {useAuth, AuthProvider} from "./auth-context"
 
 import {routeTree} from "./routeTree.gen"
-import {FeatureFlag, SplashScreen, Syncing} from "~/components"
+import {FeatureFlag, FontInitializer, SplashScreen, Syncing} from "~/components"
 import {FeatureContextProvider} from "./feature-context"
 
 export const router = createRouter({
@@ -42,6 +42,7 @@ function InnerApp() {
           <Syncing />
         </FeatureFlag.Feature>
       </FeatureFlag>
+      <FontInitializer />
       <Toaster position="top-center" />
       {showSplashScreen ? <SplashScreen /> : <RouterProvider router={router} context={{auth}} />}
     </>

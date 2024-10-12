@@ -1,11 +1,26 @@
+@font-face {
+  font-family: "Inter";
+  src: url("assets/fonts/Inter.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url("assets/fonts/OpenSans.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
 :root {
   --background: #101111;
   --hover-background: #333434;
   --item-background: #252525;
   --border: #2c2c2c;
   --tblue: #4da3ea;
+  --primary-font: Inter;
 
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--primary-font), Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
