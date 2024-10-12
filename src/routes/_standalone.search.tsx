@@ -15,9 +15,10 @@ export const Route = createFileRoute("/_standalone/search")({
   loader: async ({deps: {query}}) => {
     const cancelToken = getCancelTokenSource()
 
-    if (!query) return {tasks: []}
+    if (!query) return {tasks: [], query}
 
     return {
+      query,
       tasks: await taskQueue.enqueueUnique({
         task: () => API.getTasks(null, query, false, cancelToken),
         id: "fetchAllTasks",
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/_standalone/search")({
 })
 
 function Search() {
-  const {tasks} = Route.useLoaderData()
+  const {tasks, query} = Route.useLoaderData()
   const navigate = useNavigate({from: location.pathname})
 
   const [search, cancel] = useDelay((query: string) => {
@@ -85,6 +86,12 @@ function Search() {
             return <Task onToggle={() => undefined} {...t} key={t.id} type={"search"} />
           })}
         </div>
+        {Boolean(query) && tasks.length === 0 && (
+          <p className="font-semibold text-center mt-5">No result found</p>
+        )}
+        {!Boolean(query) && tasks.length <= 0 && (
+          <p className="font-semibold text-center mt-5">Search something...</p>
+        )}
         <div className="min-h-[20vh]" />
       </StandAlonePage>
     </>
