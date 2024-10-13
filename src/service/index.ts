@@ -9,7 +9,6 @@ import {SettingsStore, TasksStore} from "~/utils/persistent-storage"
 async function getTasks(
   filter: "my-day" | "important" | null,
   query?: string,
-  random?: boolean, // TODO: remove random option backend
   cancelTokenSource?: CancelTokenSource,
 ) {
   try {
@@ -19,7 +18,7 @@ async function getTasks(
     console.log(showCompletedTask?.enable)
 
     const response = await axios.get(`/api/v1/tasks`, {
-      params: {filter, random, query, showCompleted: Boolean(showCompletedTask?.enable)},
+      params: {filter, query, showCompleted: Boolean(showCompletedTask?.enable)},
       ...(cancelTokenSource
         ? {
             cancelToken: cancelTokenSource.token,

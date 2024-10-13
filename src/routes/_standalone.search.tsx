@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_standalone/search")({
     return {
       query,
       tasks: await taskQueue.enqueueUnique({
-        task: () => API.getTasks(null, query, false, cancelToken),
+        task: () => API.getTasks(null, query, cancelToken),
         id: "fetchAllTasks",
         cancelTokenSource: cancelToken,
       }),

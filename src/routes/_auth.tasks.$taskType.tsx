@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_auth/tasks/$taskType")({
       id: uuid(),
       source: "online" as const,
       tasks: await taskQueue.enqueueUnique({
-        task: () => API.getTasks(metadata.filter, "", false, cancelToken),
+        task: () => API.getTasks(metadata.filter, "", cancelToken),
         id: "fetchAllTasks",
         cancelTokenSource: cancelToken,
       }),
