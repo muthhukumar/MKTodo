@@ -2,6 +2,9 @@ import * as React from "react"
 import {API} from "~/service"
 import {logger} from "./logger"
 import {getVersion} from "@tauri-apps/api/app"
+import {autocomplete, buildHash} from "./autocomplete"
+import {useFeatureValue} from "~/feature-context"
+import {TTask} from "~/@types"
 
 export function useOutsideAlerter(
   ref: React.RefObject<any>,
@@ -251,4 +254,34 @@ export function useVersion() {
   }, [])
 
   return version
+}
+
+export function useAutoCompletion({
+  onChange,
+  tasks,
+  task,
+}: {
+  tasks: Array<TTask>
+  task: string
+  onChange: (word: string) => void
+}) {
+  function onWordSelect(word: string) {
+    onChange(`${task} ${word} `)
+  }
+
+  const feature = useFeatureValue("TaskNameAutoComplete")
+
+  const tasksNames = React.useMemo(() => {
+    if (feature && !feature.enable) return []
+    else return tasks.map(t => t.name)
+  }, [tasks, feature])
+
+  const hash = React.useMemo(() => buildHash(tasksNames), [tasksNames])
+
+  const wordSuggestions = React.useMemo(
+    () => autocomplete(hash, task).map((w, idx) => ({id: idx, word: w})),
+    [task, tasksNames, feature],
+  )
+
+  return {wordSuggestions, onWordSelect}
 }

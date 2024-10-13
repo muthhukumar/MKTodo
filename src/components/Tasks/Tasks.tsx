@@ -180,8 +180,9 @@ export default function Tasks(props: TasksProps) {
           <div className="min-h-[20vh]" />
           {showTaskCreate && (
             <CreateTaskInput
+              tasks={tasks}
               tagFilterOptions={tagFilterOptions}
-              taskType={props.type}
+              taskType={taskType}
               setTaskType={setTaskType}
               setNewTasks={setNewTasks}
             />

@@ -4,7 +4,7 @@ import {TaskTypes} from "~/@types"
 import {useDeviceCallback, useOnKeyDown} from "~/utils/hooks"
 import {selectNext, taskTypes} from "~/utils/tasks"
 import {isActiveElement} from "~/utils/ui"
-import {FeatureFlag} from "~/components"
+import {AutoWordSuggestions, Divider, FeatureFlag} from "~/components"
 
 interface CreateTaskInputProps {
   task: string
@@ -12,10 +12,15 @@ interface CreateTaskInputProps {
   setTaskType: React.Dispatch<React.SetStateAction<TaskTypes>>
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
   taskType: TaskTypes
+  onWordSelect: (word: string) => void
+  wordSuggestions: Array<{id: number; word: string}>
 }
 
 const CreateTaskInput = React.forwardRef<HTMLInputElement, CreateTaskInputProps>(
-  ({taskType, task, setTask: onChange, onSubmit, setTaskType}, ref) => {
+  (
+    {taskType, task, setTask: onChange, onSubmit, setTaskType, onWordSelect, wordSuggestions},
+    ref,
+  ) => {
     const inputRef = React.useRef<HTMLInputElement>(null)
 
     React.useImperativeHandle(ref, () => {
@@ -49,39 +54,49 @@ const CreateTaskInput = React.forwardRef<HTMLInputElement, CreateTaskInputProps>
     })
 
     return (
-      <form
-        onSubmit={onSubmit}
-        className="border border-border focus-within:ring-2 focus-within:ring-blue-500 rounded-md flex items-center w-full bg-item-background"
-      >
-        <FaPlus className="mx-3" />
-        <FeatureFlag feature="TaskTypeInputInCreateTask">
+      <div>
+        <FeatureFlag feature="TaskNameAutoComplete">
           <FeatureFlag.Feature>
-            <select
-              className="reset-select rounded-md py-1 text-white"
-              value={taskType}
-              onChange={e => setTaskType(e.target.value as TaskTypes)}
-            >
-              {taskTypes.map(t => {
-                return (
-                  <option key={t.value} value={t.value}>
-                    {t.title}
-                  </option>
-                )
-              })}
-            </select>
+            <div className="mb-3">
+              <AutoWordSuggestions wordSuggestions={wordSuggestions} onSelect={onWordSelect} />
+            </div>
+            {wordSuggestions.length > 0 && <Divider space="none" className="mb-2" />}
           </FeatureFlag.Feature>
         </FeatureFlag>
-        <input
-          ref={inputRef}
-          value={task}
-          type="text"
-          name="Task"
-          title="Task"
-          onChange={e => onChange(e.target.value)}
-          className="outline-none w-full text-white rounded-md px-2 py-3 bg-item-background"
-          placeholder="Add a Task"
-        />
-      </form>
+        <form
+          onSubmit={onSubmit}
+          className="border border-border focus-within:ring-2 focus-within:ring-blue-500 rounded-md flex items-center w-full bg-item-background"
+        >
+          <FaPlus className="mx-3" />
+          <FeatureFlag feature="TaskTypeInputInCreateTask">
+            <FeatureFlag.Feature>
+              <select
+                className="reset-select rounded-md py-1 text-white"
+                value={taskType}
+                onChange={e => setTaskType(e.target.value as TaskTypes)}
+              >
+                {taskTypes.map(t => {
+                  return (
+                    <option key={t.value} value={t.value}>
+                      {t.title}
+                    </option>
+                  )
+                })}
+              </select>
+            </FeatureFlag.Feature>
+          </FeatureFlag>
+          <input
+            ref={inputRef}
+            value={task}
+            type="text"
+            name="Task"
+            title="Task"
+            onChange={e => onChange(e.target.value)}
+            className="outline-none w-full text-white rounded-md px-2 py-3 bg-item-background"
+            placeholder="Add a Task"
+          />
+        </form>
+      </div>
     )
   },
 )
