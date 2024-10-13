@@ -39,6 +39,7 @@ function CreateTaskInput(props: CreateTaskInputProps) {
   const router = useRouter()
 
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const mobileInputRef = React.useRef<HTMLInputElement>(null)
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -74,7 +75,14 @@ function CreateTaskInput(props: CreateTaskInputProps) {
     }
   }
 
-  const autoCompletionProps = useAutoCompletion({tasks, task, onChange: word => setTask(word)})
+  const autoCompletionProps = useAutoCompletion({
+    tasks,
+    task,
+    onChange: word => {
+      setTask(word)
+      mobileInputRef.current?.focus()
+    },
+  })
 
   return (
     <>
@@ -94,6 +102,7 @@ function CreateTaskInput(props: CreateTaskInputProps) {
 
       <MobileOnly>
         <MobileCreateTaskInput
+          ref={mobileInputRef}
           {...autoCompletionProps}
           tags={tagFilterOptions}
           taskType={taskType}

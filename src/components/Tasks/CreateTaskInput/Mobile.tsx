@@ -18,7 +18,10 @@ interface CreateTaskInputProps {
   wordSuggestions: Array<{id: number; word: string}>
 }
 
-export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
+const MobileCreateTaskInput = React.forwardRef(function MobileCreateTaskInput(
+  props: CreateTaskInputProps,
+  ref,
+) {
   const [showInput, setShowInput] = React.useState(false)
 
   const {
@@ -38,6 +41,12 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
   }
 
   const inputRef = React.useRef<HTMLInputElement>(null)
+
+  React.useImperativeHandle(ref, () => {
+    return {
+      focus: () => inputRef.current?.focus(),
+    }
+  })
 
   useOutsideAlerter(formRef, {onClickOutside: hideInput})
 
@@ -122,4 +131,6 @@ export default function MobileCreateTaskInput(props: CreateTaskInputProps) {
       )}
     </>
   )
-}
+})
+
+export default MobileCreateTaskInput
