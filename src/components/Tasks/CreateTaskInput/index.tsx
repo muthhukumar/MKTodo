@@ -8,9 +8,11 @@ import {logger} from "~/utils/logger"
 import {createTask} from "~/utils/tasks"
 import {taskQueue} from "~/utils/task-queue"
 import {API} from "~/service"
-import {TaskTypes} from "~/@types"
+import {TTask, TaskTypes} from "~/@types"
+import {useAutoCompletion} from "~/utils/hooks"
 
 interface CreateTaskInputProps {
+  tasks: Array<TTask>
   setNewTasks: React.Dispatch<
     React.SetStateAction<
       {
@@ -30,7 +32,7 @@ interface CreateTaskInputProps {
 }
 
 function CreateTaskInput(props: CreateTaskInputProps) {
-  const {setNewTasks, setTaskType, taskType, tagFilterOptions} = props
+  const {setNewTasks, setTaskType, taskType, tagFilterOptions, tasks} = props
 
   const [task, setTask] = React.useState("")
 
@@ -71,11 +73,15 @@ function CreateTaskInput(props: CreateTaskInputProps) {
       })
     }
   }
+
+  const autoCompletionProps = useAutoCompletion({tasks, task, onChange: word => setTask(word)})
+
   return (
     <>
       <DesktopOnly>
         <div className="p-3 bg-background sticky w-full bottom-4 md:bottom-0 left-0 right-0">
           <Desktop
+            {...autoCompletionProps}
             ref={inputRef}
             taskType={taskType}
             setTaskType={setTaskType}
@@ -88,6 +94,7 @@ function CreateTaskInput(props: CreateTaskInputProps) {
 
       <MobileOnly>
         <MobileCreateTaskInput
+          {...autoCompletionProps}
           tags={tagFilterOptions}
           taskType={taskType}
           setTaskType={setTaskType}

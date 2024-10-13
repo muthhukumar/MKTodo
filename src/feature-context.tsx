@@ -17,6 +17,7 @@ const allFeatures = [
   {id: "ShowCompletedTasks", title: "Show Completed Tasks"},
   {id: "PreLoadTasks", title: "Pre load tasks"},
   {id: "Font", title: "Change Font", defaultValue: "Inter"},
+  {id: "TaskNameAutoComplete", title: "Auto complete Task Name"},
 ] as const
 
 export type Feature = (typeof allFeatures)[number]["id"]
