@@ -286,7 +286,7 @@ export function useAutoCompletion({
     else return tasks.map(t => t.name)
   }, [tasks, feature])
 
-  const hash = React.useMemo(() => ({...defaultHash, ...buildHash(tasksNames)}), [tasksNames])
+  const hash = React.useMemo(() => buildHash(tasksNames, defaultHash), [tasksNames])
 
   const wordSuggestions = React.useMemo(
     () => autocomplete(hash, task).map((w, idx) => ({id: idx, word: w})),

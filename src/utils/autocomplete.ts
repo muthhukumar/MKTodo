@@ -2,9 +2,7 @@ export function getTaskNames(data: {data: Array<{name: string}>}) {
   return data.data.map(d => d.name)
 }
 
-export function buildHash(data: Array<string>) {
-  const hash = {} as Record<string, Array<string>>
-
+export function buildHash(data: Array<string>, hash: Record<string, Array<string>> = {}) {
   for (let i = 0; i < data.length; i++) {
     const words = data[i].split(" ").filter(Boolean)
 
