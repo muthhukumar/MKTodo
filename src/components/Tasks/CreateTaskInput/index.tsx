@@ -9,7 +9,8 @@ import {createTask} from "~/utils/tasks"
 import {taskQueue} from "~/utils/task-queue"
 import {API} from "~/service"
 import {TTask, TaskTypes} from "~/@types"
-import {useAutoCompletion} from "~/utils/hooks"
+import {useAutoCompletion, useDeviceCallback} from "~/utils/hooks"
+import {options} from "~/components/Select/data"
 
 interface CreateTaskInputProps {
   tasks: Array<TTask>
@@ -75,12 +76,20 @@ function CreateTaskInput(props: CreateTaskInputProps) {
     }
   }
 
+  const focus = useDeviceCallback({
+    mobile: () => mobileInputRef.current?.focus(),
+    desktop: () => inputRef.current?.focus(),
+  })
+
   const autoCompletionProps = useAutoCompletion({
     tasks,
     task,
     onChange: word => {
       setTask(word)
-      mobileInputRef.current?.focus()
+      focus()
+    },
+    defaultHash: {
+      "!": [...options.map(o => `!${o}`)],
     },
   })
 

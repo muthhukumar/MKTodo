@@ -47,5 +47,5 @@ export function autocomplete(hash: Record<string, Array<string>>, sentence: stri
     return []
   }
 
-  return hash[lastWord].slice(0, 3)
+  return hash[lastWord]
 }

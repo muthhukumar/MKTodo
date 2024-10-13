@@ -256,17 +256,27 @@ export function useVersion() {
   return version
 }
 
+function isLastCharacterMatches(str: string, match: string) {
+  return str && str[str.length - 1] === match
+}
+
 export function useAutoCompletion({
   onChange,
   tasks,
   task,
+  defaultHash = {},
 }: {
   tasks: Array<TTask>
   task: string
   onChange: (word: string) => void
+  defaultHash?: Record<string, Array<string>>
 }) {
   function onWordSelect(word: string) {
-    onChange(`${task} ${word} `)
+    if (isLastCharacterMatches(task, "!")) {
+      onChange(`${task.substring(0, task.length - 1)}${word} `)
+    } else if (isLastCharacterMatches(task, " ")) {
+      onChange(`${task}${word}`)
+    } else onChange(`${task} ${word} `)
   }
 
   const feature = useFeatureValue("TaskNameAutoComplete")
@@ -276,7 +286,7 @@ export function useAutoCompletion({
     else return tasks.map(t => t.name)
   }, [tasks, feature])
 
-  const hash = React.useMemo(() => buildHash(tasksNames), [tasksNames])
+  const hash = React.useMemo(() => ({...defaultHash, ...buildHash(tasksNames)}), [tasksNames])
 
   const wordSuggestions = React.useMemo(
     () => autocomplete(hash, task).map((w, idx) => ({id: idx, word: w})),
