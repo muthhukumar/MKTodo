@@ -14,6 +14,7 @@ import {useRouter} from "@tanstack/react-router"
 import {
   AutoResizeTextarea,
   CopyToClipboardButton,
+  DesktopOnly,
   FeatureFlag,
   GoBack,
   MobileOnly,
@@ -160,9 +161,11 @@ export default function Drawer({
 
       <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <button onClick={goBack}>
-            <MdOutlineArrowForwardIos size={18} />
-          </button>
+          <DesktopOnly>
+            <button onClick={goBack}>
+              <MdOutlineArrowForwardIos size={18} />
+            </button>
+          </DesktopOnly>
           <FeatureFlag feature="CopyTaskTextInDrawer">
             <FeatureFlag.Feature>
               <CopyToClipboardButton content={name} />
