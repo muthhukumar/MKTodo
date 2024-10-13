@@ -1,5 +1,7 @@
 import * as React from "react"
 import {API} from "~/service"
+import {logger} from "./logger"
+import {getVersion} from "@tauri-apps/api/app"
 
 export function useOutsideAlerter(
   ref: React.RefObject<any>,
@@ -229,4 +231,24 @@ export function useDeviceCallback<T>({
   }
 
   return fn
+}
+
+export function useVersion() {
+  const [version, setVersion] = React.useState("")
+
+  React.useEffect(() => {
+    async function fetchVersion() {
+      try {
+        const version = await getVersion()
+
+        if (version) setVersion(version)
+      } catch (error) {
+        logger.error("Failed to get version", error)
+      }
+    }
+
+    fetchVersion()
+  }, [])
+
+  return version
 }

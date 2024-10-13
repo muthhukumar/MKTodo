@@ -1,7 +1,7 @@
 import {Link, createFileRoute} from "@tanstack/react-router"
 import clsx from "clsx"
 import {useAuth} from "~/auth-context"
-import {Divider, Logout, StandAlonePage} from "~/components"
+import {Divider, Logout, StandAlonePage, Version} from "~/components"
 import {useFeature, useFeatureValue} from "~/feature-context"
 import {usePing} from "~/utils/hooks"
 
@@ -101,6 +101,14 @@ function Settings() {
 
       <Divider />
 
+      <div>
+        <strong>App Info</strong>
+        <div className="mt-3">
+          <p>App Build Version</p>
+          <Version />
+        </div>
+      </div>
+      <Divider />
       <Logout />
       <Divider />
     </StandAlonePage>
