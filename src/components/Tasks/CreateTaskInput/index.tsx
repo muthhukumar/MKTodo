@@ -8,12 +8,12 @@ import {logger} from "~/utils/logger"
 import {createTask} from "~/utils/tasks"
 import {taskQueue} from "~/utils/task-queue"
 import {API} from "~/service"
-import {TTask, TaskTypes} from "~/@types"
+import {TaskTypes} from "~/@types"
 import {useAutoCompletion, useDeviceCallback} from "~/utils/hooks"
 import {options} from "~/components/Select/data"
 
 interface CreateTaskInputProps {
-  tasks: Array<TTask>
+  metadata: Array<string>
   setNewTasks: React.Dispatch<
     React.SetStateAction<
       {
@@ -33,7 +33,7 @@ interface CreateTaskInputProps {
 }
 
 function CreateTaskInput(props: CreateTaskInputProps) {
-  const {setNewTasks, setTaskType, taskType, tagFilterOptions, tasks} = props
+  const {setNewTasks, setTaskType, taskType, tagFilterOptions, metadata} = props
 
   const [task, setTask] = React.useState("")
 
@@ -82,7 +82,7 @@ function CreateTaskInput(props: CreateTaskInputProps) {
   })
 
   const autoCompletionProps = useAutoCompletion({
-    tasks,
+    metadata,
     task,
     onChange: word => {
       setTask(word)

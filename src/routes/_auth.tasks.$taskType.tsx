@@ -31,16 +31,14 @@ export const Route = createFileRoute("/_auth/tasks/$taskType")({
     //  }
 
     const cancelToken = getCancelTokenSource()
+    const metadataCancelToken = getCancelTokenSource()
     const metadata = getTaskPageMetaData(taskType)
 
     return {
       id: uuid(),
       source: "online" as const,
-      tasks: await taskQueue.enqueueUnique({
-        task: () => API.getTasks(metadata.filter, "", cancelToken),
-        id: "fetchAllTasks",
-        cancelTokenSource: cancelToken,
-      }),
+      tasks: await taskQueue.enqueue(() => API.getTasks(metadata.filter, "", cancelToken)),
+      metadata: await taskQueue.enqueue(() => API.getTasksNames(metadataCancelToken)),
     }
   },
   beforeLoad: ({context, location}) => {
@@ -59,7 +57,7 @@ export const Route = createFileRoute("/_auth/tasks/$taskType")({
 })
 
 function AllTasks() {
-  let {tasks} = Route.useLoaderData()
+  let {tasks, metadata} = Route.useLoaderData()
   const {taskType} = Route.useParams()
   // const [tasks, setTasks] = React.useState(loaderData.tasks)
   // const [source, setSource] = React.useState(loaderData.source)
@@ -99,7 +97,7 @@ function AllTasks() {
   return (
     <>
       <Outlet />
-      <Tasks {...props} tasks={tasks} source={"online"} />
+      <Tasks {...props} tasks={tasks} source={"online"} metadata={metadata} />
     </>
   )
 }

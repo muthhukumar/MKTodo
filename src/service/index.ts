@@ -15,7 +15,6 @@ async function getTasks(
     const store = await SettingsStore.get()
 
     const showCompletedTask = store?.find(f => f.id === "ShowCompletedTasks")
-    console.log(showCompletedTask?.enable)
 
     const response = await axios.get(`/api/v1/tasks`, {
       params: {filter, query, showCompleted: Boolean(showCompletedTask?.enable)},
@@ -218,6 +217,25 @@ function log(logs: Array<{level: string; log: string; created_at: string}>) {
   } catch (error) {}
 }
 
+async function getTasksNames(cancelTokenSource?: CancelTokenSource) {
+  try {
+    const response = await axios.get(`/api/v1/tasks`, {
+      params: {showCompleted: true},
+      ...(cancelTokenSource
+        ? {
+            cancelToken: cancelTokenSource.token,
+          }
+        : {}),
+    })
+
+    const tasks = response.data.data as Array<TTask>
+
+    return tasks.map(t => t.name)
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -233,4 +251,5 @@ export const API = {
   updateTaskMetadata,
   getLogs,
   log,
+  getTasksNames,
 }

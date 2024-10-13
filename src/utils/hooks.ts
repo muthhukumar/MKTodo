@@ -4,7 +4,6 @@ import {logger} from "./logger"
 import {getVersion} from "@tauri-apps/api/app"
 import {autocomplete, buildHash} from "./autocomplete"
 import {useFeatureValue} from "~/feature-context"
-import {TTask} from "~/@types"
 
 export function useOutsideAlerter(
   ref: React.RefObject<any>,
@@ -262,11 +261,11 @@ function isLastCharacterMatches(str: string, match: string) {
 
 export function useAutoCompletion({
   onChange,
-  tasks,
+  metadata,
   task,
   defaultHash = {},
 }: {
-  tasks: Array<TTask>
+  metadata: Array<string>
   task: string
   onChange: (word: string) => void
   defaultHash?: Record<string, Array<string>>
@@ -283,8 +282,8 @@ export function useAutoCompletion({
 
   const tasksNames = React.useMemo(() => {
     if (feature && !feature.enable) return []
-    else return tasks.map(t => t.name)
-  }, [tasks, feature])
+    else return metadata
+  }, [metadata, feature])
 
   const hash = React.useMemo(() => buildHash(tasksNames, defaultHash), [tasksNames])
 

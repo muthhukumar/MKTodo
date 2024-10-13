@@ -23,6 +23,7 @@ interface TasksProps {
   source?: "online" | "offline"
   showHeader?: boolean
   showTaskCreate?: boolean
+  metadata?: Array<string>
 }
 
 const extractTagsFromTasks = (tasks: Array<TTask>) => {
@@ -30,7 +31,14 @@ const extractTagsFromTasks = (tasks: Array<TTask>) => {
 }
 
 export default function Tasks(props: TasksProps) {
-  const {showFilters, title, source, showHeader = true, showTaskCreate = true} = props
+  const {
+    showFilters,
+    title,
+    source,
+    showHeader = true,
+    showTaskCreate = true,
+    metadata = [],
+  } = props
   const [tasks, setTasks] = React.useState(props.tasks)
 
   const [newTasks, setNewTasks] = React.useState<
@@ -180,11 +188,11 @@ export default function Tasks(props: TasksProps) {
           <div className="min-h-[20vh]" />
           {showTaskCreate && (
             <CreateTaskInput
-              tasks={tasks}
               tagFilterOptions={tagFilterOptions}
               taskType={taskType}
               setTaskType={setTaskType}
               setNewTasks={setNewTasks}
+              metadata={metadata}
             />
           )}
         </div>
