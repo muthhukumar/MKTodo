@@ -230,7 +230,16 @@ async function getTasksNames(cancelTokenSource?: CancelTokenSource) {
 
     const tasks = response.data.data as Array<TTask>
 
-    return tasks.map(t => t.name)
+    return tasks
+      .map(t => [
+        t.name,
+        ...t.metadata
+          .trim()
+          .split(",")
+          .filter(Boolean)
+          .map(mt => `! !${mt}`),
+      ])
+      .flat()
   } catch (error) {
     return Promise.reject(error)
   }

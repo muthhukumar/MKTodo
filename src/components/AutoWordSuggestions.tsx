@@ -2,6 +2,7 @@ import * as React from "react"
 import {IoIosArrowDropleftCircle, IoIosArrowDroprightCircle} from "react-icons/io"
 import DesktopOnly from "./DesktopOnly"
 import {AutoCompleteSuggestion} from "~/utils/autocomplete"
+import FeatureFlag from "./FeatureFlag"
 
 interface AutoWordSuggestionsProps {
   wordSuggestions: Array<AutoCompleteSuggestion & {id: number}>
@@ -45,10 +46,17 @@ export default function AutoWordSuggestions({wordSuggestions, onSelect}: AutoWor
           <button
             key={w.id}
             type="button"
-            className="inline-block text-center border border-inherit rounded-md px-4"
+            className="relative inline-block text-center border border-inherit rounded-md px-4"
             onClick={() => onSelect(w.word)}
           >
             <p className="text-center">{w.word}</p>
+            <FeatureFlag feature="AutoCompletionSuggestionFrequencyCount">
+              <FeatureFlag.Feature>
+                <span className="inline-block border border-border rounded-full text-[8px] absolute top-0 right-0">
+                  {w.frequency}
+                </span>
+              </FeatureFlag.Feature>
+            </FeatureFlag>
           </button>
         ))}
       </div>

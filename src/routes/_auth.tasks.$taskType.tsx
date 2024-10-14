@@ -38,7 +38,7 @@ export const Route = createFileRoute("/_auth/tasks/$taskType")({
       id: uuid(),
       source: "online" as const,
       tasks: await taskQueue.enqueue(() => API.getTasks(metadata.filter, "", cancelToken)),
-      metadata: await taskQueue.enqueue(() => API.getTasksNames(metadataCancelToken)),
+      autoCompletionData: await taskQueue.enqueue(() => API.getTasksNames(metadataCancelToken)),
     }
   },
   beforeLoad: ({context, location}) => {
@@ -57,7 +57,7 @@ export const Route = createFileRoute("/_auth/tasks/$taskType")({
 })
 
 function AllTasks() {
-  let {tasks, metadata} = Route.useLoaderData()
+  let {tasks, autoCompletionData} = Route.useLoaderData()
   const {taskType} = Route.useParams()
   // const [tasks, setTasks] = React.useState(loaderData.tasks)
   // const [source, setSource] = React.useState(loaderData.source)
@@ -97,7 +97,7 @@ function AllTasks() {
   return (
     <>
       <Outlet />
-      <Tasks {...props} tasks={tasks} source={"online"} metadata={metadata} />
+      <Tasks {...props} tasks={tasks} source={"online"} autoCompletionData={autoCompletionData} />
     </>
   )
 }

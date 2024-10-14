@@ -11,10 +11,9 @@ import {API} from "~/service"
 import {TaskTypes} from "~/@types"
 import {useAutoCompletion, useDeviceCallback} from "~/utils/hooks"
 import {options} from "~/components/Select/data"
-import {buildHash} from "~/utils/autocomplete"
 
 interface CreateTaskInputProps {
-  metadata: Array<string>
+  autoCompletionData: Array<string>
   setNewTasks: React.Dispatch<
     React.SetStateAction<
       {
@@ -34,7 +33,7 @@ interface CreateTaskInputProps {
 }
 
 function CreateTaskInput(props: CreateTaskInputProps) {
-  const {setNewTasks, setTaskType, taskType, tagFilterOptions, metadata} = props
+  const {setNewTasks, setTaskType, taskType, tagFilterOptions, autoCompletionData} = props
 
   const [task, setTask] = React.useState("")
 
@@ -83,13 +82,12 @@ function CreateTaskInput(props: CreateTaskInputProps) {
   })
 
   const autoCompletionProps = useAutoCompletion({
-    data: metadata,
+    data: [...options.map(o => `! !${o}`), ...autoCompletionData],
     typedText: task,
     onSuggestionSelect: word => {
       setTask(word)
       focus()
     },
-    defaultHash: buildHash(options.map(o => `! !${o}`)),
   })
 
   return (

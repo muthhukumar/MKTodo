@@ -18,6 +18,10 @@ const allFeatures = [
   {id: "PreLoadTasks", title: "Pre load tasks"},
   {id: "Font", title: "Change Font", defaultValue: "Inter"},
   {id: "TaskNameAutoComplete", title: "Auto complete Task Name"},
+  {
+    id: "AutoCompletionSuggestionFrequencyCount",
+    title: "Show Auto completion suggestion frequency count",
+  },
 ] as const
 
 export type Feature = (typeof allFeatures)[number]["id"]

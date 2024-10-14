@@ -23,7 +23,7 @@ interface TasksProps {
   source?: "online" | "offline"
   showHeader?: boolean
   showTaskCreate?: boolean
-  metadata?: Array<string>
+  autoCompletionData?: Array<string>
 }
 
 const extractTagsFromTasks = (tasks: Array<TTask>) => {
@@ -37,7 +37,7 @@ export default function Tasks(props: TasksProps) {
     source,
     showHeader = true,
     showTaskCreate = true,
-    metadata = [],
+    autoCompletionData = [],
   } = props
   const [tasks, setTasks] = React.useState(props.tasks)
 
@@ -192,7 +192,7 @@ export default function Tasks(props: TasksProps) {
               taskType={taskType}
               setTaskType={setTaskType}
               setNewTasks={setNewTasks}
-              metadata={metadata}
+              autoCompletionData={autoCompletionData}
             />
           )}
         </div>
