@@ -260,36 +260,36 @@ function isLastCharacterMatches(str: string, match: string) {
 }
 
 export function useAutoCompletion({
-  onChange,
-  metadata,
-  task,
+  onSuggestionSelect,
+  data,
+  typedText,
   defaultHash = {},
 }: {
-  metadata: Array<string>
-  task: string
-  onChange: (word: string) => void
+  data: Array<string>
+  typedText: string
+  onSuggestionSelect: (word: string) => void
   defaultHash?: Record<string, Array<string>>
 }) {
   function onWordSelect(word: string) {
-    if (isLastCharacterMatches(task, "!")) {
-      onChange(`${task.substring(0, task.length - 1)}${word} `)
-    } else if (isLastCharacterMatches(task, " ")) {
-      onChange(`${task}${word}`)
-    } else onChange(`${task} ${word} `)
+    if (isLastCharacterMatches(typedText, "!")) {
+      onSuggestionSelect(`${typedText.substring(0, typedText.length - 1)}${word} `)
+    } else if (isLastCharacterMatches(typedText, " ")) {
+      onSuggestionSelect(`${typedText}${word}`)
+    } else onSuggestionSelect(`${typedText} ${word} `)
   }
 
   const feature = useFeatureValue("TaskNameAutoComplete")
 
   const tasksNames = React.useMemo(() => {
     if (feature && !feature.enable) return []
-    else return metadata
-  }, [metadata, feature])
+    else return data
+  }, [data, feature])
 
   const hash = React.useMemo(() => buildHash(tasksNames, defaultHash), [tasksNames])
 
   const wordSuggestions = React.useMemo(
-    () => autocomplete(hash, task).map((w, idx) => ({id: idx, word: w})),
-    [task, tasksNames, feature],
+    () => autocomplete(hash, typedText).map((w, idx) => ({id: idx, word: w})),
+    [typedText, tasksNames, feature],
   )
 
   return {wordSuggestions, onWordSelect}

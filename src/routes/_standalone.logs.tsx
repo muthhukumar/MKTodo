@@ -98,7 +98,7 @@ function Logs() {
           {queuedLogs.map((l, idx) => {
             const level = l.level.toLowerCase()
             return (
-              <p key={idx}>
+              <p key={idx} className="break-all">
                 <span className="font-bold">[{format24Hour(l.created_at)}] </span>
                 <span
                   className={clsx("font-bold", {
@@ -121,7 +121,7 @@ function Logs() {
         {filteredLogs.map(l => {
           const level = l.level.toLowerCase()
           return (
-            <div key={l.id}>
+            <div key={l.id} className="break-all">
               <button className="mr-1" onClick={() => createTaskFromLog(l)}>
                 <AiOutlinePlus />
               </button>

@@ -1,6 +1,6 @@
 import * as React from "react"
 import {Outlet, createFileRoute, redirect, useNavigate} from "@tanstack/react-router"
-import {StandAlonePage, Task} from "~/components"
+import {GoBack, StandAlonePage, Task} from "~/components"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
 import {getCancelTokenSource} from "~/service/axios"
@@ -66,7 +66,6 @@ function Search() {
         title="Search"
         header={
           <StandAlonePage.HeaderWrapper>
-            <StandAlonePage.GoBack />
             <form onSubmit={onSubmit}>
               <input
                 ref={inputRef}
@@ -93,6 +92,7 @@ function Search() {
           <p className="font-semibold text-center mt-5">Search something...</p>
         )}
         <div className="min-h-[20vh]" />
+        <GoBack />
       </StandAlonePage>
     </>
   )

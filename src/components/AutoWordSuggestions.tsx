@@ -1,5 +1,6 @@
 import * as React from "react"
 import {IoIosArrowDropleftCircle, IoIosArrowDroprightCircle} from "react-icons/io"
+import DesktopOnly from "./DesktopOnly"
 
 interface AutoWordSuggestionsProps {
   wordSuggestions: Array<{id: number; word: string}>
@@ -31,9 +32,13 @@ export default function AutoWordSuggestions({wordSuggestions, onSelect}: AutoWor
 
   return (
     <div className="flex items-center px-3">
-      <button className="inline-block mr-3" onClick={scrollLeft}>
-        <IoIosArrowDropleftCircle size={24} />
-      </button>
+      <DesktopOnly>
+        <div className="flex items-center">
+          <button className="inline-block mr-3" onClick={scrollLeft}>
+            <IoIosArrowDropleftCircle size={24} />
+          </button>
+        </div>
+      </DesktopOnly>
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar" ref={containerRef}>
         {wordSuggestions.map(w => (
           <button
@@ -46,9 +51,13 @@ export default function AutoWordSuggestions({wordSuggestions, onSelect}: AutoWor
           </button>
         ))}
       </div>
-      <button className="inline-block ml-3" onClick={scrollRight}>
-        <IoIosArrowDroprightCircle size={24} />
-      </button>
+      <DesktopOnly>
+        <div className="flex items-center">
+          <button className="inline-block ml-3" onClick={scrollRight}>
+            <IoIosArrowDroprightCircle size={24} />
+          </button>
+        </div>
+      </DesktopOnly>
     </div>
   )
 }

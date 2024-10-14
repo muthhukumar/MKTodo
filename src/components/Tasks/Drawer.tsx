@@ -11,15 +11,7 @@ import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
-import {
-  AutoResizeTextarea,
-  CopyToClipboardButton,
-  DesktopOnly,
-  FeatureFlag,
-  GoBack,
-  MobileOnly,
-  Select,
-} from ".."
+import {AutoResizeTextarea, CopyToClipboardButton, FeatureFlag, Select} from ".."
 import {extractLinks} from "~/utils/url"
 import {useAudioPlayer} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
@@ -161,11 +153,9 @@ export default function Drawer({
 
       <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <DesktopOnly>
-            <button onClick={goBack}>
-              <MdOutlineArrowForwardIos size={18} />
-            </button>
-          </DesktopOnly>
+          <button onClick={goBack}>
+            <MdOutlineArrowForwardIos size={18} />
+          </button>
           <FeatureFlag feature="CopyTaskTextInDrawer">
             <FeatureFlag.Feature>
               <CopyToClipboardButton content={name} />
@@ -188,9 +178,6 @@ export default function Drawer({
         open={showDeleteModal}
         onDismiss={() => setShowDeleteModal(false)}
       />
-      <MobileOnly>
-        <GoBack />
-      </MobileOnly>
     </div>
   )
 }

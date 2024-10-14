@@ -82,9 +82,9 @@ function CreateTaskInput(props: CreateTaskInputProps) {
   })
 
   const autoCompletionProps = useAutoCompletion({
-    metadata,
-    task,
-    onChange: word => {
+    data: metadata,
+    typedText: task,
+    onSuggestionSelect: word => {
       setTask(word)
       focus()
     },

@@ -7,7 +7,7 @@ function GoBack() {
   return (
     <button
       onClick={goBack}
-      className="left-10 fixed bottom-20 p-3 backdrop-blur-sm rounded-full bg-border flex items-center justify-center"
+      className="left-6 fixed bottom-10 p-3 backdrop-blur-sm rounded-full bg-border flex items-center justify-center"
     >
       <MdOutlineArrowBackIos />
     </button>
