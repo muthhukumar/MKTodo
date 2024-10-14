@@ -27,7 +27,7 @@ function NavItem({Icon, path}: {title: string; path: string; Icon: IconType}) {
 
 export default function MobileBottomNavbar() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-1 bg-item-background border-t border-zinc-500 rounded-b-md z-10 flex items-center">
+    <div className="fixed bottom-0 left-0 right-0 p-1 bg-background border-t border-zinc-500 rounded-b-md z-10 flex items-center">
       <NavItem Icon={MdOutlineWbSunny} title="My Day" path="/tasks/my-day" />
       <FeatureFlag feature="ImportantTaskView">
         <FeatureFlag.Feature>

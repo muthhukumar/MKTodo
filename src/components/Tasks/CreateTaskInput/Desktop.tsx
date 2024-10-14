@@ -5,6 +5,7 @@ import {useDeviceCallback, useOnKeyDown} from "~/utils/hooks"
 import {selectNext, taskTypes} from "~/utils/tasks"
 import {isActiveElement} from "~/utils/ui"
 import {AutoWordSuggestions, Divider, FeatureFlag} from "~/components"
+import {AutoCompleteSuggestion} from "~/utils/autocomplete"
 
 interface CreateTaskInputProps {
   task: string
@@ -13,7 +14,7 @@ interface CreateTaskInputProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
   taskType: TaskTypes
   onWordSelect: (word: string) => void
-  wordSuggestions: Array<{id: number; word: string}>
+  wordSuggestions: Array<AutoCompleteSuggestion & {id: number}>
 }
 
 const CreateTaskInput = React.forwardRef<HTMLInputElement, CreateTaskInputProps>(

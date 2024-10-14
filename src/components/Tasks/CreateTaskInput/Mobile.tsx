@@ -5,6 +5,7 @@ import {TaskTypes} from "~/@types"
 import {useOutsideAlerter} from "~/utils/hooks"
 import {BsFillFileArrowUpFill} from "react-icons/bs"
 import {AutoWordSuggestions, Divider, FeatureFlag} from "~/components"
+import {AutoCompleteSuggestion} from "~/utils/autocomplete"
 
 interface CreateTaskInputProps {
   task: string
@@ -15,7 +16,7 @@ interface CreateTaskInputProps {
   // TODO: Implement this or remove this dependency
   tags: Array<string>
   onWordSelect: (word: string) => void
-  wordSuggestions: Array<{id: number; word: string}>
+  wordSuggestions: Array<AutoCompleteSuggestion & {id: number}>
 }
 
 const MobileCreateTaskInput = React.forwardRef(function MobileCreateTaskInput(

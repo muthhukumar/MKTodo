@@ -11,6 +11,7 @@ import {API} from "~/service"
 import {TaskTypes} from "~/@types"
 import {useAutoCompletion, useDeviceCallback} from "~/utils/hooks"
 import {options} from "~/components/Select/data"
+import {buildHash} from "~/utils/autocomplete"
 
 interface CreateTaskInputProps {
   metadata: Array<string>
@@ -88,9 +89,7 @@ function CreateTaskInput(props: CreateTaskInputProps) {
       setTask(word)
       focus()
     },
-    defaultHash: {
-      "!": [...options.map(o => `!${o}`)],
-    },
+    defaultHash: buildHash(options.map(o => `! !${o}`)),
   })
 
   return (

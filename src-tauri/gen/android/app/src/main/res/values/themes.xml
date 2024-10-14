@@ -2,6 +2,6 @@
     <!-- Base application theme. -->
     <style name="Theme.mktodo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:navigationBarColor">#252525</item> 
+        <item name="android:navigationBarColor">#101111</item> 
     </style>
 </resources>

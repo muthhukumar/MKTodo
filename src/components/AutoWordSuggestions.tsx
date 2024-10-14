@@ -1,9 +1,10 @@
 import * as React from "react"
 import {IoIosArrowDropleftCircle, IoIosArrowDroprightCircle} from "react-icons/io"
 import DesktopOnly from "./DesktopOnly"
+import {AutoCompleteSuggestion} from "~/utils/autocomplete"
 
 interface AutoWordSuggestionsProps {
-  wordSuggestions: Array<{id: number; word: string}>
+  wordSuggestions: Array<AutoCompleteSuggestion & {id: number}>
   onSelect: (selectedWord: string) => void
 }
 

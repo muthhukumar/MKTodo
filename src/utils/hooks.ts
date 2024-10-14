@@ -2,7 +2,7 @@ import * as React from "react"
 import {API} from "~/service"
 import {logger} from "./logger"
 import {getVersion} from "@tauri-apps/api/app"
-import {autocomplete, buildHash} from "./autocomplete"
+import {AutoCompleteHashType, autocomplete, buildHash} from "./autocomplete"
 import {useFeatureValue} from "~/feature-context"
 
 export function useOutsideAlerter(
@@ -268,7 +268,7 @@ export function useAutoCompletion({
   data: Array<string>
   typedText: string
   onSuggestionSelect: (word: string) => void
-  defaultHash?: Record<string, Array<string>>
+  defaultHash?: AutoCompleteHashType
 }) {
   function onWordSelect(word: string) {
     if (isLastCharacterMatches(typedText, "!")) {
@@ -288,7 +288,7 @@ export function useAutoCompletion({
   const hash = React.useMemo(() => buildHash(tasksNames, defaultHash), [tasksNames])
 
   const wordSuggestions = React.useMemo(
-    () => autocomplete(hash, typedText).map((w, idx) => ({id: idx, word: w})),
+    () => autocomplete(hash, typedText).map((w, idx) => ({id: idx, ...w})),
     [typedText, tasksNames, feature],
   )
 

@@ -111,6 +111,7 @@ function Settings() {
       <Divider />
       <Logout />
       <Divider />
+      <div className="min-h-[20vh]" />
     </StandAlonePage>
   )
 }
