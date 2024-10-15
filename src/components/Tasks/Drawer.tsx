@@ -143,8 +143,12 @@ export default function Drawer({
           </div>
         </div>
       </div>
-      <Divider />
-      <SubTasks sub_tasks={sub_tasks} task_id={id} />
+      <FeatureFlag feature="SubTask">
+        <FeatureFlag.Feature>
+          <Divider />
+          <SubTasks sub_tasks={sub_tasks} task_id={id} />
+        </FeatureFlag.Feature>
+      </FeatureFlag>
       <AddToMyDay id={id} markedToday={marked_today} onToggleAddToMyDay={toggleTaskAddToMyDay} />
       <DueDateInput onSelect={dueDate => updateTaskDueDate(id, dueDate)} dueDate={due_date} />
       <FeatureFlag feature="TaskTagInput">

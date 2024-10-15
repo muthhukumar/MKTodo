@@ -23,6 +23,7 @@ const allFeatures = [
     title: "Show Auto completion suggestion frequency count",
   },
   {id: "ShowTaskSubTaskInfo", title: "Show count of completed sub tasks and subtasks count"},
+  {id: "SubTask", title: "Show Sub tasks and create Sub task input"},
 ] as const
 
 export type Feature = (typeof allFeatures)[number]["id"]
