@@ -9,6 +9,8 @@ export type TTask = {
   due_date: string
   metadata: string
   sub_tasks: Array<SubTask> | null
+  incomplete_subtask_count: number
+  subtask_count: number
 }
 
 export type SubTask = {

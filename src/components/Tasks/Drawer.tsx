@@ -425,7 +425,9 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
         )}
       </div>
       <button
-        className="flex items-center gap-3 mt-5 text-sm"
+        className={clsx("flex items-center gap-3 text-sm", {
+          "mt-7": subTasks.length !== 0 || showCreateSubTaskInput,
+        })}
         onClick={() => setShowCreateSubTaskInput(true)}
       >
         <AiOutlinePlus /> <span>{subTasks.length === 0 ? "Add Step" : "Next Step"}</span>

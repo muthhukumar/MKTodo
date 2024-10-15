@@ -128,6 +128,16 @@ function Task(props: TaskProps) {
               )}
 
               {Boolean(props.due_date) && <DueDateTag value={props.due_date} />}
+              <FeatureFlag feature="ShowTaskSubTaskInfo">
+                <FeatureFlag.Feature>
+                  {props.subtask_count > 0 && (
+                    <SubTaskInfo
+                      totalSubTasks={props.subtask_count}
+                      totalCompletedSubTasks={props.incomplete_subtask_count}
+                    />
+                  )}
+                </FeatureFlag.Feature>
+              </FeatureFlag>
 
               <FeatureFlag feature="TaskTagsView">
                 <FeatureFlag.Feature>
@@ -179,6 +189,20 @@ function Task(props: TaskProps) {
         </FeatureFlag.Feature>
       </FeatureFlag>
     </div>
+  )
+}
+
+function SubTaskInfo({
+  totalSubTasks,
+  totalCompletedSubTasks,
+}: {
+  totalSubTasks: number
+  totalCompletedSubTasks: number
+}) {
+  return (
+    <p className="text-xs text-gray-300">
+      {totalCompletedSubTasks} of {totalSubTasks}
+    </p>
   )
 }
 
