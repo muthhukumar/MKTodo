@@ -3,15 +3,17 @@ import * as Dialog from "@radix-ui/react-dialog"
 
 import clsx from "clsx"
 import {MdOutlineDeleteForever, MdSunny, MdClose, MdOutlineArrowForwardIos} from "react-icons/md"
+import {AiOutlinePlus} from "react-icons/ai"
+import {MdDelete} from "react-icons/md"
 
-import {TTask} from "~/@types"
+import {SubTask, TTask} from "~/@types"
 import {timeAgo, isDateSameAsToday} from "~/utils/date"
 import {useDelay, useOnKeyPress} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
-import {AutoResizeTextarea, CopyToClipboardButton, FeatureFlag, Select} from ".."
+import {AutoResizeTextarea, CopyToClipboardButton, Divider, FeatureFlag, Select} from ".."
 import {extractLinks} from "~/utils/url"
 import {useAudioPlayer} from "~/utils/hooks"
 import doneAudio from "~/assets/audio/ting.mp3"
@@ -29,6 +31,7 @@ export default function Drawer({
   onDismiss,
   marked_today,
   due_date,
+  sub_tasks,
 }: TTask & {
   onDismiss: () => void
   ignoreRef?: React.RefObject<HTMLDivElement>
@@ -140,6 +143,8 @@ export default function Drawer({
           </div>
         </div>
       </div>
+      <Divider />
+      <SubTasks sub_tasks={sub_tasks} task_id={id} />
       <AddToMyDay id={id} markedToday={marked_today} onToggleAddToMyDay={toggleTaskAddToMyDay} />
       <DueDateInput onSelect={dueDate => updateTaskDueDate(id, dueDate)} dueDate={due_date} />
       <FeatureFlag feature="TaskTagInput">
@@ -342,5 +347,157 @@ function DeleteTaskModel({
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
+  )
+}
+
+function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask["sub_tasks"]}) {
+  const [showCreateSubTaskInput, setShowCreateSubTaskInput] = React.useState(false)
+
+  const subTasks = sub_tasks || []
+
+  const router = useRouter()
+
+  const updateSubTaskName = async (subTaskId: number, task: string) => {
+    try {
+      await API.updateSubTaskById({id: subTaskId, task})
+
+      router.invalidate()
+    } catch (error) {
+      handleError({error, defaultMessage: "Failed to update subtask"})
+    }
+  }
+
+  const createSubTask = async (name: string) => {
+    try {
+      await API.createSubTask({task_id, name})
+
+      router.invalidate()
+
+      setShowCreateSubTaskInput(false)
+    } catch (error) {
+      handleError({error, defaultMessage: "Failed to create subtask"})
+    }
+  }
+
+  const deleteSubTask = async (id: number) => {
+    try {
+      await API.deleteSubTaskById(id)
+
+      router.invalidate()
+    } catch (error) {
+      handleError({error, defaultMessage: "Failed to delete subtask"})
+    }
+  }
+
+  const toggleSubTaskCompletedById = async (id: number) => {
+    try {
+      await API.toggleSubTaskCompletedById(id)
+
+      router.invalidate()
+    } catch (error) {
+      handleError({error, defaultMessage: "Failed to toggle subtask"})
+    }
+  }
+
+  const [onChangeName] = useDelay(({subTaskId, value}: {subTaskId: number; value: string}) => {
+    updateSubTaskName(subTaskId, value)
+  }, 3000)
+
+  return (
+    <div className="my-5 px-3">
+      <div className="flex flex-col gap-3">
+        {subTasks.map(st => {
+          return (
+            <SubTaskItem
+              {...st}
+              key={st.id}
+              onToggle={() => toggleSubTaskCompletedById(st.id)}
+              onChange={name => onChangeName({value: name, subTaskId: st.id})}
+              deleteTask={() => deleteSubTask(st.id)}
+            />
+          )
+        })}
+        {showCreateSubTaskInput && (
+          <CreateSubTaskInput
+            onCancel={() => setShowCreateSubTaskInput(false)}
+            onCreate={createSubTask}
+          />
+        )}
+      </div>
+      <button
+        className="flex items-center gap-3 mt-5 text-sm"
+        onClick={() => setShowCreateSubTaskInput(true)}
+      >
+        <AiOutlinePlus /> <span>{subTasks.length === 0 ? "Add Step" : "Next Step"}</span>
+      </button>
+    </div>
+  )
+}
+
+function CreateSubTaskInput({
+  onCreate,
+  onCancel,
+}: {
+  onCreate: (name: string) => void
+  onCancel: () => void
+}) {
+  const [onChange] = useDelay(onCreate, 3000)
+
+  return (
+    <SubTaskItem
+      autoFocus={true}
+      onToggle={() => undefined}
+      completed={false}
+      onChange={onChange}
+      deleteTask={onCancel}
+    />
+  )
+}
+
+interface SubTaskItemProps extends Pick<SubTask, "completed"> {
+  onToggle: () => void
+  id?: number
+  onChange: (name: string) => void
+  name?: string
+  autoFocus?: boolean
+  deleteTask: () => void
+}
+
+function SubTaskItem({
+  id,
+  name,
+  completed,
+  onToggle,
+  onChange,
+  deleteTask,
+  autoFocus = false,
+}: SubTaskItemProps) {
+  const modalRef = React.useRef<HTMLDivElement>(null)
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false)
+
+  return (
+    <div className="flex items-center">
+      <TaskToggleIcon completed={completed} onClick={onToggle} />
+      <input
+        className="w-full bg-inherit ml-2 outline-none"
+        defaultValue={name}
+        onChange={e => onChange(e.target.value)}
+        autoFocus={autoFocus}
+      />
+      <button onClick={() => setShowDeleteModal(true)} className="ml-2">
+        <MdDelete />
+      </button>
+      <DeleteTaskModel
+        name={name ?? ""}
+        id={id || 0}
+        modalRef={modalRef}
+        onDelete={() => {
+          deleteTask()
+          setShowDeleteModal(false)
+        }}
+        open={showDeleteModal}
+        onDismiss={() => setShowDeleteModal(false)}
+      />
+    </div>
   )
 }

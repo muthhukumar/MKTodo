@@ -8,6 +8,15 @@ export type TTask = {
   marked_today: string
   due_date: string
   metadata: string
+  sub_tasks: Array<SubTask> | null
+}
+
+export type SubTask = {
+  id: number
+  name: string
+  completed: boolean
+  created_at: string
+  task_id: number
 }
 
 export type DueDateFilters =

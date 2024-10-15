@@ -245,6 +245,48 @@ async function getTasksNames(cancelTokenSource?: CancelTokenSource) {
   }
 }
 
+async function createSubTask(payload: {name: string; task_id: number}) {
+  try {
+    const response = await axios.post(`/api/v1/task/sub-task/create`, payload)
+
+    return response.data as {message: string; id: number}
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function updateSubTaskById({id, task}: {id: number; task: string}) {
+  try {
+    const response = await axios.post(`/api/v1/sub-task/${id}`, {
+      name: task,
+    })
+
+    return response.data as {message: string}
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function deleteSubTaskById(id: number) {
+  try {
+    const response = await axios.delete(`/api/v1/sub-task/${id}`)
+
+    return response.data as {message: string}
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function toggleSubTaskCompletedById(id: number) {
+  try {
+    const response = await axios.post(`/api/v1/sub-task/${id}/completed/toggle`)
+
+    return response.data as {message: string}
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -261,4 +303,8 @@ export const API = {
   getLogs,
   log,
   getTasksNames,
+  createSubTask,
+  updateSubTaskById,
+  deleteSubTaskById,
+  toggleSubTaskCompletedById,
 }

@@ -274,7 +274,7 @@ export function useAutoCompletion({
     if (isLastCharacterMatches(typedText, "!")) {
       onSuggestionSelect(`${typedText.substring(0, typedText.length - 1)}${word} `)
     } else if (isLastCharacterMatches(typedText, " ")) {
-      onSuggestionSelect(`${typedText}${word}`)
+      onSuggestionSelect(`${typedText}${word} `)
     } else onSuggestionSelect(`${typedText} ${word} `)
   }
 
