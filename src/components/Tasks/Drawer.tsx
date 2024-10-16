@@ -567,19 +567,26 @@ interface RecurringTaskInputProps {
   }) => {}
 }
 
-function recurrencePatternReverseMap(pattern: string) {
+function recurrencePatternReverseMap(pattern: string, interval: string | number) {
+  let result = ""
+
   switch (pattern) {
     case "daily":
-      return "day"
+      result = "day"
+      break
     case "weekly":
-      return "week"
+      result = "week"
+      break
     case "monthly":
-      return "month"
+      result = "month"
+      break
     case "yearly":
-      return "year"
+      result = "year"
+      break
     default:
-      return ""
   }
+
+  return interval === "1" || interval === 1 ? result : result + "s"
 }
 
 function RecurringTaskInput(props: RecurringTaskInputProps) {
@@ -616,7 +623,7 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
           <p>
             <h2 className="font-bold">
               Repeats every {props.recurrenceInterval}{" "}
-              {recurrencePatternReverseMap(props.recurrencePattern)}
+              {recurrencePatternReverseMap(props.recurrencePattern, props.recurrenceInterval)}
             </h2>
           </p>
           <button
