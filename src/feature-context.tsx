@@ -24,6 +24,8 @@ const allFeatures = [
   },
   {id: "ShowTaskSubTaskInfo", title: "Show count of completed sub tasks and subtasks count"},
   {id: "SubTask", title: "Show Sub tasks and create Sub task input"},
+  {id: "RecurringTask", title: "Enable Recurring Task"},
+  {id: "RecurringTaskTag", title: "Show recurring task tag"},
 ] as const
 
 export type Feature = (typeof allFeatures)[number]["id"]

@@ -2,12 +2,18 @@ import * as React from "react"
 import * as Dialog from "@radix-ui/react-dialog"
 
 import clsx from "clsx"
-import {MdOutlineDeleteForever, MdSunny, MdClose, MdOutlineArrowForwardIos} from "react-icons/md"
+import {
+  MdRepeat,
+  MdOutlineDeleteForever,
+  MdSunny,
+  MdClose,
+  MdOutlineArrowForwardIos,
+} from "react-icons/md"
 import {AiOutlinePlus} from "react-icons/ai"
 import {MdDelete} from "react-icons/md"
 
 import {SubTask, TTask} from "~/@types"
-import {timeAgo, isDateSameAsToday} from "~/utils/date"
+import {timeAgo, isDateSameAsToday, getTodayDate, isDateInPast} from "~/utils/date"
 import {useDelay, useOnKeyPress} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
@@ -21,6 +27,8 @@ import {handleError} from "~/utils/error"
 import {options} from "../Select/data"
 import {taskQueue} from "~/utils/task-queue"
 import {useGoBack} from "~/utils/navigation"
+import {isValidNumber} from "~/utils/validate"
+import toast from "react-hot-toast"
 
 export default function Drawer({
   metadata,
@@ -32,6 +40,9 @@ export default function Drawer({
   marked_today,
   due_date,
   sub_tasks,
+  recurrence_pattern,
+  recurrence_interval,
+  start_date,
 }: TTask & {
   onDismiss: () => void
   ignoreRef?: React.RefObject<HTMLDivElement>
@@ -121,9 +132,23 @@ export default function Drawer({
   const [onFocusLeave] = useDelay(updateTaskName)
   const [onChange] = useDelay(updateTaskName, 3000)
 
+  async function updateRecurrenceOfTask(props: {
+    recurrenceInterval: string | number
+    recurrencePattern: string
+    startDate: string
+  }) {
+    try {
+      await API.updateTaskRecurrence({...props, taskId: id})
+
+      router.invalidate()
+    } catch (error) {
+      handleError({error, defaultMessage: "Failed to update task recurrence"})
+    }
+  }
+
   return (
     <div
-      className="w-full border-l border-zinc-700 slide-in fixed right-0 h-screen md:max-w-xs z-[100] min-w-72 max-h-[100vh] py-3 px-3 bg-background"
+      className="w-full border-l border-zinc-700 slide-in fixed right-0 h-screen md:max-w-xs z-[100] min-w-72 max-h-[100vh] overflow-y-auto py-3 px-3 bg-background"
       ref={containerRef}
     >
       <div className="flex items-center w-full mb-3">
@@ -131,7 +156,7 @@ export default function Drawer({
           <div className="flex-[0.1] flex items-center">
             <TaskToggleIcon completed={completed} onClick={() => toggleTask(id)} />
           </div>
-          <div className="flex-[0.9] w-full">
+          <div className="flex-[0.9] w-full max-h-[30vh] overflow-y-auto no-scrollbar">
             <AutoResizeTextarea
               ref={inputRef}
               className="w-full rounded-md bg-background outline-none"
@@ -187,6 +212,16 @@ export default function Drawer({
         open={showDeleteModal}
         onDismiss={() => setShowDeleteModal(false)}
       />
+      <FeatureFlag feature="RecurringTask">
+        <FeatureFlag.Feature>
+          <RecurringTaskInput
+            onSubmit={updateRecurrenceOfTask}
+            startDate={start_date}
+            recurrencePattern={recurrence_pattern}
+            recurrenceInterval={recurrence_interval}
+          />
+        </FeatureFlag.Feature>
+      </FeatureFlag>
     </div>
   )
 }
@@ -454,7 +489,11 @@ function CreateSubTaskInput({
       autoFocus={true}
       onToggle={() => undefined}
       completed={false}
-      onChange={onChange}
+      onChange={(name: string, submit?: boolean) => {
+        if (submit) return onCreate(name)
+
+        onChange(name)
+      }}
       deleteTask={onCancel}
     />
   )
@@ -463,7 +502,7 @@ function CreateSubTaskInput({
 interface SubTaskItemProps extends Pick<SubTask, "completed"> {
   onToggle: () => void
   id?: number
-  onChange: (name: string) => void
+  onChange: (name: string, submit?: boolean) => void
   name?: string
   autoFocus?: boolean
   deleteTask: () => void
@@ -481,17 +520,26 @@ function SubTaskItem({
   const modalRef = React.useRef<HTMLDivElement>(null)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
 
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onChange(inputRef.current?.value ?? "", true)
+
+    if (inputRef.current) inputRef.current.value = ""
+  }
+
   return (
-    <div className="flex items-center">
+    <form className="flex items-center" onSubmit={onSubmit}>
       <TaskToggleIcon completed={completed} onClick={onToggle} />
       <input
+        ref={inputRef}
         className="w-full bg-inherit ml-2 outline-none"
         defaultValue={name}
-        onChange={e => onChange(e.target.value)}
         autoFocus={autoFocus}
       />
       <button onClick={() => setShowDeleteModal(true)} className="ml-2">
-        <MdDelete />
+        <MdDelete size={22} />
       </button>
       <DeleteTaskModel
         name={name ?? ""}
@@ -504,6 +552,143 @@ function SubTaskItem({
         open={showDeleteModal}
         onDismiss={() => setShowDeleteModal(false)}
       />
-    </div>
+    </form>
+  )
+}
+
+interface RecurringTaskInputProps {
+  recurrenceInterval: string | number
+  recurrencePattern: string
+  startDate: string
+  onSubmit: (props: {
+    recurrenceInterval: string | number
+    recurrencePattern: string
+    startDate: string
+  }) => {}
+}
+
+function RecurringTaskInput(props: RecurringTaskInputProps) {
+  const [recurrenceInterval, setRecurrenceInterval] = React.useState(
+    props.recurrenceInterval === 0 ? "" : props.recurrenceInterval,
+  )
+  const [recurrencePattern, setRecurrencePattern] = React.useState(props.recurrencePattern)
+  const [startDate, setStartDate] = React.useState(props.startDate || getTodayDate())
+  const [showInput, setShowInput] = React.useState(false)
+
+  function onRecurrencePatternChange(value: string) {
+    setRecurrencePattern(value)
+
+    if (!recurrenceInterval) return
+  }
+
+  return (
+    <>
+      <Divider />
+      {props.recurrencePattern === "" && (
+        <button
+          className="w-full flex items-center mb-3 gap-3 px-1"
+          onClick={() => setShowInput(state => !state)}
+        >
+          <MdRepeat />
+          <p>Repeat</p>
+        </button>
+      )}
+      {props.recurrencePattern !== "" && Boolean(props.recurrencePattern) && (
+        <div
+          className="w-full flex items-center justify-between mb-3 px-1"
+          onClick={() => setShowInput(state => !state)}
+        >
+          <p>
+            <h2 className="font-bold">
+              Repeats every {props.recurrenceInterval} {props.recurrencePattern}
+            </h2>
+          </p>
+          <button
+            onClick={e => {
+              e.stopPropagation()
+
+              props.onSubmit({
+                recurrenceInterval: 0,
+                recurrencePattern: "",
+                startDate: "",
+              })
+            }}
+          >
+            <MdClose size={15} className="" />
+          </button>
+        </div>
+      )}
+      {showInput && (
+        <div className="mt-3 border border-border p-3 rounded-md">
+          <h2 className="font-bold mb-3">Repeats</h2>
+          <div>
+            <input
+              maxLength={2}
+              value={recurrenceInterval}
+              onChange={e => {
+                const value = e.target.value
+
+                if (!value || isValidNumber(value)) {
+                  setRecurrenceInterval(value)
+                }
+              }}
+              type="text"
+              className="px-1 w-16 border border-border rounded-md mr-3"
+            />
+            <select
+              value={recurrencePattern}
+              onChange={e => onRecurrencePatternChange(e.target.value)}
+            >
+              <option disabled value="">
+                Select
+              </option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+          <div className="flex flex-col mt-3 gap-1">
+            <label htmlFor="startDate">Start date</label>
+            <input
+              type="date"
+              id="startDate"
+              placeholder="Start date"
+              min={getTodayDate()}
+              value={startDate}
+              onChange={e => {
+                if (isDateInPast(new Date())) {
+                  toast.error("Cannot select past date")
+                } else {
+                  setStartDate(e.target.value)
+                }
+              }}
+              className="w-fit px-3 rounded-md"
+            />
+          </div>
+          <div className="mt-3 flex items-center gap-3 justify-end">
+            <button
+              className="bg-red-600 text-sm px-3 py-1 rounded-md"
+              onClick={() => setShowInput(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-blue-600 text-sm px-3 py-1 rounded-md"
+              onClick={() => {
+                props.onSubmit({
+                  recurrenceInterval,
+                  recurrencePattern,
+                  startDate,
+                })
+                setShowInput(false)
+              }}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

@@ -8,7 +8,7 @@ import {FaStar} from "react-icons/fa"
 import {FaRegCircle} from "react-icons/fa6"
 import {twMerge} from "tailwind-merge"
 import {Link, useParams, useRouter} from "@tanstack/react-router"
-import {MdSunny} from "react-icons/md"
+import {MdSunny, MdRepeat} from "react-icons/md"
 import {isDateInPast, isDateSameAsToday, isTaskMoreThanOneMonthOld} from "~/utils/date"
 import {CiCalendar} from "react-icons/ci"
 import {getDueDateDisplayStr} from "~/utils/tasks"
@@ -116,7 +116,7 @@ function Task(props: TaskProps) {
                 <FeatureFlag.Fallback>{props.name}</FeatureFlag.Fallback>
               </FeatureFlag>
             </p>
-            <div className="relative flex items-center gap-x-2">
+            <div className="relative flex items-center gap-x-3">
               {isDateSameAsToday(props.marked_today) && (
                 <div className="text-xs flex items-center gap-1 text-gray-400">
                   <MdSunny size={10} />
@@ -135,6 +135,16 @@ function Task(props: TaskProps) {
                       totalSubTasks={props.subtask_count}
                       totalCompletedSubTasks={props.incomplete_subtask_count}
                     />
+                  )}
+                </FeatureFlag.Feature>
+              </FeatureFlag>
+              <FeatureFlag feature="RecurringTaskTag">
+                <FeatureFlag.Feature>
+                  {props.recurrence_pattern !== "" && (
+                    <div className="flex items-center gap-1 text-blue-400 text-xs">
+                      <MdRepeat size={10} />
+                      <span>Repeat</span>
+                    </div>
                   )}
                 </FeatureFlag.Feature>
               </FeatureFlag>

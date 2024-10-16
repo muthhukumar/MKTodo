@@ -11,6 +11,10 @@ export type TTask = {
   sub_tasks: Array<SubTask> | null
   incomplete_subtask_count: number
   subtask_count: number
+
+  recurrence_interval: number
+  start_date: string
+  recurrence_pattern: string
 }
 
 export type SubTask = {

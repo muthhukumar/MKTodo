@@ -287,6 +287,25 @@ async function toggleSubTaskCompletedById(id: number) {
   }
 }
 
+async function updateTaskRecurrence(props: {
+  recurrenceInterval: string | number
+  recurrencePattern: string
+  startDate: string
+  taskId: number
+}) {
+  try {
+    const response = await axios.post(`/api/v1/task/${props.taskId}/recurrence`, {
+      "recurrence_interval": Number(props.recurrenceInterval),
+      "recurrence_pattern": props.recurrencePattern,
+      "start_date": props.startDate,
+    })
+
+    return response.data as {message: string}
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -307,4 +326,5 @@ export const API = {
   updateSubTaskById,
   deleteSubTaskById,
   toggleSubTaskCompletedById,
+  updateTaskRecurrence,
 }
