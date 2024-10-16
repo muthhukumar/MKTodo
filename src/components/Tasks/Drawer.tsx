@@ -567,6 +567,21 @@ interface RecurringTaskInputProps {
   }) => {}
 }
 
+function recurrencePatternReverseMap(pattern: string) {
+  switch (pattern) {
+    case "daily":
+      return "day"
+    case "weekly":
+      return "week"
+    case "monthly":
+      return "month"
+    case "yearly":
+      return "year"
+    default:
+      return ""
+  }
+}
+
 function RecurringTaskInput(props: RecurringTaskInputProps) {
   const [recurrenceInterval, setRecurrenceInterval] = React.useState(
     props.recurrenceInterval === 0 ? "" : props.recurrenceInterval,
@@ -600,7 +615,8 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
         >
           <p>
             <h2 className="font-bold">
-              Repeats every {props.recurrenceInterval} {props.recurrencePattern}
+              Repeats every {props.recurrenceInterval}{" "}
+              {recurrencePatternReverseMap(props.recurrencePattern)}
             </h2>
           </p>
           <button
@@ -612,9 +628,11 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
                 recurrencePattern: "",
                 startDate: "",
               })
+
+              setShowInput(false)
             }}
           >
-            <MdClose size={15} className="" />
+            <MdClose size={15} />
           </button>
         </div>
       )}
