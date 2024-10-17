@@ -20,7 +20,7 @@ interface TasksProps {
   title?: string
   tasks: Array<TTask>
   type: TaskTypes
-  source?: "online" | "offline"
+  //source?: "online" | "offline"
   showHeader?: boolean
   showTaskCreate?: boolean
   autoCompletionData?: Array<string>
@@ -34,7 +34,7 @@ export default function Tasks(props: TasksProps) {
   const {
     showFilters,
     title,
-    source,
+    //source,
     showHeader = true,
     showTaskCreate = true,
     autoCompletionData = [],
@@ -139,7 +139,7 @@ export default function Tasks(props: TasksProps) {
               pendingTasks={pendingTasks}
               tagFilterOptions={tagFilterOptions}
               title={title || "Tasks"}
-              source={source}
+              //source={source}
             />
           )}
           <div className={clsx("min-h-screen my-1 flex flex-col gap-[2px]")}>

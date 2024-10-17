@@ -2,31 +2,59 @@ import * as React from "react"
 import {SettingsStore} from "./utils/persistent-storage"
 
 const allFeatures = [
-  {id: "TaskTagsView", title: "Show Task Tags"},
-  {id: "TaskTagInput", title: "Show Task Tags Input"},
-  {id: "ImportantTaskView", title: "Show Important List"},
-  {id: "ToggleTaskImportant", title: "Toggle Task Importance"},
-  {id: "LinkifyLinkInTask", title: "Convert Links in Task Description"},
-  {id: "LinksListDrawer", title: "Show Links List in Drawer"},
-  {id: "TasksCountInTitle", title: "Show Task Count in Title"},
-  {id: "TagFilter", title: "Enable Tag Filter"},
-  {id: "TaskTypeInputInCreateTask", title: "Enable Task Type Input in Create Task"},
-  {id: "CopyTaskTextInDrawer", title: "Copy Task Text in Drawer"},
-  {id: "SyncingNotifier", title: "Show Syncing Notifier"},
-  {id: "TaskStaleTag", title: "Show Stale Task Tag"},
-  {id: "ShowCompletedTasks", title: "Show Completed Tasks"},
-  {id: "PreLoadTasks", title: "Pre load tasks"},
-  {id: "Font", title: "Change Font", defaultValue: "Inter"},
-  {id: "TaskNameAutoComplete", title: "Auto complete Task Name"},
+  {id: "TaskTagsView", title: "Show Tags for Tasks", category: "Display"},
+  {id: "TaskTagInput", title: "Enable Tag Input for Tasks", category: "Feature"},
+  {id: "ImportantTaskView", title: "Show Important Tasks List", category: "Feature"},
+  {id: "ToggleTaskImportant", title: "Allow Marking Tasks as Important", category: "Feature"},
+  {id: "LinkifyLinkInTask", title: "Convert Links in Task Descriptions", category: "Feature"},
+  {id: "LinksListDrawer", title: "Show Links in Drawer", category: "Display"},
+  {id: "TasksCountInTitle", title: "Display Task Count in Title", category: "Display"},
+  {id: "TagFilter", title: "Enable Filtering by Tag", category: "Feature"},
+  {
+    id: "TaskTypeInputInCreateTask",
+    title: "Enable Task Type Input on Creation",
+    category: "Feature",
+  },
+  {id: "CopyTaskTextInDrawer", title: "Enable Copying Task Text from Drawer", category: "Feature"},
+  {id: "SyncingNotifier", title: "Show Syncing Notification", category: "Display"},
+  {id: "TaskStaleTag", title: "Show Stale Task Tags", category: "Display"},
+  {id: "ShowCompletedTasks", title: "Show Completed Tasks", category: "Display"},
+  {id: "PreLoadTasks", title: "Preload Tasks for Better Performance", category: "Feature"},
+  {id: "Font", title: "Change Font Style", defaultValue: "Inter", category: "Display"},
+  {id: "TaskNameAutoComplete", title: "Enable Task Name Autocomplete", category: "Feature"},
   {
     id: "AutoCompletionSuggestionFrequencyCount",
-    title: "Show Auto completion suggestion frequency count",
+    title: "Show Autocomplete Suggestion Frequency",
+    category: "Display",
   },
-  {id: "ShowTaskSubTaskInfo", title: "Show count of completed sub tasks and subtasks count"},
-  {id: "SubTask", title: "Show Sub tasks and create Sub task input"},
-  {id: "RecurringTask", title: "Enable Recurring Task"},
-  {id: "RecurringTaskTag", title: "Show recurring task tag"},
+  {id: "ShowTaskSubTaskInfo", title: "Show Subtask Completion Info", category: "Display"},
+  {id: "SubTask", title: "Enable Subtasks and Subtask Input", category: "Feature"},
+  {id: "RecurringTask", title: "Enable Recurring Tasks", category: "Feature"},
+  {id: "RecurringTaskTag", title: "Show Recurring Task Tags", category: "Display"},
 ] as const
+
+// TODO: fix the type for this
+function arrangeFeatureByCategory() {
+  const result: Record<string, Array<{id: string; title: string}>> = {}
+
+  for (let feature of allFeatures) {
+    if (!(feature.category in result)) {
+      result[feature.category] = []
+    }
+
+    result[feature.category].push({id: feature.id, title: feature.title})
+  }
+
+  const finalResult: Array<{category: string; features: Array<{id: string; title: string}>}> = []
+
+  Object.keys(result).forEach(k => {
+    finalResult.push({category: k, features: result[k]})
+  })
+
+  return finalResult
+}
+
+export const allFeaturesByCategory = arrangeFeatureByCategory()
 
 export type Feature = (typeof allFeatures)[number]["id"]
 

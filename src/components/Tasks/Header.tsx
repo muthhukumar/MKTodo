@@ -8,7 +8,7 @@ import {invariant} from "~/utils/invariants"
 
 interface TaskHeaderProps {
   title: string
-  source?: string
+  //source?: string
   pendingTasks: TTask[]
   tasks: TTask[]
   tagFilterOptions: any[]
@@ -21,7 +21,7 @@ interface TaskHeaderProps {
 function TaskHeader(props: TaskHeaderProps) {
   const {
     title,
-    source = null,
+    //source = null,
     tagFilterOptions,
     pendingTasks,
     tasks,
@@ -38,7 +38,7 @@ function TaskHeader(props: TaskHeaderProps) {
         <h1 className="flex items-center gap-2 text-2xl font-bold">
           <span>
             {title}
-            <span className="font-normal text-xs ml-2">{source}</span>
+            {/* <span className="font-normal text-xs ml-2">{source}</span> */}
           </span>
           <FeatureFlag feature="TasksCountInTitle">
             <FeatureFlag.Feature>

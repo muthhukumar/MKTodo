@@ -1,8 +1,8 @@
 import {Link, createFileRoute} from "@tanstack/react-router"
 import clsx from "clsx"
 import {useAuth} from "~/auth-context"
-import {Divider, Logout, StandAlonePage, Version} from "~/components"
-import {useFeature, useFeatureValue} from "~/feature-context"
+import {Divider, FeatureFlag, Logout, StandAlonePage, Version} from "~/components"
+import {Feature, allFeaturesByCategory, useFeature, useFeatureValue} from "~/feature-context"
 import {usePing} from "~/utils/hooks"
 
 export const Route = createFileRoute("/_standalone/settings")({
@@ -51,44 +51,54 @@ function Settings() {
       <Divider />
       <div>
         <strong>Appearance</strong>
-        <div className="flex flex-col mt-3">
-          <label>Change Font</label>
-          <div>
-            <select
-              className="mt-1"
-              value={fontFeature?.value ?? "Inter"}
-              onChange={e => changeFont(e.target.value)}
-              style={{
-                // @ts-ignore
-                "--primary-font": fontFeature?.value || "Inter",
-              }}
-            >
-              <option value="Inter">Open Sans</option>
-              <option value="OpenSans">Inter</option>
-            </select>
-          </div>
-        </div>
+        <FeatureFlag feature="Font">
+          <FeatureFlag.Feature>
+            <div className="flex flex-col mt-3">
+              <label>Change Font</label>
+              <div>
+                <select
+                  className="mt-1"
+                  value={fontFeature?.value ?? "Inter"}
+                  onChange={e => changeFont(e.target.value)}
+                  style={{
+                    // @ts-ignore
+                    "--primary-font": fontFeature?.value || "Inter",
+                  }}
+                >
+                  <option value="Inter">Open Sans</option>
+                  <option value="OpenSans">Inter</option>
+                </select>
+              </div>
+            </div>
+          </FeatureFlag.Feature>
+        </FeatureFlag>
       </div>
       <Divider />
       <div>
-        <strong>General</strong>
-        <div className="mt-3 flex-col flex">
-          {features.map(sf => {
-            return (
-              <div key={sf.id} className="py-1 flex items-center justify-between">
-                <label htmlFor={sf.id}>{sf.title}</label>
-                <input
-                  type="checkbox"
-                  id={sf.id}
-                  checked={sf.enable}
-                  onChange={() => toggleFeature(sf.id)}
-                />
+        {allFeaturesByCategory.map(f => {
+          return (
+            <div key={f.category}>
+              <strong className="text-xl">{f.category}</strong>
+              <div className="mt-3 flex-col flex">
+                {f.features.map(sf => {
+                  return (
+                    <div key={sf.id} className="py-1 flex items-center justify-between">
+                      <label htmlFor={sf.id}>{sf.title}</label>
+                      <input
+                        type="checkbox"
+                        id={sf.id}
+                        checked={features.find(f => f.id === sf.id)?.enable || false}
+                        onChange={() => toggleFeature(sf.id as Feature)}
+                      />
+                    </div>
+                  )
+                })}
               </div>
-            )
-          })}
-        </div>
+              <Divider />
+            </div>
+          )
+        })}
       </div>
-      <Divider />
       <Link
         to="/logs"
         search={{

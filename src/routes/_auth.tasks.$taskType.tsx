@@ -97,7 +97,7 @@ function AllTasks() {
   return (
     <>
       <Outlet />
-      <Tasks {...props} tasks={tasks} source={"online"} autoCompletionData={autoCompletionData} />
+      <Tasks {...props} tasks={tasks} autoCompletionData={autoCompletionData} />
     </>
   )
 }
