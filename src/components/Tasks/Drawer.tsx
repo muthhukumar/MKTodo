@@ -170,19 +170,43 @@ export default function Drawer({
       </div>
       <FeatureFlag feature="SubTask">
         <FeatureFlag.Feature>
-          <Divider />
+          <Divider space="sm" />
           <SubTasks sub_tasks={sub_tasks} task_id={id} />
         </FeatureFlag.Feature>
       </FeatureFlag>
+      <Divider space="sm" />
       <AddToMyDay id={id} markedToday={marked_today} onToggleAddToMyDay={toggleTaskAddToMyDay} />
+      <Divider space="sm" />
       <DueDateInput onSelect={dueDate => updateTaskDueDate(id, dueDate)} dueDate={due_date} />
+
+      <Divider space="sm" />
+      <FeatureFlag feature="RecurringTask">
+        <FeatureFlag.Feature>
+          <RecurringTaskInput
+            onSubmit={updateRecurrenceOfTask}
+            startDate={start_date}
+            recurrencePattern={recurrence_pattern}
+            recurrenceInterval={recurrence_interval}
+          />
+        </FeatureFlag.Feature>
+      </FeatureFlag>
+      <Divider space="sm" />
       <FeatureFlag feature="TaskTagInput">
         <FeatureFlag.Feature>
-          <TaskMetaTag metadata={metadata} id={id} updateMetadata={updateTaskMetadata} key={id} />
+          <div className="py-3">
+            <TaskMetaTag metadata={metadata} id={id} updateMetadata={updateTaskMetadata} key={id} />
+          </div>
         </FeatureFlag.Feature>
       </FeatureFlag>
       <FeatureFlag feature="LinksListDrawer">
-        <FeatureFlag.Feature>{links.length > 0 && <Links links={links} />}</FeatureFlag.Feature>
+        <FeatureFlag.Feature>
+          {links.length > 0 && (
+            <>
+              <Divider space="sm" />
+              <Links links={links} />
+            </>
+          )}
+        </FeatureFlag.Feature>
       </FeatureFlag>
 
       <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
@@ -212,16 +236,6 @@ export default function Drawer({
         open={showDeleteModal}
         onDismiss={() => setShowDeleteModal(false)}
       />
-      <FeatureFlag feature="RecurringTask">
-        <FeatureFlag.Feature>
-          <RecurringTaskInput
-            onSubmit={updateRecurrenceOfTask}
-            startDate={start_date}
-            recurrencePattern={recurrence_pattern}
-            recurrenceInterval={recurrence_interval}
-          />
-        </FeatureFlag.Feature>
-      </FeatureFlag>
     </div>
   )
 }
@@ -334,9 +348,7 @@ function AddToMyDay(props: {
 }) {
   return (
     <button
-      className={clsx(
-        "border-y w-full py-3 border-border text-zinc-400 px-2 flex items-center gap-4 text-sm",
-      )}
+      className={clsx("w-full py-3 text-zinc-400 px-2 flex items-center gap-4 text-sm")}
       onClick={e => {
         props.onToggleAddToMyDay(props.id)
 
@@ -607,10 +619,9 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
 
   return (
     <>
-      <Divider />
       {props.recurrencePattern === "" && (
         <button
-          className="w-full flex items-center mb-3 gap-3 px-1"
+          className="w-full flex items-center py-3 gap-3 px-1"
           onClick={() => setShowInput(state => !state)}
         >
           <MdRepeat />
@@ -619,7 +630,7 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
       )}
       {props.recurrencePattern !== "" && Boolean(props.recurrencePattern) && (
         <div
-          className="w-full flex items-center justify-between mb-3 px-1"
+          className="py-3 w-full flex items-center justify-between mb-3 px-1"
           onClick={() => setShowInput(state => !state)}
         >
           <p>
