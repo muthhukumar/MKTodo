@@ -530,17 +530,19 @@ function SubTaskItem({
   }
 
   return (
-    <form className="flex items-center" onSubmit={onSubmit}>
-      <TaskToggleIcon completed={completed} onClick={onToggle} />
-      <input
-        ref={inputRef}
-        className="w-full bg-inherit ml-2 outline-none"
-        defaultValue={name}
-        autoFocus={autoFocus}
-      />
-      <button onClick={() => setShowDeleteModal(true)} className="ml-2">
-        <MdDelete size={22} />
-      </button>
+    <>
+      <form className="flex items-center" onSubmit={onSubmit}>
+        <TaskToggleIcon completed={completed} onClick={onToggle} />
+        <input
+          ref={inputRef}
+          className="w-full bg-inherit ml-2 outline-none"
+          defaultValue={name}
+          autoFocus={autoFocus}
+        />
+        <button type="button" onClick={() => setShowDeleteModal(true)} className="ml-2">
+          <MdDelete size={22} />
+        </button>
+      </form>
       <DeleteTaskModel
         name={name ?? ""}
         id={id || 0}
@@ -552,7 +554,7 @@ function SubTaskItem({
         open={showDeleteModal}
         onDismiss={() => setShowDeleteModal(false)}
       />
-    </form>
+    </>
   )
 }
 
