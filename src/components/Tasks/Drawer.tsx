@@ -209,7 +209,7 @@ export default function Drawer({
         </FeatureFlag.Feature>
       </FeatureFlag>
 
-      <div className="p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
+      <div className="z-10 p-5 absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <button onClick={goBack}>
             <MdOutlineArrowForwardIos size={18} />
@@ -455,7 +455,7 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
   }, 3000)
 
   return (
-    <div className="my-5 px-3">
+    <div className="my-5 px-2">
       <div className="flex flex-col gap-3">
         {subTasks.map(st => {
           return (
@@ -476,7 +476,7 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
         )}
       </div>
       <button
-        className={clsx("flex items-center gap-3 text-sm", {
+        className={clsx("flex items-center gap-4 text-sm text-zinc-400", {
           "mt-7": subTasks.length !== 0 || showCreateSubTaskInput,
         })}
         onClick={() => setShowCreateSubTaskInput(true)}
@@ -618,10 +618,10 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
   }
 
   return (
-    <>
+    <div className="relative">
       {props.recurrencePattern === "" && (
         <button
-          className="w-full flex items-center py-3 gap-3 px-1"
+          className="text-zinc-400 text-sm w-full flex items-center py-3 gap-3 px-2"
           onClick={() => setShowInput(state => !state)}
         >
           <MdRepeat />
@@ -630,7 +630,7 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
       )}
       {props.recurrencePattern !== "" && Boolean(props.recurrencePattern) && (
         <div
-          className="py-3 w-full flex items-center justify-between mb-3 px-1"
+          className="text-zinc-400 py-3 w-full flex items-center justify-between mb-3 pl-2"
           onClick={() => setShowInput(state => !state)}
         >
           <p>
@@ -657,7 +657,7 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
         </div>
       )}
       {showInput && (
-        <div className="mt-3 border border-border p-3 rounded-md">
+        <div className="bg-background z-20 absolute top-full left-0 right-0 mt-3 border border-border p-3 rounded-md">
           <h2 className="font-bold mb-3">Repeats</h2>
           <div>
             <input
@@ -704,15 +704,15 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
               className="w-fit px-3 rounded-md"
             />
           </div>
-          <div className="mt-3 flex items-center gap-3 justify-end">
+          <div className="mt-3 flex items-center gap-1 justify-end">
             <button
-              className="bg-red-600 text-sm px-3 py-1 rounded-md"
+              className="bg-item-background text-sm px-3 py-1 rounded-md"
               onClick={() => setShowInput(false)}
             >
               Cancel
             </button>
             <button
-              className="bg-blue-600 text-sm px-3 py-1 rounded-md"
+              className="bg-blue-500 text-sm px-3 py-1 rounded-md"
               onClick={() => {
                 props.onSubmit({
                   recurrenceInterval,
@@ -722,11 +722,11 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
                 setShowInput(false)
               }}
             >
-              Submit
+              Save
             </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }

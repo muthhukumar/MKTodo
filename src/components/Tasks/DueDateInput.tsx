@@ -27,7 +27,7 @@ export default function DueDateInput({onSelect, dueDate}: DueDateInputProps) {
   const overdue = dueDate ? isDateInPast(dueDate) : false
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex items-center">
         <button
           className={clsx("w-full px-2 text-sm flex my-3 items-center gap-3 text-zinc-400", {
@@ -70,7 +70,7 @@ function DueDateOptions(props: DueDateOptionsProps) {
   const [date, setDate] = React.useState("")
 
   return (
-    <div className="border border-border rounded-md bg-background p-1">
+    <div className="absolute left-0 right-0 top-full border border-border rounded-md bg-background z-20 p-1">
       <DueDateOption
         Icon={BsCalendar4Event}
         title="Today"
@@ -106,7 +106,7 @@ function DueDateOptions(props: DueDateOptionsProps) {
               className="bg-item-background border border-border rounded-md px-2"
               onClick={() => setShow(false)}
             >
-              cancel
+              Cancel
             </button>
             <button
               className="rounded-md bg-blue-500 px-2"
@@ -116,7 +116,7 @@ function DueDateOptions(props: DueDateOptionsProps) {
                 onSelect(date)
               }}
             >
-              save
+              Save
             </button>
           </div>
         }

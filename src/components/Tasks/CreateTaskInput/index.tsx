@@ -54,7 +54,7 @@ function CreateTaskInput(props: CreateTaskInputProps) {
     setNewTasks(state => [...state, {name: currentTask, status: "started"}])
 
     try {
-      await taskQueue.enqueue(API.createTask.bind(null, createTask(taskType, currentTask)))
+      await taskQueue.enqueue(() => API.createTask(createTask(taskType, currentTask)))
 
       setNewTasks(state => state.filter(t => t.name !== currentTask))
 

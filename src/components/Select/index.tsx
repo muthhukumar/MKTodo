@@ -90,7 +90,7 @@ export default function Select(props: SelectProps) {
           )}
         </div>
         {showOptions && (
-          <div className="flex flex-col absolute top-[110%] left-0 right-0 bg-black border border-border rounded-md p-3 gap-3 max-h-64 overflow-y-scroll">
+          <div className="flex flex-col absolute top-[110%] left-0 right-0 bg-black border border-border rounded-md p-3 gap-3 z-20 max-h-64 overflow-y-scroll">
             <SelectAllOption
               checked={isEveryItemSelected(data, selectedOptions)}
               onChange={() => handleOptionToggle("all")}
