@@ -49,7 +49,7 @@ export default function DueDateInput({onSelect, dueDate}: DueDateInputProps) {
               setShow(false)
               onSelect("")
             }}
-            className="ml-auto"
+            className="ml-auto text-zinc-400"
           >
             <MdClose size={15} className="" />
           </button>

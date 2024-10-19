@@ -243,7 +243,7 @@ export function TaskToggleIcon({
   onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }) {
   return (
-    <button onClick={onClick} className="w-[24px]">
+    <button onClick={onClick} type="button" className="w-[24px]">
       {!completed ? (
         <FaRegCircle size={18} className="text-zinc-400 mr-5" />
       ) : (

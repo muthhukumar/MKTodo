@@ -348,7 +348,7 @@ function AddToMyDay(props: {
 }) {
   return (
     <button
-      className={clsx("w-full py-3 text-zinc-400 px-2 flex items-center gap-4 text-sm")}
+      className={clsx("w-full py-3 text-zinc-400 pl-2 flex items-center gap-4 text-sm")}
       onClick={e => {
         props.onToggleAddToMyDay(props.id)
 
@@ -357,7 +357,7 @@ function AddToMyDay(props: {
     >
       <MdSunny size={12} />
       <span>{isDateSameAsToday(props.markedToday) ? "Added to my day" : "Add to my day"}</span>
-      {isDateSameAsToday(props.markedToday) && <MdClose size={12} className="ml-auto" />}
+      {isDateSameAsToday(props.markedToday) && <MdClose className="ml-auto" />}
     </button>
   )
 }
