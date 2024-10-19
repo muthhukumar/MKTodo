@@ -14,7 +14,7 @@ import {MdDelete} from "react-icons/md"
 
 import {SubTask, TTask} from "~/@types"
 import {timeAgo, isDateSameAsToday, getTodayDate, isDateInPast} from "~/utils/date"
-import {useDelay, useOnKeyPress} from "~/utils/hooks"
+import {useDelay, useOnKeyPress, useOnMousePull} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
@@ -64,6 +64,8 @@ export default function Drawer({
     callback: onDismiss,
     validateKey: e => e.key === "Escape",
   })
+
+  useOnMousePull({ref: containerRef}, router.invalidate)
 
   async function updateTaskName(value: string) {
     if (name === value) return

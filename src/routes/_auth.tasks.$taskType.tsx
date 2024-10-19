@@ -1,5 +1,5 @@
-// import * as React from "react"
-import {createFileRoute, Outlet, redirect} from "@tanstack/react-router"
+import * as React from "react"
+import {createFileRoute, Outlet, redirect, useRouter} from "@tanstack/react-router"
 import {Tasks} from "~/components"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
@@ -10,6 +10,7 @@ import {uuid} from "~/utils"
 import {getTaskPageMetaData} from "~/utils/tasks"
 import {useAsyncFilteredTasks} from "~/utils/tasks/hooks"
 import {z} from "zod"
+import {useOnMousePull} from "~/utils/hooks"
 
 const plannedFilter = z.object({
   filter: z
@@ -94,10 +95,15 @@ function AllTasks() {
 
   tasks = taskType === "planned" ? filteredTasks : tasks
 
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  const router = useRouter()
+
+  useOnMousePull({ref: containerRef}, router.invalidate)
+
   return (
-    <>
+    <div ref={containerRef}>
       <Outlet />
       <Tasks {...props} tasks={tasks} autoCompletionData={autoCompletionData} />
-    </>
+    </div>
   )
 }

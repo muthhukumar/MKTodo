@@ -4,6 +4,7 @@ import {logger} from "./logger"
 import {getVersion} from "@tauri-apps/api/app"
 import {AutoCompleteHashType, autocomplete, buildHash} from "./autocomplete"
 import {useFeatureValue} from "~/feature-context"
+import {calculatePartValue} from "./math"
 
 export function useOutsideAlerter(
   ref: React.RefObject<any>,
@@ -293,4 +294,56 @@ export function useAutoCompletion({
   )
 
   return {wordSuggestions, onWordSelect}
+}
+
+export function useOnMousePull<T extends HTMLElement>(
+  {ref, pullThresholdPercentage = 35}: {ref: React.RefObject<T>; pullThresholdPercentage?: number},
+  callback: () => void,
+) {
+  const mouseDown = React.useRef(false)
+  const mouseYStart = React.useRef<number | null>(null)
+  const callbackCalled = React.useRef(false)
+
+  React.useEffect(() => {
+    if (!ref.current) return
+
+    function onMouseDown(e: MouseEvent) {
+      mouseDown.current = true
+
+      mouseYStart.current = e.clientY
+
+      callbackCalled.current = false
+    }
+
+    function onMouseUp() {
+      mouseDown.current = false
+
+      mouseYStart.current = null
+
+      callbackCalled.current = false
+    }
+
+    function onMouseMove(event: MouseEvent) {
+      if (!mouseYStart.current) return
+
+      const maxPullThreshold = calculatePartValue(pullThresholdPercentage, window.innerHeight)
+
+      if (event.clientY - mouseYStart.current > maxPullThreshold && !callbackCalled.current) {
+        callback()
+        callbackCalled.current = true
+      }
+    }
+
+    ref.current.addEventListener("mousedown", onMouseDown)
+    ref.current.addEventListener("mouseup", onMouseUp)
+    ref.current.addEventListener("mousemove", onMouseMove)
+
+    return () => {
+      if (!ref.current) return
+
+      ref.current.removeEventListener("mousedown", onMouseDown)
+      ref.current.removeEventListener("mouseup", onMouseUp)
+      ref.current.removeEventListener("mousemove", onMouseMove)
+    }
+  }, [])
 }

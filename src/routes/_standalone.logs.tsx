@@ -12,6 +12,7 @@ import {handleError} from "~/utils/error"
 import {createTask} from "~/utils/tasks"
 import toast from "react-hot-toast"
 import {invariant} from "~/utils/invariants"
+import {useOnMousePull} from "~/utils/hooks"
 
 export const Route = createFileRoute("/_standalone/logs")({
   component: Logs,
@@ -68,37 +69,69 @@ function Logs() {
     }
   }
 
+  const containerRef = React.useRef<HTMLDivElement>(null)
+
+  useOnMousePull({ref: containerRef, pullThresholdPercentage: 30}, router.invalidate)
+
   return (
-    <StandAlonePage title="Logs">
-      <p className="text-center my-2">
-        Total <strong>{filteredLogs.length}</strong> logs found
-      </p>
-      <div className="w-full sticky top-12 left-0 right-0 bg-background py-1">
-        <select value={logLevel} onChange={e => setLogLevel(e.target.value)}>
-          <option value="" disabled>
-            Select LogLevel
-          </option>
-          <option value="debug">debug</option>
-          <option value="info">info</option>
-          <option value="warn">warn</option>
-          <option value="error">error</option>
-        </select>
-        <button
-          onClick={() => router.invalidate()}
-          className="text-black bg-white rounded-md px-3 ml-2"
-        >
-          Refresh
-        </button>
-      </div>
-      <Divider />
-      <div>
-        <p className="font-bold text-lg mb-2">Queued Logs</p>
+    // TODO: remove this div and pass the ref directly to the standalone page
+    <div ref={containerRef}>
+      <StandAlonePage title="Logs">
+        <p className="text-center my-2">
+          Total <strong>{filteredLogs.length}</strong> logs found
+        </p>
+        <div className="w-full sticky top-12 left-0 right-0 bg-background py-1">
+          <select value={logLevel} onChange={e => setLogLevel(e.target.value)}>
+            <option value="" disabled>
+              Select LogLevel
+            </option>
+            <option value="debug">debug</option>
+            <option value="info">info</option>
+            <option value="warn">warn</option>
+            <option value="error">error</option>
+          </select>
+          <button
+            onClick={() => router.invalidate()}
+            className="text-black bg-white rounded-md px-3 ml-2"
+          >
+            Refresh
+          </button>
+        </div>
+        <Divider />
+        <div>
+          <p className="font-bold text-lg mb-2">Queued Logs</p>
+          <div className="flex flex-col gap-3">
+            {queuedLogs.length === 0 && <p>No logs queued</p>}
+            {queuedLogs.map((l, idx) => {
+              const level = l.level.toLowerCase()
+              return (
+                <p key={idx} className="break-all">
+                  <span className="font-bold">[{format24Hour(l.created_at)}] </span>
+                  <span
+                    className={clsx("font-bold", {
+                      "text-blue-400": level === "debug",
+                      "text-green-400": level === "info",
+                      "text-yellow-400": level === "warn",
+                      "text-red-400": level === "error",
+                    })}
+                  >
+                    [{level}]
+                  </span>{" "}
+                  <span className="text-zinc-300">{l.log}</span>
+                </p>
+              )
+            })}
+          </div>
+        </div>
+        <Divider />
         <div className="flex flex-col gap-3">
-          {queuedLogs.length === 0 && <p>No logs queued</p>}
-          {queuedLogs.map((l, idx) => {
+          {filteredLogs.map(l => {
             const level = l.level.toLowerCase()
             return (
-              <p key={idx} className="break-all">
+              <div key={l.id} className="break-all">
+                <button className="mr-1" onClick={() => createTaskFromLog(l)}>
+                  <AiOutlinePlus />
+                </button>
                 <span className="font-bold">[{format24Hour(l.created_at)}] </span>
                 <span
                   className={clsx("font-bold", {
@@ -111,36 +144,11 @@ function Logs() {
                   [{level}]
                 </span>{" "}
                 <span className="text-zinc-300">{l.log}</span>
-              </p>
+              </div>
             )
           })}
         </div>
-      </div>
-      <Divider />
-      <div className="flex flex-col gap-3">
-        {filteredLogs.map(l => {
-          const level = l.level.toLowerCase()
-          return (
-            <div key={l.id} className="break-all">
-              <button className="mr-1" onClick={() => createTaskFromLog(l)}>
-                <AiOutlinePlus />
-              </button>
-              <span className="font-bold">[{format24Hour(l.created_at)}] </span>
-              <span
-                className={clsx("font-bold", {
-                  "text-blue-400": level === "debug",
-                  "text-green-400": level === "info",
-                  "text-yellow-400": level === "warn",
-                  "text-red-400": level === "error",
-                })}
-              >
-                [{level}]
-              </span>{" "}
-              <span className="text-zinc-300">{l.log}</span>
-            </div>
-          )
-        })}
-      </div>
-    </StandAlonePage>
+      </StandAlonePage>
+    </div>
   )
 }
