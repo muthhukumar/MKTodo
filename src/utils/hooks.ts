@@ -334,6 +334,43 @@ export function useOnMousePull<T extends HTMLElement>(
       }
     }
 
+    // TODO: refactor this later
+
+    function onTouchStart(e: TouchEvent) {
+      mouseDown.current = true
+
+      const touch = e.touches[0]
+
+      mouseYStart.current = touch.clientY
+
+      callbackCalled.current = false
+    }
+
+    function onTouchEnd() {
+      mouseDown.current = false
+
+      mouseYStart.current = null
+
+      callbackCalled.current = false
+    }
+
+    function onTouchMove(event: TouchEvent) {
+      if (!mouseYStart.current) return
+
+      const maxPullThreshold = calculatePartValue(pullThresholdPercentage, window.innerHeight)
+
+      const touch = event.touches[0]
+
+      if (touch.clientY - mouseYStart.current > maxPullThreshold && !callbackCalled.current) {
+        callback()
+        callbackCalled.current = true
+      }
+    }
+
+    ref.current.addEventListener("touchstart", onTouchStart)
+    ref.current.addEventListener("touchend", onTouchEnd)
+    ref.current.addEventListener("touchmove", onTouchMove)
+
     ref.current.addEventListener("mousedown", onMouseDown)
     ref.current.addEventListener("mouseup", onMouseUp)
     ref.current.addEventListener("mousemove", onMouseMove)
@@ -344,6 +381,10 @@ export function useOnMousePull<T extends HTMLElement>(
       ref.current.removeEventListener("mousedown", onMouseDown)
       ref.current.removeEventListener("mouseup", onMouseUp)
       ref.current.removeEventListener("mousemove", onMouseMove)
+
+      ref.current.removeEventListener("touchstart", onTouchStart)
+      ref.current.removeEventListener("touchend", onTouchEnd)
+      ref.current.removeEventListener("touchmove", onTouchMove)
     }
   }, [])
 }
