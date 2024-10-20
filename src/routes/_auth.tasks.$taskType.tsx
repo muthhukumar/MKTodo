@@ -11,7 +11,7 @@ import {getTaskPageMetaData} from "~/utils/tasks"
 import {useAsyncFilteredTasks} from "~/utils/tasks/hooks"
 import {z} from "zod"
 import {useOnMousePull} from "~/utils/hooks"
-import {refreshingNotifier} from "~/utils/ui"
+import {notifier} from "~/utils/ui"
 import {useEnabledFeatureCallback} from "~/feature-context"
 
 const plannedFilter = z.object({
@@ -103,7 +103,7 @@ function AllTasks() {
   const refresh = useEnabledFeatureCallback("PullToRefresh", () => {
     router.invalidate()
 
-    refreshingNotifier.show("Refreshing")
+    notifier.show("Refreshing")
   })
 
   useOnMousePull({ref: containerRef}, refresh)

@@ -16,7 +16,6 @@ const allFeatures = [
     category: "Feature",
   },
   {id: "CopyTaskTextInDrawer", title: "Enable Copying Task Text from Drawer", category: "Feature"},
-  {id: "SyncingNotifier", title: "Show Syncing Notification", category: "Display"},
   {id: "TaskStaleTag", title: "Show Stale Task Tags", category: "Display"},
   {id: "ShowCompletedTasks", title: "Show Completed Tasks", category: "Display"},
   {id: "PreLoadTasks", title: "Preload Tasks for Better Performance", category: "Feature"},
@@ -31,7 +30,7 @@ const allFeatures = [
   {id: "SubTask", title: "Enable Subtasks and Subtask Input", category: "Feature"},
   {id: "RecurringTask", title: "Enable Recurring Tasks", category: "Feature"},
   {id: "RecurringTaskTag", title: "Show Recurring Task Tags", category: "Display"},
-  {id: "RefreshingNotifier", title: "Show Refreshing Notification", category: "Display"},
+  {id: "Notifier", title: "Show Pop Up Notifier", category: "Display"},
   {id: "PullToRefresh", title: "Enable pull to refresh", category: "Feature"},
 ] as const
 

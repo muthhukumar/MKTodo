@@ -2,6 +2,7 @@ import {ErrorType} from "./error"
 import {CancelTokenSource} from "axios"
 import {v4 as uuidv4} from "uuid"
 import {logger} from "./logger"
+import {notifier} from "./ui"
 
 type Task<T> = () => Promise<T>
 
@@ -193,18 +194,11 @@ class AsyncAPITaskQueue {
 export const taskQueue = new AsyncAPITaskQueue(4)
 
 taskQueue.subscribe(queue => {
-  const el = document.getElementById("syncing")
-  const taskCountEl = document.getElementById("tasksCount")
-
-  if (!el || !taskCountEl) return
-
   const taskCount = queue.getTasksCount()
 
   if (taskCount === 0) {
-    el.style.display = "none"
-    taskCountEl.innerHTML = ""
+    notifier.hide()
   } else {
-    el.style.display = "block"
-    taskCountEl.innerHTML = String(taskCount)
+    notifier.show(`Syncing (${taskCount})`, {autoClose: false})
   }
 })

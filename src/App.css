@@ -185,26 +185,14 @@ body {
   cursor: text;
 }
 
-.refreshing {
+.notifier {
   display: none;
 }
 
-.refreshing::after {
+.notifier::after {
   content: "...";
   display: inline-block;
   width: 0.75em;
-  text-align: left;
-  animation: dots 1.5s steps(3) infinite;
-}
-
-.syncing {
-  display: none;
-}
-
-.syncing::after {
-  content: "...";
-  display: inline-block;
-  width: 1em;
   text-align: left;
   animation: dots 1.5s steps(3) infinite;
 }

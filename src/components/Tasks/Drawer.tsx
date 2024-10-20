@@ -29,7 +29,7 @@ import {taskQueue} from "~/utils/task-queue"
 import {useGoBack} from "~/utils/navigation"
 import {isValidNumber} from "~/utils/validate"
 import toast from "react-hot-toast"
-import {refreshingNotifier} from "~/utils/ui"
+import {notifier} from "~/utils/ui"
 import {useEnabledFeatureCallback} from "~/feature-context"
 
 export default function Drawer({
@@ -70,7 +70,7 @@ export default function Drawer({
   const refresh = useEnabledFeatureCallback("PullToRefresh", () => {
     router.invalidate()
 
-    refreshingNotifier.show("Refreshing")
+    notifier.show("Refreshing")
   })
 
   useOnMousePull({ref: containerRef}, refresh)

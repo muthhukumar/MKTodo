@@ -11,22 +11,24 @@ class Notifier {
   get element() {
     const el = document.getElementById(this.elementId)
 
-    invariant(Boolean(el), "Element with ID %s cannnot be null. But got %s", this.elementId, el)
+    invariant(Boolean(el), "Element with ID %s cannot be null. But got %s", this.elementId, el)
 
     if (!el) throw new Error("Element cannot be empty")
 
     return el
   }
 
-  show(message: string, options?: {duration?: number}) {
+  show(message: string, options?: {duration?: number; autoClose?: boolean}) {
     this.element.style.display = "block"
     this.element.textContent = message
 
-    const {duration = 4000} = options || {}
+    const {duration = 4000, autoClose = true} = options || {}
 
-    setTimeout(() => {
-      this.element.style.display = "none"
-    }, duration)
+    if (autoClose) {
+      setTimeout(() => {
+        this.element.style.display = "none"
+      }, duration)
+    }
   }
 
   hide() {
@@ -35,4 +37,4 @@ class Notifier {
   }
 }
 
-export const refreshingNotifier = new Notifier("refreshing")
+export const notifier = new Notifier("notifier")

@@ -14,7 +14,7 @@ import toast from "react-hot-toast"
 import {invariant} from "~/utils/invariants"
 import {useOnMousePull} from "~/utils/hooks"
 import {useEnabledFeatureCallback} from "~/feature-context"
-import {refreshingNotifier} from "~/utils/ui"
+import {notifier} from "~/utils/ui"
 
 export const Route = createFileRoute("/_standalone/logs")({
   component: Logs,
@@ -76,7 +76,7 @@ function Logs() {
   const refresh = useEnabledFeatureCallback("PullToRefresh", () => {
     router.invalidate()
 
-    refreshingNotifier.show("Refreshing")
+    notifier.show("Refreshing")
   })
 
   useOnMousePull({ref: containerRef, pullThresholdPercentage: 30}, refresh)
