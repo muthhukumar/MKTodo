@@ -6,7 +6,6 @@ import {API} from "~/service"
 import {getCancelTokenSource} from "~/service/axios"
 import {taskQueue} from "~/utils/task-queue"
 // import {TasksStore} from "~/utils/persistent-storage"
-import {uuid} from "~/utils"
 import {getTaskPageMetaData} from "~/utils/tasks"
 import {useAsyncFilteredTasks} from "~/utils/tasks/hooks"
 import {z} from "zod"
@@ -38,7 +37,6 @@ export const Route = createFileRoute("/_auth/tasks/$taskType")({
     const metadata = getTaskPageMetaData(taskType)
 
     return {
-      id: uuid(),
       source: "online" as const,
       tasks: await taskQueue.enqueue(() => API.getTasks(metadata.filter, "", cancelToken)),
       autoCompletionData: await taskQueue.enqueue(() => API.getTasksNames(metadataCancelToken)),

@@ -1,8 +1,8 @@
-export default function Refreshing() {
+export default function Notifier({elementId}: {elementId: string}) {
   return (
     <span
-      id="notifier"
-      className="bg-black w-fit mx-auto rounded-full px-2 notifier text-zinc-200 fixed top-1 left-1/2 transform -translate-x-1/2 z-40 text-center text-xs"
+      id={elementId}
+      className={`bg-black w-fit mx-auto rounded-full px-2 ${elementId} text-zinc-200 fixed top-1 left-1/2 transform -translate-x-1/2 z-[1000] text-center text-xs`}
     ></span>
   )
 }

@@ -337,9 +337,6 @@ export function useOnMousePull<T extends HTMLElement>(
 
       const touch = e.touches[0]
 
-      logger.info("mouse", touch)
-      logger.info("touch client y", touch?.clientY)
-
       if (touch.clientY) {
         YStartPosition.current = touch.clientY
       } else {
@@ -360,7 +357,6 @@ export function useOnMousePull<T extends HTMLElement>(
         "Touch details",
         `${touch?.clientY}, ${YStartPosition.current}, ${maxPullThreshold}`,
       )
-      logger.info("check", `${touch?.clientY - YStartPosition.current > maxPullThreshold}`)
 
       if (!touch || !touch?.clientY) {
         logger.warn("Touch not found", touch)

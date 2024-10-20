@@ -25,9 +25,7 @@ class Notifier {
     const {duration = 4000, autoClose = true} = options || {}
 
     if (autoClose) {
-      setTimeout(() => {
-        this.element.style.display = "none"
-      }, duration)
+      setTimeout(() => this.hide(), duration)
     }
   }
 
@@ -38,3 +36,4 @@ class Notifier {
 }
 
 export const notifier = new Notifier("notifier")
+export const syncNotifier = new Notifier("syncing")

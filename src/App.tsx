@@ -37,9 +37,14 @@ function InnerApp() {
 
   return (
     <>
+      <FeatureFlag feature="SyncNotifier">
+        <FeatureFlag.Feature>
+          <Notifier elementId="syncing" />
+        </FeatureFlag.Feature>
+      </FeatureFlag>
       <FeatureFlag feature="Notifier">
         <FeatureFlag.Feature>
-          <Notifier />
+          <Notifier elementId="notifier" />
         </FeatureFlag.Feature>
       </FeatureFlag>
       <FontInitializer />

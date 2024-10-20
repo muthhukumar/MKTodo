@@ -2,7 +2,7 @@ import {ErrorType} from "./error"
 import {CancelTokenSource} from "axios"
 import {v4 as uuidv4} from "uuid"
 import {logger} from "./logger"
-import {notifier} from "./ui"
+import {syncNotifier} from "./ui"
 
 type Task<T> = () => Promise<T>
 
@@ -197,8 +197,8 @@ taskQueue.subscribe(queue => {
   const taskCount = queue.getTasksCount()
 
   if (taskCount === 0) {
-    notifier.hide()
+    syncNotifier.hide()
   } else {
-    notifier.show(`Syncing (${taskCount})`, {autoClose: false})
+    syncNotifier.show(`Syncing (${taskCount})`, {autoClose: false})
   }
 })

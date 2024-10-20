@@ -14,7 +14,7 @@ import {MdDelete} from "react-icons/md"
 
 import {SubTask, TTask} from "~/@types"
 import {timeAgo, isDateSameAsToday, getTodayDate, isDateInPast} from "~/utils/date"
-import {useDelay, useOnKeyPress, useOnMousePull} from "~/utils/hooks"
+import {useDelay, useOnKeyPress} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
@@ -29,28 +29,30 @@ import {taskQueue} from "~/utils/task-queue"
 import {useGoBack} from "~/utils/navigation"
 import {isValidNumber} from "~/utils/validate"
 import toast from "react-hot-toast"
-import {notifier} from "~/utils/ui"
-import {useEnabledFeatureCallback} from "~/feature-context"
 
-export default function Drawer({
-  metadata,
-  name,
-  completed,
-  created_at,
-  id,
-  onDismiss,
-  marked_today,
-  due_date,
-  sub_tasks,
-  recurrence_pattern,
-  recurrence_interval,
-  start_date,
-}: TTask & {
+interface DrawerProps extends TTask {
   onDismiss: () => void
   ignoreRef?: React.RefObject<HTMLDivElement>
-}) {
+}
+
+const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
+  {
+    metadata,
+    name,
+    completed,
+    created_at,
+    id,
+    onDismiss,
+    marked_today,
+    due_date,
+    sub_tasks,
+    recurrence_pattern,
+    recurrence_interval,
+    start_date,
+  },
+  ref,
+) {
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
-  const containerRef = React.useRef<HTMLDivElement>(null)
   const modalRef = React.useRef<HTMLDivElement>(null)
   const goBack = useGoBack()
 
@@ -66,14 +68,6 @@ export default function Drawer({
     callback: onDismiss,
     validateKey: e => e.key === "Escape",
   })
-
-  const refresh = useEnabledFeatureCallback("PullToRefresh", () => {
-    router.invalidate()
-
-    notifier.show("Refreshing")
-  })
-
-  useOnMousePull({ref: containerRef}, refresh)
 
   async function updateTaskName(value: string) {
     if (name === value) return
@@ -159,7 +153,7 @@ export default function Drawer({
   return (
     <div
       className="w-full border-l border-zinc-700 slide-in fixed right-0 h-screen md:max-w-xs z-[100] min-w-72 max-h-[100vh] overflow-y-auto py-3 px-3 bg-background"
-      ref={containerRef}
+      ref={ref}
     >
       <div className="flex items-center w-full mb-3">
         <div className="mt-3 flex items-start w-full">
@@ -248,7 +242,7 @@ export default function Drawer({
       />
     </div>
   )
-}
+})
 
 export function getMetaTags(metadata: string): Array<string> {
   if (metadata === "") return []
@@ -740,3 +734,5 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
     </div>
   )
 }
+
+export default Drawer

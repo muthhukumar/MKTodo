@@ -31,6 +31,7 @@ const allFeatures = [
   {id: "RecurringTask", title: "Enable Recurring Tasks", category: "Feature"},
   {id: "RecurringTaskTag", title: "Show Recurring Task Tags", category: "Display"},
   {id: "Notifier", title: "Show Pop Up Notifier", category: "Display"},
+  {id: "SyncNotifier", title: "Show Sync Notifier", category: "Display"},
   {id: "PullToRefresh", title: "Enable pull to refresh", category: "Feature"},
 ] as const
 
