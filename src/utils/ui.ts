@@ -1,4 +1,5 @@
 import * as React from "react"
+import {Feature, getFeatureValueFromWindow} from "~/feature-context"
 import {invariant} from "./invariants"
 
 export function isActiveElement<T>(ref: React.RefObject<T>) {
@@ -6,19 +7,26 @@ export function isActiveElement<T>(ref: React.RefObject<T>) {
 }
 
 class Notifier {
-  constructor(public elementId: string) {}
+  constructor(
+    public elementId: string,
+    public featureId: Feature,
+  ) {}
 
   get element() {
+    const feature = getFeatureValueFromWindow(this.featureId)
+
+    if (!feature?.enable) return null
+
     const el = document.getElementById(this.elementId)
 
     invariant(Boolean(el), "Element with ID %s cannot be null. But got %s", this.elementId, el)
-
-    if (!el) throw new Error("Element cannot be empty")
 
     return el
   }
 
   show(message: string, options?: {duration?: number; autoClose?: boolean}) {
+    if (!this.element) return
+
     this.element.style.display = "block"
     this.element.textContent = message
 
@@ -30,10 +38,12 @@ class Notifier {
   }
 
   hide() {
+    if (!this.element) return
+
     this.element.style.display = "none"
     this.element.textContent = ""
   }
 }
 
-export const notifier = new Notifier("notifier")
-export const syncNotifier = new Notifier("syncing")
+export const notifier = new Notifier("notifier", "Notifier")
+export const syncNotifier = new Notifier("syncing", "SyncNotifier")

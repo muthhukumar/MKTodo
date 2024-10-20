@@ -1,12 +1,21 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import App, {router} from "./App"
+import {FeatureSetting} from "./feature-context"
 
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router
   }
 }
+
+declare global {
+  interface Window {
+    features: Array<FeatureSetting>
+  }
+}
+
+window.features = []
 
 const rootElement = document.getElementById("root")!
 

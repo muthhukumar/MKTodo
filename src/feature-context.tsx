@@ -104,6 +104,8 @@ export function FeatureContextProvider({children}: {children: React.ReactNode}) 
 
   React.useEffect(() => {
     if (features.length > 0) {
+      window.features = features
+
       SettingsStore.set(features).then(() => {
         SettingsStore.save()
       })
@@ -169,6 +171,14 @@ export const useFeatureValue = (featureId: Feature): FeatureSetting | null => {
   const {features} = useFeature()
 
   const feature = React.useMemo(() => features.find(f => f.id === featureId), [featureId, features])
+
+  if (!feature) return null
+
+  return feature
+}
+
+export function getFeatureValueFromWindow(featureId: Feature) {
+  const feature = window.features.find(f => f.id === featureId)
 
   if (!feature) return null
 
