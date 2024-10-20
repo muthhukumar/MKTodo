@@ -31,6 +31,8 @@ const allFeatures = [
   {id: "SubTask", title: "Enable Subtasks and Subtask Input", category: "Feature"},
   {id: "RecurringTask", title: "Enable Recurring Tasks", category: "Feature"},
   {id: "RecurringTaskTag", title: "Show Recurring Task Tags", category: "Display"},
+  {id: "RefreshingNotifier", title: "Show Refreshing Notification", category: "Display"},
+  {id: "PullToRefresh", title: "Enable pull to refresh", category: "Feature"},
 ] as const
 
 // TODO: fix the type for this
@@ -171,6 +173,17 @@ export const useFeatureValue = (featureId: Feature): FeatureSetting | null => {
   if (!feature) return null
 
   return feature
+}
+
+export const useEnabledFeatureCallback = <T extends (...args: any[]) => any>(
+  featureId: Feature,
+  callback: T,
+) => {
+  const feature = useFeatureValue(featureId)
+
+  if (!feature || !feature.enable) return () => undefined
+
+  return callback
 }
 
 function ensureValidFeatures(features: Array<FeatureSetting>) {

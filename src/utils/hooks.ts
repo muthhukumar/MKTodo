@@ -300,90 +300,97 @@ export function useOnMousePull<T extends HTMLElement>(
   {ref, pullThresholdPercentage = 35}: {ref: React.RefObject<T>; pullThresholdPercentage?: number},
   callback: () => void,
 ) {
-  const mouseDown = React.useRef(false)
-  const mouseYStart = React.useRef<number | null>(null)
+  const eventStart = React.useRef(false)
+  const YStartPosition = React.useRef<number | null>(null)
   const callbackCalled = React.useRef(false)
 
   React.useEffect(() => {
     if (!ref.current) return
 
-    function onMouseDown(e: MouseEvent) {
-      mouseDown.current = true
-
-      mouseYStart.current = e.clientY
-
+    function reset() {
+      eventStart.current = false
+      YStartPosition.current = null
       callbackCalled.current = false
     }
 
-    function onMouseUp() {
-      mouseDown.current = false
+    function onMouseDown(e: MouseEvent) {
+      eventStart.current = true
 
-      mouseYStart.current = null
+      YStartPosition.current = e.clientY
 
       callbackCalled.current = false
     }
 
     function onMouseMove(event: MouseEvent) {
-      if (!mouseYStart.current) return
+      if (!YStartPosition.current) return
 
       const maxPullThreshold = calculatePartValue(pullThresholdPercentage, window.innerHeight)
 
-      if (event.clientY - mouseYStart.current > maxPullThreshold && !callbackCalled.current) {
+      if (event.clientY - YStartPosition.current > maxPullThreshold && !callbackCalled.current) {
         callback()
         callbackCalled.current = true
       }
     }
 
-    // TODO: refactor this later
-
     function onTouchStart(e: TouchEvent) {
-      mouseDown.current = true
+      eventStart.current = true
 
       const touch = e.touches[0]
 
-      mouseYStart.current = touch.clientY
+      logger.info("mouse", touch)
+      logger.info("touch client y", touch?.clientY)
 
-      callbackCalled.current = false
-    }
-
-    function onTouchEnd() {
-      mouseDown.current = false
-
-      mouseYStart.current = null
+      if (touch.clientY) {
+        YStartPosition.current = touch.clientY
+      } else {
+        logger.warn("client y not found.")
+      }
 
       callbackCalled.current = false
     }
 
     function onTouchMove(event: TouchEvent) {
-      if (!mouseYStart.current) return
+      if (!YStartPosition.current) return
 
       const maxPullThreshold = calculatePartValue(pullThresholdPercentage, window.innerHeight)
 
       const touch = event.touches[0]
 
-      if (touch.clientY - mouseYStart.current > maxPullThreshold && !callbackCalled.current) {
+      logger.info(
+        "Touch details",
+        `${touch?.clientY}, ${YStartPosition.current}, ${maxPullThreshold}`,
+      )
+      logger.info("check", `${touch?.clientY - YStartPosition.current > maxPullThreshold}`)
+
+      if (!touch || !touch?.clientY) {
+        logger.warn("Touch not found", touch)
+
+        return
+      }
+
+      if (touch.clientY - YStartPosition.current > maxPullThreshold && !callbackCalled.current) {
         callback()
         callbackCalled.current = true
       }
     }
 
     ref.current.addEventListener("touchstart", onTouchStart)
-    ref.current.addEventListener("touchend", onTouchEnd)
+    ref.current.addEventListener("touchend", reset)
     ref.current.addEventListener("touchmove", onTouchMove)
 
     ref.current.addEventListener("mousedown", onMouseDown)
-    ref.current.addEventListener("mouseup", onMouseUp)
+    ref.current.addEventListener("mouseup", reset)
     ref.current.addEventListener("mousemove", onMouseMove)
 
     return () => {
       if (!ref.current) return
 
       ref.current.removeEventListener("mousedown", onMouseDown)
-      ref.current.removeEventListener("mouseup", onMouseUp)
+      ref.current.removeEventListener("mouseup", reset)
       ref.current.removeEventListener("mousemove", onMouseMove)
 
       ref.current.removeEventListener("touchstart", onTouchStart)
-      ref.current.removeEventListener("touchend", onTouchEnd)
+      ref.current.removeEventListener("touchend", reset)
       ref.current.removeEventListener("touchmove", onTouchMove)
     }
   }, [])

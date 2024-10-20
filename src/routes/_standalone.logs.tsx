@@ -13,6 +13,8 @@ import {createTask} from "~/utils/tasks"
 import toast from "react-hot-toast"
 import {invariant} from "~/utils/invariants"
 import {useOnMousePull} from "~/utils/hooks"
+import {useEnabledFeatureCallback} from "~/feature-context"
+import {refreshingNotifier} from "~/utils/ui"
 
 export const Route = createFileRoute("/_standalone/logs")({
   component: Logs,
@@ -71,7 +73,13 @@ function Logs() {
 
   const containerRef = React.useRef<HTMLDivElement>(null)
 
-  useOnMousePull({ref: containerRef, pullThresholdPercentage: 30}, router.invalidate)
+  const refresh = useEnabledFeatureCallback("PullToRefresh", () => {
+    router.invalidate()
+
+    refreshingNotifier.show("Refreshing")
+  })
+
+  useOnMousePull({ref: containerRef, pullThresholdPercentage: 30}, refresh)
 
   return (
     // TODO: remove this div and pass the ref directly to the standalone page

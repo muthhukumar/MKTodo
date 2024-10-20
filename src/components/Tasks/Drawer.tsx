@@ -29,6 +29,8 @@ import {taskQueue} from "~/utils/task-queue"
 import {useGoBack} from "~/utils/navigation"
 import {isValidNumber} from "~/utils/validate"
 import toast from "react-hot-toast"
+import {refreshingNotifier} from "~/utils/ui"
+import {useEnabledFeatureCallback} from "~/feature-context"
 
 export default function Drawer({
   metadata,
@@ -65,7 +67,13 @@ export default function Drawer({
     validateKey: e => e.key === "Escape",
   })
 
-  useOnMousePull({ref: containerRef}, router.invalidate)
+  const refresh = useEnabledFeatureCallback("PullToRefresh", () => {
+    router.invalidate()
+
+    refreshingNotifier.show("Refreshing")
+  })
+
+  useOnMousePull({ref: containerRef}, refresh)
 
   async function updateTaskName(value: string) {
     if (name === value) return

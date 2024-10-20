@@ -185,6 +185,18 @@ body {
   cursor: text;
 }
 
+.refreshing {
+  display: none;
+}
+
+.refreshing::after {
+  content: "...";
+  display: inline-block;
+  width: 0.75em;
+  text-align: left;
+  animation: dots 1.5s steps(3) infinite;
+}
+
 .syncing {
   display: none;
 }

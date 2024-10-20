@@ -9,7 +9,7 @@ import {createRouter, RouterProvider} from "@tanstack/react-router"
 import {useAuth, AuthProvider} from "./auth-context"
 
 import {routeTree} from "./routeTree.gen"
-import {FeatureFlag, FontInitializer, SplashScreen, Syncing} from "~/components"
+import {FeatureFlag, FontInitializer, Refreshing, SplashScreen, Syncing} from "~/components"
 import {FeatureContextProvider} from "./feature-context"
 
 export const router = createRouter({
@@ -40,6 +40,11 @@ function InnerApp() {
       <FeatureFlag feature="SyncingNotifier">
         <FeatureFlag.Feature>
           <Syncing />
+        </FeatureFlag.Feature>
+      </FeatureFlag>
+      <FeatureFlag feature="RefreshingNotifier">
+        <FeatureFlag.Feature>
+          <Refreshing />
         </FeatureFlag.Feature>
       </FeatureFlag>
       <FontInitializer />
