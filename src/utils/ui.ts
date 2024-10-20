@@ -47,3 +47,19 @@ class Notifier {
 
 export const notifier = new Notifier("notifier", "Notifier")
 export const syncNotifier = new Notifier("syncing", "SyncNotifier")
+
+export function isWithInRange({
+  range,
+  curr,
+  checkReverse = false,
+}: {
+  range: {start: number; end: number}
+  curr: {start: number; end: number}
+  checkReverse?: boolean
+}) {
+  if (checkReverse) {
+    return curr.start <= range.end && curr.end >= range.start
+  }
+
+  return curr.start >= range.start && curr.end <= range.end
+}

@@ -5,6 +5,7 @@ import {getVersion} from "@tauri-apps/api/app"
 import {AutoCompleteHashType, autocomplete, buildHash} from "./autocomplete"
 import {useFeatureValue} from "~/feature-context"
 import {calculatePartValue} from "./math"
+import {isWithInRange} from "./ui"
 
 export function useOutsideAlerter(
   ref: React.RefObject<any>,
@@ -296,98 +297,186 @@ export function useAutoCompletion({
   return {wordSuggestions, onWordSelect}
 }
 
-export function useOnMousePull<T extends HTMLElement>(
-  {ref, pullThresholdPercentage = 35}: {ref: React.RefObject<T>; pullThresholdPercentage?: number},
-  callback: () => void,
+type Range = {
+  axis: "x" | "y"
+  range: [start: number, end: number]
+  callback: () => void
+  minDistancePercentage: number
+  id: string
+  reverse: boolean
+}
+
+class Position {
+  constructor(
+    public x: number,
+    public y: number,
+  ) {}
+}
+
+export function useOnSwipe(
+  {ranges, enable = true}: {ranges: Array<Range>; enable?: boolean},
+  dependencies: Array<any>,
 ) {
-  const eventStart = React.useRef(false)
-  const YStartPosition = React.useRef<number | null>(null)
-  const callbackCalled = React.useRef(false)
+  const position = React.useRef<Position | null>(null)
+
+  const callbackCalled = React.useRef<Record<string, boolean>>({})
 
   React.useEffect(() => {
-    if (!ref.current) return
+    if (!enable) return
 
     function reset() {
-      eventStart.current = false
-      YStartPosition.current = null
-      callbackCalled.current = false
+      position.current = null
+
+      callbackCalled.current = {}
     }
 
     function onMouseDown(e: MouseEvent) {
-      eventStart.current = true
+      position.current = new Position(e.clientX, e.clientY)
 
-      YStartPosition.current = e.clientY
+      callbackCalled.current = {}
+    }
 
-      callbackCalled.current = false
+    function checkPositionAndTriggerCallback({
+      currPos,
+      start,
+      end,
+      callback,
+      totalSize,
+      minDistancePercentage,
+      startPos,
+      reverse,
+      id,
+    }: {
+      currPos: number
+      startPos: number
+      start: number
+      end: number
+      callback: () => void
+      totalSize: number
+      minDistancePercentage: number
+      reverse: boolean
+      id: string
+    }) {
+      const minStart = calculatePartValue(start, totalSize)
+      const minEnd = calculatePartValue(end, totalSize)
+
+      const totalDistance = minEnd - minStart
+      const currDistance = reverse ? startPos - currPos : currPos - startPos
+      const minTotalDistance = calculatePartValue(minDistancePercentage, totalDistance)
+
+      const hasMinDistance = currDistance >= minTotalDistance
+
+      const inRange = isWithInRange({
+        range: {start: minStart, end: minEnd},
+        curr: {start: startPos, end: currPos},
+        checkReverse: reverse,
+      })
+
+      if (inRange && hasMinDistance) {
+        callback()
+
+        callbackCalled.current[id] = true
+      } else {
+        callbackCalled.current[id] = false
+      }
     }
 
     function onMouseMove(event: MouseEvent) {
-      if (!YStartPosition.current) return
+      if (!position.current) return
 
-      const maxPullThreshold = calculatePartValue(pullThresholdPercentage, window.innerHeight)
-
-      if (event.clientY - YStartPosition.current > maxPullThreshold && !callbackCalled.current) {
-        callback()
-        callbackCalled.current = true
+      for (let range of ranges) {
+        if (callbackCalled.current[range.id]) continue
+        else if (range.axis === "x") {
+          checkPositionAndTriggerCallback({
+            callback: range.callback,
+            startPos: position.current.x,
+            totalSize: window.innerWidth,
+            currPos: event.clientX,
+            start: range.range[0],
+            end: range.range[1],
+            minDistancePercentage: range.minDistancePercentage,
+            reverse: range.reverse,
+            id: range.id,
+          })
+        } else {
+          checkPositionAndTriggerCallback({
+            callback: range.callback,
+            startPos: position.current.y,
+            totalSize: window.innerHeight,
+            currPos: event.clientY,
+            start: range.range[0],
+            end: range.range[1],
+            minDistancePercentage: range.minDistancePercentage,
+            reverse: range.reverse,
+            id: range.id,
+          })
+        }
       }
     }
 
     function onTouchStart(e: TouchEvent) {
-      eventStart.current = true
-
       const touch = e.touches[0]
 
       if (touch.clientY) {
-        YStartPosition.current = touch.clientY
+        position.current = new Position(touch.clientX, touch.clientY)
       } else {
         logger.warn("client y not found.")
       }
 
-      callbackCalled.current = false
+      callbackCalled.current = {}
     }
 
     function onTouchMove(event: TouchEvent) {
-      if (!YStartPosition.current) return
-
-      const maxPullThreshold = calculatePartValue(pullThresholdPercentage, window.innerHeight)
+      if (!position.current) return
 
       const touch = event.touches[0]
 
-      logger.info(
-        "Touch details",
-        `${touch?.clientY}, ${YStartPosition.current}, ${maxPullThreshold}`,
-      )
-
-      if (!touch || !touch?.clientY) {
-        logger.warn("Touch not found", touch)
-
-        return
-      }
-
-      if (touch.clientY - YStartPosition.current > maxPullThreshold && !callbackCalled.current) {
-        callback()
-        callbackCalled.current = true
+      for (let range of ranges) {
+        if (callbackCalled.current[range.id]) continue
+        else if (range.axis === "x") {
+          checkPositionAndTriggerCallback({
+            callback: range.callback,
+            startPos: position.current.x,
+            totalSize: window.innerWidth,
+            currPos: touch.clientX,
+            start: range.range[0],
+            end: range.range[1],
+            minDistancePercentage: range.minDistancePercentage,
+            reverse: range.reverse,
+            id: range.id,
+          })
+        } else {
+          checkPositionAndTriggerCallback({
+            callback: range.callback,
+            startPos: position.current.y,
+            totalSize: window.innerHeight,
+            currPos: touch.clientY,
+            start: range.range[0],
+            end: range.range[1],
+            minDistancePercentage: range.minDistancePercentage,
+            reverse: range.reverse,
+            id: range.id,
+          })
+        }
       }
     }
 
-    ref.current.addEventListener("touchstart", onTouchStart)
-    ref.current.addEventListener("touchend", reset)
-    ref.current.addEventListener("touchmove", onTouchMove)
+    window.addEventListener("touchstart", onTouchStart)
+    window.addEventListener("touchend", reset)
+    window.addEventListener("touchmove", onTouchMove)
 
-    ref.current.addEventListener("mousedown", onMouseDown)
-    ref.current.addEventListener("mouseup", reset)
-    ref.current.addEventListener("mousemove", onMouseMove)
+    window.addEventListener("mousedown", onMouseDown)
+    window.addEventListener("mouseup", reset)
+    window.addEventListener("mousemove", onMouseMove)
 
     return () => {
-      if (!ref.current) return
+      window.removeEventListener("mousedown", onMouseDown)
+      window.removeEventListener("mouseup", reset)
+      window.removeEventListener("mousemove", onMouseMove)
 
-      ref.current.removeEventListener("mousedown", onMouseDown)
-      ref.current.removeEventListener("mouseup", reset)
-      ref.current.removeEventListener("mousemove", onMouseMove)
-
-      ref.current.removeEventListener("touchstart", onTouchStart)
-      ref.current.removeEventListener("touchend", reset)
-      ref.current.removeEventListener("touchmove", onTouchMove)
+      window.removeEventListener("touchstart", onTouchStart)
+      window.removeEventListener("touchend", reset)
+      window.removeEventListener("touchmove", onTouchMove)
     }
-  }, [])
+  }, [...dependencies])
 }

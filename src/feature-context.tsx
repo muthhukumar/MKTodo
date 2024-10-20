@@ -33,6 +33,7 @@ const allFeatures = [
   {id: "Notifier", title: "Show Pop Up Notifier", category: "Display"},
   {id: "SyncNotifier", title: "Show Sync Notifier", category: "Display"},
   {id: "PullToRefresh", title: "Enable pull to refresh", category: "Feature"},
+  {id: "SwipeNavigation", title: "Swipe to navigate between screens", category: "Feature"},
 ] as const
 
 // TODO: fix the type for this

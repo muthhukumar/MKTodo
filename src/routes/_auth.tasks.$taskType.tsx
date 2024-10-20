@@ -1,5 +1,4 @@
-import * as React from "react"
-import {createFileRoute, Outlet, redirect, useRouter} from "@tanstack/react-router"
+import {createFileRoute, Outlet, redirect, useNavigate, useRouter} from "@tanstack/react-router"
 import {Tasks} from "~/components"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
@@ -9,9 +8,9 @@ import {taskQueue} from "~/utils/task-queue"
 import {getTaskPageMetaData} from "~/utils/tasks"
 import {useAsyncFilteredTasks} from "~/utils/tasks/hooks"
 import {z} from "zod"
-import {useOnMousePull} from "~/utils/hooks"
+import {useOnSwipe} from "~/utils/hooks"
 import {notifier} from "~/utils/ui"
-import {useEnabledFeatureCallback} from "~/feature-context"
+import {getFeatureValueFromWindow} from "~/feature-context"
 
 const plannedFilter = z.object({
   filter: z
@@ -57,6 +56,16 @@ export const Route = createFileRoute("/_auth/tasks/$taskType")({
   pendingComponent: LoadingScreen,
 })
 
+const routeLeftMap = {
+  "all": "planned",
+  "planned": "my-day",
+}
+
+const routeRightMap = {
+  "planned": "all",
+  "my-day": "planned",
+}
+
 function AllTasks() {
   let {tasks, autoCompletionData} = Route.useLoaderData()
   const {taskType} = Route.useParams()
@@ -89,27 +98,83 @@ function AllTasks() {
 
   const filteredTasks = useAsyncFilteredTasks({
     query: "",
-    dueDateFilter: filter,
+    dueDateFilter: filter === "none" ? "all-planned" : filter,
     tasks,
   })
 
   tasks = taskType === "planned" ? filteredTasks : tasks
 
-  const containerRef = React.useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  const refresh = useEnabledFeatureCallback("PullToRefresh", () => {
-    router.invalidate()
+  const navigate = useNavigate()
 
-    notifier.show("Refreshing")
-  })
+  useOnSwipe(
+    {
+      enable: getFeatureValueFromWindow("SwipeNavigation")?.enable,
+      ranges: [
+        {
+          id: "swipe-to-right",
+          minDistancePercentage: 35,
+          range: [15, 85],
+          callback: () => {
+            const next = routeRightMap[taskType as keyof typeof routeRightMap]
 
-  useOnMousePull({ref: containerRef}, refresh)
+            if (next)
+              navigate({
+                to: "/tasks/$taskType",
+                search: {filter: "none"},
+                params: {taskType: next},
+              })
+          },
+          axis: "x",
+          reverse: false,
+        },
+        {
+          id: "swipe-to-left",
+          minDistancePercentage: 35,
+          range: [15, 85],
+          callback: () => {
+            const next = routeLeftMap[taskType as keyof typeof routeLeftMap]
+
+            if (next)
+              navigate({
+                to: "/tasks/$taskType",
+                search: {filter: "none"},
+                params: {taskType: next},
+              })
+          },
+          axis: "x",
+          reverse: true,
+        },
+      ],
+    },
+    [taskType],
+  )
+
+  useOnSwipe(
+    {
+      enable: getFeatureValueFromWindow("PullToRefresh")?.enable,
+      ranges: [
+        {
+          id: "pull-to-refresh-tasks",
+          minDistancePercentage: 35,
+          range: [10, 90],
+          callback: () => {
+            router.invalidate()
+            notifier.show("Refreshing")
+          },
+          axis: "y",
+          reverse: false,
+        },
+      ],
+    },
+    [taskType],
+  )
 
   return (
-    <div ref={containerRef}>
+    <>
       <Outlet />
       <Tasks {...props} tasks={tasks} autoCompletionData={autoCompletionData} />
-    </div>
+    </>
   )
 }

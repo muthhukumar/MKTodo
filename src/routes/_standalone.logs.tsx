@@ -12,8 +12,8 @@ import {handleError} from "~/utils/error"
 import {createTask} from "~/utils/tasks"
 import toast from "react-hot-toast"
 import {invariant} from "~/utils/invariants"
-import {useOnMousePull} from "~/utils/hooks"
-import {useEnabledFeatureCallback} from "~/feature-context"
+import {useOnSwipe} from "~/utils/hooks"
+import {getFeatureValueFromWindow} from "~/feature-context"
 import {notifier} from "~/utils/ui"
 
 export const Route = createFileRoute("/_standalone/logs")({
@@ -71,19 +71,28 @@ function Logs() {
     }
   }
 
-  const containerRef = React.useRef<HTMLDivElement>(null)
-
-  const refresh = useEnabledFeatureCallback("PullToRefresh", () => {
-    router.invalidate()
-
-    notifier.show("Refreshing")
-  })
-
-  useOnMousePull({ref: containerRef, pullThresholdPercentage: 30}, refresh)
+  useOnSwipe(
+    {
+      enable: getFeatureValueFromWindow("PullToRefresh")?.enable,
+      ranges: [
+        {
+          id: "pull-to-refresh-logs",
+          minDistancePercentage: 35,
+          range: [10, 90],
+          callback: () => {
+            router.invalidate()
+            notifier.show("Refreshing")
+          },
+          axis: "y",
+          reverse: false,
+        },
+      ],
+    },
+    [],
+  )
 
   return (
-    // TODO: remove this div and pass the ref directly to the standalone page
-    <div ref={containerRef}>
+    <div>
       <StandAlonePage title="Logs">
         <p className="text-center my-2">
           Total <strong>{filteredLogs.length}</strong> logs found
