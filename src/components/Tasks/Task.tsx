@@ -143,7 +143,7 @@ function Task(props: TaskProps) {
                   {props.subtask_count > 0 && (
                     <SubTaskInfo
                       totalSubTasks={props.subtask_count}
-                      totalCompletedSubTasks={props.incomplete_subtask_count}
+                      totalCompletedSubTasks={props.subtask_count - props.incomplete_subtask_count}
                     />
                   )}
                 </FeatureFlag.Feature>
