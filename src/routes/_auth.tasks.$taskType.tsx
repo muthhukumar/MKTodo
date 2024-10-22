@@ -14,7 +14,16 @@ import {getFeatureValueFromWindow} from "~/feature-context"
 
 const plannedFilter = z.object({
   filter: z
-    .enum(["all-planned", "overdue", "today", "tomorrow", "this-week", "later", "none"])
+    .enum([
+      "all-planned",
+      "overdue",
+      "today",
+      "tomorrow",
+      "this-week",
+      "later",
+      "none",
+      "recurring",
+    ])
     .catch("all-planned")
     .default("all-planned"),
 })

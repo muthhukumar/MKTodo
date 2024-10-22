@@ -9,6 +9,7 @@ const filters = [
   {id: 4, filter: "tomorrow", name: "Tomorrow"},
   {id: 5, filter: "this-week", name: "This Week"},
   {id: 6, filter: "later", name: "Later"},
+  {id: 6, filter: "recurring", name: "Recurring"},
 ] as const
 
 function DueDateFilters() {
