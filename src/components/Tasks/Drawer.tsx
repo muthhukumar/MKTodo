@@ -766,7 +766,7 @@ interface SelectTaskListInputProps {
 
 function SelectTaskListInput(props: SelectTaskListInputProps) {
   return (
-    <div className="py-3 w-full">
+    <div className="py-3 w-full flex items-center gap-3 text-zinc-400">
       <select
         className="w-full px-3 py-1 bg-inherit rounded-md border-none"
         value={props.defaultValue || ""}
@@ -783,6 +783,11 @@ function SelectTaskListInput(props: SelectTaskListInputProps) {
           )
         })}
       </select>
+      {Boolean(props.defaultValue) && (
+        <button type="button" onClick={() => props.onSelect("")}>
+          <MdClose className="ml-auto" />
+        </button>
+      )}
     </div>
   )
 }
