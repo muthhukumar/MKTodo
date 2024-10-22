@@ -218,8 +218,12 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       </FeatureFlag>
 
       <Divider space="sm" />
-      <SelectTaskListInput lists={lists} onSelect={updateTaskList} defaultValue={list_id} />
-      <Divider space="sm" />
+      <FeatureFlag feature="UpdateTaskListInput">
+        <FeatureFlag.Feature>
+          <SelectTaskListInput lists={lists} onSelect={updateTaskList} defaultValue={list_id} />
+          <Divider space="sm" />
+        </FeatureFlag.Feature>
+      </FeatureFlag>
 
       <FeatureFlag feature="LinksListDrawer">
         <FeatureFlag.Feature>

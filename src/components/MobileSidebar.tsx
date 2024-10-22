@@ -11,6 +11,7 @@ import {CreateListInput, Divider, FeatureFlag, SearchBar} from "."
 import {MdOutlineChecklist} from "react-icons/md"
 import {useLists} from "~/utils/list/hooks"
 import {useOnSwipe} from "~/utils/hooks"
+import {getFeatureValueFromWindow} from "~/feature-context"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname.includes(path)
@@ -46,13 +47,13 @@ export default function MobileSidebar({className}: {className?: string}) {
 
   useOnSwipe(
     {
-      enable: true, // TODO
+      enable: getFeatureValueFromWindow("SwipeMobileSidebar")?.enable,
       ranges: [
         {
           id: "swipe-to-sidebar",
           reverse: false,
-          range: [1, 30],
-          minDistancePercentage: 25,
+          range: [1, 40],
+          minDistancePercentage: 70,
           axis: "x",
           callback: () => setShowSidebar(true),
         },
