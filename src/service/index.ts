@@ -341,10 +341,10 @@ async function getLists() {
   }
 }
 
-async function updateTaskListId(taskId: number, listId: number | null) {
+async function updateTaskListId(taskId: number, listId: number | null | string) {
   try {
     const response = await axios.post(`/api/v1/task/${taskId}/list/update`, {
-      list_id: listId,
+      list_id: Number(listId),
     })
 
     return response.data.data as Array<List>

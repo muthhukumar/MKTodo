@@ -11,6 +11,7 @@ import {useAuth, AuthProvider} from "./auth-context"
 import {routeTree} from "./routeTree.gen"
 import {FeatureFlag, FontInitializer, Notifier, SplashScreen} from "~/components"
 import {FeatureContextProvider} from "./feature-context"
+import {ListContextProvider} from "./utils/list/hooks"
 
 export const router = createRouter({
   routeTree,
@@ -58,7 +59,9 @@ function App() {
   return (
     <AuthProvider>
       <FeatureContextProvider>
-        <InnerApp />
+        <ListContextProvider>
+          <InnerApp />
+        </ListContextProvider>
       </FeatureContextProvider>
     </AuthProvider>
   )

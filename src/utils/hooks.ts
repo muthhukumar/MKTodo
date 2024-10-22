@@ -6,8 +6,6 @@ import {AutoCompleteHashType, autocomplete, buildHash} from "./autocomplete"
 import {useFeatureValue} from "~/feature-context"
 import {calculatePartValue} from "./math"
 import {isWithInRange} from "./ui"
-import {List} from "~/@types"
-import {handleError} from "./error"
 
 export function useOutsideAlerter(
   ref: React.RefObject<any>,
@@ -481,22 +479,4 @@ export function useOnSwipe(
       window.removeEventListener("touchmove", onTouchMove)
     }
   }, [...dependencies])
-}
-
-export function useLists() {
-  const [lists, setLists] = React.useState<Array<List>>([])
-
-  React.useEffect(() => {
-    async function getLists() {
-      try {
-        setLists(await API.getLists())
-      } catch (error) {
-        handleError({error, defaultMessage: "Failed to get lists"})
-      }
-    }
-
-    getLists()
-  }, [])
-
-  return lists
 }

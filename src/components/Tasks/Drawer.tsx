@@ -12,7 +12,7 @@ import {
 import {AiOutlinePlus} from "react-icons/ai"
 import {MdDelete} from "react-icons/md"
 
-import {SubTask, TTask} from "~/@types"
+import {List, SubTask, TTask} from "~/@types"
 import {timeAgo, isDateSameAsToday, getTodayDate, isDateInPast} from "~/utils/date"
 import {useDelay, useOnKeyPress} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
@@ -29,6 +29,7 @@ import {taskQueue} from "~/utils/task-queue"
 import {useGoBack} from "~/utils/navigation"
 import {isValidNumber} from "~/utils/validate"
 import toast from "react-hot-toast"
+import {useLists} from "~/utils/list/hooks"
 
 interface DrawerProps extends TTask {
   onDismiss: () => void
@@ -49,6 +50,7 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
     recurrence_pattern,
     recurrence_interval,
     start_date,
+    list_id,
   },
   ref,
 ) {
@@ -59,6 +61,8 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
   const links = React.useMemo(() => extractLinks(name), [name])
 
   const router = useRouter()
+
+  const {lists, invalidate} = useLists()
 
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
 
@@ -116,6 +120,17 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       await API.deleteTaskById(id)
 
       onDismiss()
+    } catch (error) {
+      handleError({error, defaultMessage: "Deleting task failed"})
+    }
+  }
+
+  async function updateTaskList(listId: string) {
+    try {
+      await API.updateTaskListId(id, listId)
+
+      onDismiss()
+      invalidate()
     } catch (error) {
       handleError({error, defaultMessage: "Deleting task failed"})
     }
@@ -202,6 +217,9 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
           </div>
         </FeatureFlag.Feature>
       </FeatureFlag>
+
+      <SelectTaskListInput lists={lists} onSelect={updateTaskList} defaultValue={list_id} />
+
       <FeatureFlag feature="LinksListDrawer">
         <FeatureFlag.Feature>
           {links.length > 0 && (
@@ -366,7 +384,7 @@ function AddToMyDay(props: {
   )
 }
 
-function DeleteTaskModel({
+export function DeleteTaskModel({
   name,
   id,
   onDelete,
@@ -732,6 +750,33 @@ function RecurringTaskInput(props: RecurringTaskInputProps) {
         </div>
       )}
     </div>
+  )
+}
+
+interface SelectTaskListInputProps {
+  lists: Array<List>
+  defaultValue: number | null
+  onSelect: (id: string) => void
+}
+
+function SelectTaskListInput(props: SelectTaskListInputProps) {
+  return (
+    <select
+      className="w-full"
+      value={props.defaultValue || ""}
+      onChange={e => props.onSelect(e.target.value)}
+    >
+      <option disabled value="">
+        Select List
+      </option>
+      {props.lists.map(l => {
+        return (
+          <option value={String(l.id)} key={l.id}>
+            {l.name}
+          </option>
+        )
+      })}
+    </select>
   )
 }
 

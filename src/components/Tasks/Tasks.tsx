@@ -3,7 +3,7 @@ import * as React from "react"
 import {TTask, TaskTypes} from "~/@types"
 import Task from "./Task"
 import clsx from "clsx"
-import {useRouter} from "@tanstack/react-router"
+import {useNavigate, useRouter} from "@tanstack/react-router"
 import {API} from "~/service"
 import {createTask, separateTasks} from "~/utils/tasks"
 import CreateTaskInput from "./CreateTaskInput"
@@ -14,6 +14,8 @@ import {handleError} from "~/utils/error"
 import {options} from "../Select/data"
 import {getMetaTags, removeDuplicates} from "./Drawer"
 import {CompletedTasks, Header} from "."
+import {invariant} from "~/utils/invariants"
+import {useLists} from "~/utils/list/hooks"
 
 interface TasksProps {
   showFilters?: boolean
@@ -50,6 +52,8 @@ export default function Tasks(props: TasksProps) {
   const [tagFilters, setTagFilters] = React.useState<Array<string>>([])
 
   const router = useRouter()
+  const navigate = useNavigate()
+  const lists = useLists()
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -127,12 +131,47 @@ export default function Tasks(props: TasksProps) {
 
   const tagFilterOptions = React.useMemo(() => extractTagsFromTasks(tasks), [tasks])
 
+  async function updateListName(name: string) {
+    invariant(
+      Boolean(listId),
+      "When updating list title list id should be there. But got %s",
+      listId,
+    )
+
+    if (!listId) return
+
+    try {
+      await API.updateList(listId, name)
+
+      router.invalidate()
+      lists.invalidate()
+    } catch (error) {
+      handleError({error, defaultMessage: "Failed to update list name"})
+    }
+  }
+
+  async function deleteList(listId: number) {
+    try {
+      await API.deleteListById(listId)
+
+      router.invalidate()
+      lists.invalidate()
+
+      navigate({to: "/tasks/$taskType", params: {taskType: "all"}, search: {filter: "none"}})
+    } catch (error) {
+      handleError({error, defaultMessage: "Failed to delete list"})
+    }
+  }
+
   return (
     <div className="bg-background w-full">
       <div className="w-full relative">
         <div className="px-3">
           {showHeader && (
             <Header
+              onListNameSubmit={updateListName}
+              listId={listId}
+              deleteList={listId => deleteList(listId)}
               taskType={props.type as Exclude<TaskTypes, "planned:tomorrow" | "planned:today">}
               showFilters={showFilters}
               tagFilters={tagFilters}

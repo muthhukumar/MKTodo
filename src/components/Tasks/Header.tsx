@@ -1,3 +1,4 @@
+import * as React from "react"
 import {TTask, TaskTypes} from "~/@types"
 import {DesktopOnly, FeatureFlag, MobileOnly, SearchBar, Select} from ".."
 import {TagFilter, DueDateFilter} from "."
@@ -5,6 +6,9 @@ import {Link} from "@tanstack/react-router"
 import {IoSearchOutline} from "react-icons/io5"
 import {TbSettings} from "react-icons/tb"
 import {invariant} from "~/utils/invariants"
+import {useDelay} from "~/utils/hooks"
+import {DeleteTaskModel} from "./Drawer"
+import {MdDelete} from "react-icons/md"
 
 interface TaskHeaderProps {
   title: string
@@ -15,7 +19,10 @@ interface TaskHeaderProps {
   setTagFilters: React.Dispatch<React.SetStateAction<string[]>>
   tagFilters: string[]
   showFilters?: boolean
-  taskType: Exclude<TaskTypes, "planned:tomorrow" | "planned:today">
+  taskType: Exclude<TaskTypes, "planned:tomorrow" | "planned:today"> | "list"
+  onListNameSubmit: (listName: string) => void
+  listId: number | null
+  deleteList: (listId: number) => void
 }
 
 function TaskHeader(props: TaskHeaderProps) {
@@ -29,17 +36,31 @@ function TaskHeader(props: TaskHeaderProps) {
     tagFilters,
     showFilters,
     taskType,
+    onListNameSubmit,
+    listId,
+    deleteList,
   } = props
+
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false)
+
   invariant((taskType as string) !== "search", "Task type cannot be search. Got ", taskType)
+
+  const isList = taskType === "list"
+
+  const modalRef = React.useRef(null)
 
   return (
     <div className="sticky top-0 py-1 left-0 right-0 bg-background z-10">
       <div className="flex items-center justify-between py-2 relative">
         <h1 className="flex items-center gap-2 text-2xl font-bold">
-          <span>
-            {title}
-            {/* <span className="font-normal text-xs ml-2">{source}</span> */}
-          </span>
+          {isList ? (
+            <EditListTitle title={title} onSave={onListNameSubmit} />
+          ) : (
+            <span>
+              {title}
+              {/* <span className="font-normal text-xs ml-2">{source}</span> */}
+            </span>
+          )}
           <FeatureFlag feature="TasksCountInTitle">
             <FeatureFlag.Feature>
               <span className="font-normal text-xs px-2 py-1 rounded-md bg-hover-background">
@@ -60,17 +81,37 @@ function TaskHeader(props: TaskHeaderProps) {
               </MobileOnly>
             </FeatureFlag.Feature>
           </FeatureFlag>
-          <FeatureFlag feature="TagFilter">
-            <FeatureFlag.Feature>
-              <DesktopOnly>
+          <DesktopOnly>
+            <button type="button" onClick={() => setShowDeleteModal(true)} className="ml-2">
+              <MdDelete size={22} />
+            </button>
+            <DeleteTaskModel
+              name={title}
+              id={listId || 0}
+              modalRef={modalRef}
+              onDelete={id => {
+                if (id === 0) {
+                  setShowDeleteModal(false)
+
+                  invariant(false, "Trying to delete list with id 0")
+                } else {
+                  deleteList(id)
+                  setShowDeleteModal(false)
+                }
+              }}
+              open={showDeleteModal}
+              onDismiss={() => setShowDeleteModal(false)}
+            />
+            <FeatureFlag feature="TagFilter">
+              <FeatureFlag.Feature>
                 <Select
                   data={tagFilterOptions}
                   setSelectedOptions={setTagFilters}
                   selectedOptions={tagFilters}
                 />
-              </DesktopOnly>
-            </FeatureFlag.Feature>
-          </FeatureFlag>
+              </FeatureFlag.Feature>
+            </FeatureFlag>
+          </DesktopOnly>
           <MobileOnly>
             <Link
               to="/search"
@@ -96,6 +137,31 @@ function TaskHeader(props: TaskHeaderProps) {
       </DesktopOnly>
       {showFilters && <DueDateFilter />}
     </div>
+  )
+}
+
+function EditListTitle({title, onSave}: {title: string; onSave: (title: string) => void}) {
+  const [showInput, setShowInput] = React.useState(false)
+
+  if (!showInput) return <button onClick={() => setShowInput(true)}>{title}</button>
+
+  const [onChange] = useDelay((listName: string) => {
+    onSave(listName)
+    setShowInput(false)
+  }, 3000)
+
+  return (
+    <input
+      autoFocus
+      className="w-fit bg-inherit"
+      defaultValue={title}
+      onChange={e => onChange(e.target.value)}
+      onBlur={e => {
+        onSave(e.target.value)
+
+        setShowInput(false)
+      }}
+    />
   )
 }
 

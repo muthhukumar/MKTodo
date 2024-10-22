@@ -7,8 +7,9 @@ import {CiCalendarDate} from "react-icons/ci"
 import {Link, useLocation} from "@tanstack/react-router"
 import {twMerge} from "tailwind-merge"
 import {Divider, FeatureFlag, SearchBar} from "."
-import {useLists, usePing} from "~/utils/hooks"
+import {usePing} from "~/utils/hooks"
 import {MdOutlineChecklist} from "react-icons/md"
+import {useLists} from "~/utils/list/hooks"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname.includes(path)
@@ -41,7 +42,7 @@ export default function Sidebar({className}: {className?: string}) {
   const location = useLocation()
   const online = usePing()
 
-  const lists = useLists()
+  const {lists} = useLists()
 
   return (
     <div
@@ -72,6 +73,7 @@ export default function Sidebar({className}: {className?: string}) {
         {lists.map(l => {
           return (
             <Link
+              key={l.id}
               to="/list/$listId/tasks"
               params={{listId: String(l.id)}}
               className="flex items-center gap-3"
