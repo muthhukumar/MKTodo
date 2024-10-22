@@ -129,7 +129,7 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
     try {
       await API.updateTaskListId(id, listId)
 
-      onDismiss()
+      router.invalidate()
       invalidate()
     } catch (error) {
       handleError({error, defaultMessage: "Deleting task failed"})
@@ -209,7 +209,6 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
           />
         </FeatureFlag.Feature>
       </FeatureFlag>
-      <Divider space="sm" />
       <FeatureFlag feature="TaskTagInput">
         <FeatureFlag.Feature>
           <div className="py-3">
@@ -218,7 +217,9 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
         </FeatureFlag.Feature>
       </FeatureFlag>
 
+      <Divider space="sm" />
       <SelectTaskListInput lists={lists} onSelect={updateTaskList} defaultValue={list_id} />
+      <Divider space="sm" />
 
       <FeatureFlag feature="LinksListDrawer">
         <FeatureFlag.Feature>
@@ -761,22 +762,24 @@ interface SelectTaskListInputProps {
 
 function SelectTaskListInput(props: SelectTaskListInputProps) {
   return (
-    <select
-      className="w-full"
-      value={props.defaultValue || ""}
-      onChange={e => props.onSelect(e.target.value)}
-    >
-      <option disabled value="">
-        Select List
-      </option>
-      {props.lists.map(l => {
-        return (
-          <option value={String(l.id)} key={l.id}>
-            {l.name}
-          </option>
-        )
-      })}
-    </select>
+    <div className="py-3 w-full">
+      <select
+        className="w-full px-3 py-1 bg-inherit rounded-md border-none"
+        value={props.defaultValue || ""}
+        onChange={e => props.onSelect(e.target.value)}
+      >
+        <option disabled value="">
+          Select List
+        </option>
+        {props.lists.map(l => {
+          return (
+            <option value={String(l.id)} key={l.id}>
+              {l.name}
+            </option>
+          )
+        })}
+      </select>
+    </div>
   )
 }
 

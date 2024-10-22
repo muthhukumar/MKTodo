@@ -1,15 +1,16 @@
+import * as React from "react"
 import clsx from "clsx"
 import {MdOutlineWbSunny} from "react-icons/md"
 import {CiStar} from "react-icons/ci"
 import {IconType} from "react-icons"
 import {TbHomeCheck, TbSettings} from "react-icons/tb"
 import {CiCalendarDate} from "react-icons/ci"
-import {Link, useLocation} from "@tanstack/react-router"
+import {Link} from "@tanstack/react-router"
 import {twMerge} from "tailwind-merge"
 import {CreateListInput, Divider, FeatureFlag, SearchBar} from "."
-import {usePing} from "~/utils/hooks"
 import {MdOutlineChecklist} from "react-icons/md"
 import {useLists} from "~/utils/list/hooks"
+import {useOnSwipe} from "~/utils/hooks"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname.includes(path)
@@ -38,16 +39,38 @@ function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: str
   )
 }
 
-export default function Sidebar({className}: {className?: string}) {
-  const location = useLocation()
-  const online = usePing()
-
+export default function MobileSidebar({className}: {className?: string}) {
   const {lists} = useLists()
+
+  const [showSidebar, setShowSidebar] = React.useState(true)
+
+  useOnSwipe(
+    {
+      enable: true, // TODO
+      ranges: [
+        {
+          id: "swipe-to-sidebar",
+          reverse: false,
+          range: [1, 30],
+          minDistancePercentage: 25,
+          axis: "x",
+          callback: () => setShowSidebar(true),
+        },
+      ],
+    },
+    [],
+  )
+
+  React.useEffect(() => {
+    setShowSidebar(false)
+  }, [location.href])
+
+  if (!showSidebar) return null
 
   return (
     <div
       className={twMerge(
-        "sticky h-screen left-0 top-0 bottom-0 w-1/4 min-w-80 max-w-md py-6 md:py-8 bg-background border-r border-border",
+        "overflow-y-scroll no-scrollbar fixed max-h-[100vh] h-screen left-0 top-0 bottom-0 w-full py-6 md:py-8 bg-background border-r border-border right-0 z-40",
         className,
       )}
     >
@@ -66,7 +89,6 @@ export default function Sidebar({className}: {className?: string}) {
           <IconLink Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
           <IconLink Icon={TbSettings} title="Settings" path="/settings" />
         </div>
-        <p className="mt-4">{location.href}</p>
       </div>
       <Divider />
       <div className="flex flex-col gap-2 px-4">
@@ -76,29 +98,21 @@ export default function Sidebar({className}: {className?: string}) {
               key={l.id}
               to="/list/$listId/tasks"
               params={{listId: String(l.id)}}
-              className="flex items-center gap-3"
+              className="flex items-center gap-5"
             >
               <MdOutlineChecklist />
-              <span className="text-sm">{l.name}</span>
+              <span className="text-lg">{l.name}</span>
             </Link>
           )
         })}
       </div>
       <CreateListInput />
-      <Divider />
-      {online !== null && !online && (
-        <p
-          className={clsx(
-            "w-fit mx-auto absolute left-0 right-0 bottom-0 mb-5 px-4 py-1 border border-border rounded-full text-center",
-            {
-              "text-green-400 border-green-400": online,
-              "text-red-400 border-red-400": !online,
-            },
-          )}
-        >
-          {online ? "Online" : "Server is offline"}
-        </p>
-      )}
+      <button
+        className="absolute bottom-4 rounded-md border border-border px-3 mx-4 py-1 left-0 right-0 inline-block"
+        onClick={() => setShowSidebar(false)}
+      >
+        Close
+      </button>
     </div>
   )
 }
