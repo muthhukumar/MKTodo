@@ -24,6 +24,7 @@ interface TasksProps {
   showHeader?: boolean
   showTaskCreate?: boolean
   autoCompletionData?: Array<string>
+  listId?: number | null
 }
 
 const extractTagsFromTasks = (tasks: Array<TTask>) => {
@@ -38,6 +39,7 @@ export default function Tasks(props: TasksProps) {
     showHeader = true,
     showTaskCreate = true,
     autoCompletionData = [],
+    listId = null,
   } = props
   const [tasks, setTasks] = React.useState(props.tasks)
 
@@ -89,7 +91,7 @@ export default function Tasks(props: TasksProps) {
     })
 
     try {
-      await API.createTask(createTask(taskType, task))
+      await API.createTask(createTask(taskType, task, listId))
 
       setNewTasks(state => state.filter(t => t.name !== task))
 
@@ -179,7 +181,7 @@ export default function Tasks(props: TasksProps) {
                 onToggle={onTaskToggle}
                 {...t}
                 key={t.id}
-                type={props.type as "all" | "my-day" | "important" | "planned"}
+                type={props.type as "all" | "my-day" | "important" | "planned" | "search" | "list"}
               />
             ))}
             <CompletedTasks tasks={completedTasks} onTaskToggle={onTaskToggle} type={props.type} />
@@ -188,6 +190,7 @@ export default function Tasks(props: TasksProps) {
           <div className="min-h-[20vh]" />
           {showTaskCreate && (
             <CreateTaskInput
+              listId={listId}
               tagFilterOptions={tagFilterOptions}
               taskType={taskType}
               setTaskType={setTaskType}

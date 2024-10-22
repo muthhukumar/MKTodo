@@ -1,4 +1,4 @@
-import {Log, TTask} from "~/@types"
+import {List, Log, TTask} from "~/@types"
 import axios from "./axios"
 import defaultAxios, {CancelTokenSource} from "axios"
 import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
@@ -10,6 +10,7 @@ async function getTasks(
   filter: "my-day" | "important" | null,
   query?: string,
   cancelTokenSource?: CancelTokenSource,
+  listId?: number | string,
 ) {
   try {
     const store = await SettingsStore.get()
@@ -17,7 +18,7 @@ async function getTasks(
     const showCompletedTask = store?.find(f => f.id === "ShowCompletedTasks")
 
     const response = await axios.get(`/api/v1/tasks`, {
-      params: {filter, query, showCompleted: Boolean(showCompletedTask?.enable)},
+      params: {filter, query, showCompleted: Boolean(showCompletedTask?.enable), list_id: listId},
       ...(cancelTokenSource
         ? {
             cancelToken: cancelTokenSource.token,
@@ -306,6 +307,72 @@ async function updateTaskRecurrence(props: {
   }
 }
 
+async function createList(listName: string) {
+  try {
+    const response = await axios.post(`/api/v1/list/new`, {
+      "name": listName,
+    })
+
+    return response.data as {message: string; id: number}
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function updateList(listId: number, listName: string) {
+  try {
+    const response = await axios.post(`/api/v1/list/${listId}`, {
+      "name": listName,
+    })
+
+    return response.data as {message: string; id: number}
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function getLists() {
+  try {
+    const response = await axios.get(`/api/v1/lists`)
+
+    return response.data.data as Array<List>
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function updateTaskListId(taskId: number, listId: number | null) {
+  try {
+    const response = await axios.post(`/api/v1/task/${taskId}/list/update`, {
+      list_id: listId,
+    })
+
+    return response.data.data as Array<List>
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function deleteListById(id: number) {
+  try {
+    const response = await axios.delete(`/api/v1/list/${id}`)
+
+    return response.data as {message: string}
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
+async function getList(listId: number | string) {
+  try {
+    const response = await axios.get(`/api/v1/list/${listId}`)
+
+    return response.data.data as List
+  } catch (error) {
+    return Promise.reject(error)
+  }
+}
+
 export const API = {
   getTasks,
   createTask,
@@ -327,4 +394,10 @@ export const API = {
   deleteSubTaskById,
   toggleSubTaskCompletedById,
   updateTaskRecurrence,
+  createList,
+  getLists,
+  updateList,
+  updateTaskListId,
+  deleteListById,
+  getList,
 }

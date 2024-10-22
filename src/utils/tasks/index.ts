@@ -71,7 +71,11 @@ export function separateTasks(tasks: Array<TTask>) {
 
 export class NewTask {
   metadata: string = ""
-  constructor(public name: string) {
+
+  constructor(
+    public name: string,
+    public list_id?: number | null,
+  ) {
     const {tags, modifiedStr} = extractTags(name)
 
     this.metadata = tags.filter(t => !taskTypeTags.includes(t as TaskTypes)).join(",")
@@ -81,16 +85,24 @@ export class NewTask {
 
 export class MyDayTask extends NewTask {
   marked_today: string = ""
-  constructor({name, myDay}: {name: string; myDay: string}) {
-    super(name)
+  constructor({name, myDay, listId}: {name: string; myDay: string; listId?: number | null}) {
+    super(name, listId)
     this.marked_today = myDay
   }
 }
 
 export class ImportantTask extends NewTask {
   is_important: boolean = true
-  constructor({name, important}: {name: string; important: boolean}) {
-    super(name)
+  constructor({
+    name,
+    important,
+    listId,
+  }: {
+    name: string
+    important: boolean
+    listId?: number | null
+  }) {
+    super(name, listId)
     this.is_important = important
   }
 }
@@ -103,12 +115,14 @@ export class PlannedTask extends NewTask {
     name,
     dueDate,
     marked_today,
+    listId,
   }: {
     name: string
     dueDate: string
     marked_today?: string
+    listId?: number | null
   }) {
-    super(name)
+    super(name, listId)
     this.due_date = dueDate
 
     if (marked_today) {
@@ -143,16 +157,22 @@ const reverseMapTaskType = {
 export const createTask = (
   taskType: string,
   task: string,
+  listId?: number | null,
 ): NewTask | ImportantTask | PlannedTask => {
   switch (taskType) {
     case "my-day":
-      return new MyDayTask({name: task, myDay: getTodayDateIOSString()})
+      return new MyDayTask({name: task, myDay: getTodayDateIOSString(), listId})
     case "important":
-      return new ImportantTask({important: true, name: task})
+      return new ImportantTask({important: true, name: task, listId})
     case "planned:today":
-      return new PlannedTask({dueDate: getTodayDate(), name: task, marked_today: getTodayDate()})
+      return new PlannedTask({
+        dueDate: getTodayDate(),
+        name: task,
+        marked_today: getTodayDate(),
+        listId,
+      })
     case "planned:tomorrow":
-      return new PlannedTask({dueDate: getTomorrowDate(), name: task})
+      return new PlannedTask({dueDate: getTomorrowDate(), name: task, listId})
     case "planned":
     case "all":
     default: {
@@ -161,10 +181,10 @@ export const createTask = (
       if (taskTypeFromTag) {
         const tag = reverseMapTaskType[taskTypeFromTag.taskType as keyof typeof reverseMapTaskType]
 
-        return createTask(tag ? tag : taskTypeFromTag.taskType, taskTypeFromTag.modifiedStr)
+        return createTask(tag ? tag : taskTypeFromTag.taskType, taskTypeFromTag.modifiedStr, listId)
       }
 
-      return new NewTask(task)
+      return new NewTask(task, listId)
     }
   }
 }

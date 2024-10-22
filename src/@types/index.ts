@@ -15,6 +15,14 @@ export type TTask = {
   recurrence_interval: number
   start_date: string
   recurrence_pattern: string
+
+  list_id: number
+}
+
+export type List = {
+  id: number
+  name: string
+  created_at: string
 }
 
 export type SubTask = {

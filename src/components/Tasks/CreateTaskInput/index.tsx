@@ -13,6 +13,7 @@ import {useAutoCompletion, useDeviceCallback} from "~/utils/hooks"
 import {options} from "~/components/Select/data"
 
 interface CreateTaskInputProps {
+  listId?: number | null
   autoCompletionData: Array<string>
   setNewTasks: React.Dispatch<
     React.SetStateAction<
@@ -54,7 +55,7 @@ function CreateTaskInput(props: CreateTaskInputProps) {
     setNewTasks(state => [...state, {name: currentTask, status: "started"}])
 
     try {
-      await taskQueue.enqueue(() => API.createTask(createTask(taskType, currentTask)))
+      await taskQueue.enqueue(() => API.createTask(createTask(taskType, currentTask, props.listId)))
 
       setNewTasks(state => state.filter(t => t.name !== currentTask))
 

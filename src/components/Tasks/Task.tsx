@@ -23,7 +23,7 @@ import {taskQueue} from "~/utils/task-queue"
 import {useFeatureValue} from "~/feature-context"
 
 interface TaskProps extends TTask {
-  type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today"> | "search"
+  type: Exclude<TaskTypes, "planned:tomorrow" | "planned:today"> | "search" | "list"
   onToggle: (id: number, completed: boolean) => void
 }
 
@@ -64,9 +64,19 @@ function Task(props: TaskProps) {
   }
 
   // TODO: refactor this later
-  const from = props.type === "search" ? "/search" : `/tasks/${props.type || "all"}`
+  const from =
+    props.type === "search"
+      ? "/search"
+      : props.type === "list"
+        ? `/list/${props.list_id}`
+        : `/tasks/${props.type || "all"}`
 
-  const to = props.type === "search" ? "/search/$taskId" : (`/tasks/${props.type}/$taskId` as const)
+  const to =
+    props.type === "search"
+      ? "/search/$taskId"
+      : props.type === "list"
+        ? `/list/${props.list_id}/tasks/${props.id}`
+        : (`/tasks/${props.type}/$taskId` as const)
 
   const metatags = React.useMemo(() => getMetaTags(props.metadata), [props.metadata])
 
