@@ -6,19 +6,32 @@ import {getCreds} from "~/utils/tauri-store"
 import {ErrorType} from "~/utils/error"
 import {SettingsStore, TasksStore} from "~/utils/persistent-storage"
 
-async function getTasks(
-  filter: "my-day" | "important" | null,
-  query?: string,
-  cancelTokenSource?: CancelTokenSource,
-  listId?: number | string,
-) {
+async function getTasks({
+  filter,
+  query,
+  cancelTokenSource,
+  listId,
+  showAllTasks,
+}: {
+  filter: "my-day" | "important" | null
+  query?: string
+  cancelTokenSource?: CancelTokenSource
+  listId?: number | string
+  showAllTasks: boolean
+}) {
   try {
     const store = await SettingsStore.get()
 
     const showCompletedTask = store?.find(f => f.id === "ShowCompletedTasks")
 
     const response = await axios.get(`/api/v1/tasks`, {
-      params: {filter, query, showCompleted: Boolean(showCompletedTask?.enable), list_id: listId},
+      params: {
+        filter,
+        query,
+        showCompleted: Boolean(showCompletedTask?.enable),
+        list_id: listId,
+        show_all_tasks: showAllTasks,
+      },
       ...(cancelTokenSource
         ? {
             cancelToken: cancelTokenSource.token,

@@ -46,7 +46,14 @@ export const Route = createFileRoute("/_auth/tasks/$taskType")({
 
     return {
       source: "online" as const,
-      tasks: await taskQueue.enqueue(() => API.getTasks(metadata.filter, "", cancelToken)),
+      tasks: await taskQueue.enqueue(() =>
+        API.getTasks({
+          filter: metadata.filter,
+          query: "",
+          cancelTokenSource: cancelToken,
+          showAllTasks: taskType === "all" || taskType === "my-day" || taskType === "important",
+        }),
+      ),
       autoCompletionData: await taskQueue.enqueue(() => API.getTasksNames(metadataCancelToken)),
     }
   },

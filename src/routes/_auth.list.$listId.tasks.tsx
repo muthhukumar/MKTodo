@@ -13,7 +13,15 @@ export const Route = createFileRoute("/_auth/list/$listId/tasks")({
 
     return {
       list: await API.getList(listId),
-      tasks: await taskQueue.enqueue(() => API.getTasks(null, "", cancelToken, listId)),
+      tasks: await taskQueue.enqueue(() =>
+        API.getTasks({
+          filter: null,
+          query: "",
+          cancelTokenSource: cancelToken,
+          listId,
+          showAllTasks: false,
+        }),
+      ),
       autoCompletionData: await taskQueue.enqueue(() => API.getTasksNames(metadataCancelToken)),
     }
   },
