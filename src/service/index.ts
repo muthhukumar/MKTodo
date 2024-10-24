@@ -4,7 +4,8 @@ import defaultAxios, {CancelTokenSource} from "axios"
 import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
 import {getCreds} from "~/utils/tauri-store"
 import {ErrorType} from "~/utils/error"
-import {SettingsStore, TasksStore} from "~/utils/persistent-storage"
+import {TasksStore} from "~/utils/persistent-storage"
+import {getFeatureValueFromWindow} from "~/feature-context"
 
 async function getTasks({
   filter,
@@ -12,23 +13,23 @@ async function getTasks({
   cancelTokenSource,
   listId,
   showAllTasks,
+  showCompleted,
 }: {
   filter: "my-day" | "important" | null
   query?: string
   cancelTokenSource?: CancelTokenSource
   listId?: number | string
   showAllTasks: boolean
+  showCompleted?: boolean
 }) {
   try {
-    const store = await SettingsStore.get()
-
-    const showCompletedTask = store?.find(f => f.id === "ShowCompletedTasks")
+    const showCompletedTasks = getFeatureValueFromWindow("ShowCompletedTasks")
 
     const response = await axios.get(`/api/v1/tasks`, {
       params: {
         filter,
         query,
-        showCompleted: Boolean(showCompletedTask?.enable),
+        showCompleted: showCompleted ?? Boolean(showCompletedTasks?.enable),
         list_id: listId,
         show_all_tasks: showAllTasks,
       },
