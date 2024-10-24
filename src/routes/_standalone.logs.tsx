@@ -13,7 +13,6 @@ import {createTask} from "~/utils/tasks"
 import toast from "react-hot-toast"
 import {invariant} from "~/utils/invariants"
 import {useOnSwipe} from "~/utils/hooks"
-import {getFeatureValueFromWindow} from "~/feature-context"
 import {notifier} from "~/utils/ui"
 
 export const Route = createFileRoute("/_standalone/logs")({
@@ -73,7 +72,7 @@ function Logs() {
 
   useOnSwipe(
     {
-      enable: getFeatureValueFromWindow("PullToRefresh")?.enable,
+      enable: window.featureManager.isEnabled("PullToRefresh"),
       ranges: [
         {
           id: "pull-to-refresh-logs",

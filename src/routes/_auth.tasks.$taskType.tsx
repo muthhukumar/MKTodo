@@ -10,7 +10,6 @@ import {useAsyncFilteredTasks} from "~/utils/tasks/hooks"
 import {z} from "zod"
 import {useOnSwipe} from "~/utils/hooks"
 import {notifier} from "~/utils/ui"
-import {getFeatureValueFromWindow} from "~/feature-context"
 
 const plannedFilter = z.object({
   filter: z
@@ -136,7 +135,7 @@ function AllTasks() {
 
   useOnSwipe(
     {
-      enable: getFeatureValueFromWindow("SwipeNavigation")?.enable,
+      enable: window.featureManager.isEnabled("SwipeNavigation"),
       ranges: [
         {
           id: "swipe-to-right",
@@ -179,7 +178,7 @@ function AllTasks() {
 
   useOnSwipe(
     {
-      enable: getFeatureValueFromWindow("PullToRefresh")?.enable,
+      enable: window.featureManager.isEnabled("PullToRefresh"),
       ranges: [
         {
           id: "pull-to-refresh-tasks",

@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Feature, getFeatureValueFromWindow} from "~/feature-context"
+import {Feature} from "~/feature-context"
 import {invariant} from "./invariants"
 
 export function isActiveElement<T>(ref: React.RefObject<T>) {
@@ -13,7 +13,7 @@ class Notifier {
   ) {}
 
   get element() {
-    const feature = getFeatureValueFromWindow(this.featureId)
+    const feature = window.featureManager.get(this.featureId)
 
     if (!feature?.enable) return null
 

@@ -5,7 +5,6 @@ import {ImportantTask, MyDayTask, NewTask, PlannedTask} from "~/utils/tasks"
 import {getCreds} from "~/utils/tauri-store"
 import {ErrorType} from "~/utils/error"
 import {TasksStore} from "~/utils/persistent-storage"
-import {getFeatureValueFromWindow} from "~/feature-context"
 
 async function getTasks({
   filter,
@@ -23,13 +22,13 @@ async function getTasks({
   showCompleted?: boolean
 }) {
   try {
-    const showCompletedTasks = getFeatureValueFromWindow("ShowCompletedTasks")
+    const showCompletedTasks = window.featureManager.isEnabled("ShowCompletedTasks")
 
     const response = await axios.get(`/api/v1/tasks`, {
       params: {
         filter,
         query,
-        showCompleted: showCompleted ?? Boolean(showCompletedTasks?.enable),
+        showCompleted: showCompleted ?? showCompletedTasks,
         list_id: listId,
         show_all_tasks: showAllTasks,
       },
