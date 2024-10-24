@@ -221,7 +221,7 @@ function log(logs: Array<{level: string; log: string; created_at: string}>) {
 async function getTasksNames(cancelTokenSource?: CancelTokenSource) {
   try {
     const response = await axios.get(`/api/v1/tasks`, {
-      params: {showCompleted: true},
+      params: {showCompleted: true, show_all_tasks: true},
       ...(cancelTokenSource
         ? {
             cancelToken: cancelTokenSource.token,
