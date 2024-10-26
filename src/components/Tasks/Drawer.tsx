@@ -209,9 +209,10 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
           />
         </FeatureFlag.Feature>
       </FeatureFlag>
+      <Divider space="sm" />
       <FeatureFlag feature="TaskTagInput">
         <FeatureFlag.Feature>
-          <div className="py-3">
+          <div className="py-2">
             <TaskMetaTag metadata={metadata} id={id} updateMetadata={updateTaskMetadata} key={id} />
           </div>
         </FeatureFlag.Feature>
@@ -766,7 +767,7 @@ interface SelectTaskListInputProps {
 
 function SelectTaskListInput(props: SelectTaskListInputProps) {
   return (
-    <div className="py-3 w-full flex items-center gap-3 text-zinc-400">
+    <div className="py-2 w-full flex items-center gap-3 text-zinc-400">
       <select
         className="w-full px-3 py-1 bg-inherit rounded-md border-none"
         value={props.defaultValue || ""}

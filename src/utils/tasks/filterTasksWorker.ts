@@ -29,6 +29,8 @@ function taskDueDateMatchesDueDateFilter(task: TTask, dueDateFilter: DueDateFilt
   switch (dueDateFilter) {
     case null:
       return true
+    case "recurring":
+      return Boolean(task.recurrence_pattern)
     case "all-planned":
       return Boolean(dueDate)
     case "overdue":
@@ -41,8 +43,6 @@ function taskDueDateMatchesDueDateFilter(task: TTask, dueDateFilter: DueDateFilt
       return isDateWithinThisWeek(dueDate)
     case "later":
       return isDatePastThisWeek(dueDate)
-    case "recurring":
-      return Boolean(task.recurrence_pattern)
     default:
       return false
   }
