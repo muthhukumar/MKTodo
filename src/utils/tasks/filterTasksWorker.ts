@@ -12,6 +12,7 @@ import {AsyncTasksFilter} from "./hooks"
 self.onmessage = function (event) {
   const {tasks, query, dueDateFilter} = event.data as AsyncTasksFilter
 
+  // TODO: remove query as it is moved to backend
   let result = query ? tasks.filter(t => t.name.toLowerCase().includes(query.toLowerCase())) : tasks
 
   result = dueDateFilter
