@@ -18,9 +18,9 @@ android {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
         applicationId = "com.muthukumar.mktodo.mktodo"
         minSdk = 24
-        targetSdk = 33
-        versionCode = 62
-        versionName = "7.2"
+        targetSdk = 34
+        versionCode = 63
+        versionName = "7.3"
     }
      signingConfigs {
         create("release") {
