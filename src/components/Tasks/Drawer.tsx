@@ -18,7 +18,7 @@ import {useDelay, useOnKeyPress} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
 import {TaskToggleIcon} from "./Task"
 import {API} from "~/service"
-import {useRouter} from "@tanstack/react-router"
+import {useNavigate, useRouter} from "@tanstack/react-router"
 import {AutoResizeTextarea, CopyToClipboardButton, Divider, FeatureFlag, Select} from ".."
 import {extractLinks} from "~/utils/url"
 import {useAudioPlayer} from "~/utils/hooks"
@@ -451,8 +451,6 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
       await API.createSubTask({task_id, name})
 
       router.invalidate()
-
-      setShowCreateSubTaskInput(false)
     } catch (error) {
       handleError({error, defaultMessage: "Failed to create subtask"})
     }
@@ -488,6 +486,7 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
         {subTasks.map(st => {
           return (
             <SubTaskItem
+              onBlur={() => undefined}
               {...st}
               key={st.id}
               onToggle={() => toggleSubTaskCompletedById(st.id)}
@@ -526,6 +525,7 @@ function CreateSubTaskInput({
 
   return (
     <SubTaskItem
+      onBlur={onCancel}
       autoFocus={true}
       onToggle={() => undefined}
       completed={false}
@@ -546,6 +546,7 @@ interface SubTaskItemProps extends Pick<SubTask, "completed"> {
   name?: string
   autoFocus?: boolean
   deleteTask: () => void
+  onBlur: () => void
 }
 
 function SubTaskItem({
@@ -556,6 +557,7 @@ function SubTaskItem({
   onChange,
   deleteTask,
   autoFocus = false,
+  onBlur,
 }: SubTaskItemProps) {
   const modalRef = React.useRef<HTMLDivElement>(null)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
@@ -578,6 +580,7 @@ function SubTaskItem({
           className="w-full bg-inherit ml-2 outline-none"
           defaultValue={name}
           autoFocus={autoFocus}
+          onBlur={onBlur}
         />
         <button type="button" onClick={() => setShowDeleteModal(true)} className="ml-2">
           <MdDelete size={22} />
