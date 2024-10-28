@@ -99,6 +99,17 @@ body {
   }
 }
 
+.hide-scrollbar {
+  overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .no-scrollbar {
   overflow: hidden; /* General overflow hidden */
   -ms-overflow-style: none; /* IE and Edge */
