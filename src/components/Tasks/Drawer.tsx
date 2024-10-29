@@ -494,9 +494,10 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
   return (
     <div className="my-5 px-2">
       <div className="max-h-[30vh] hide-scrollbar flex flex-col gap-3">
-        {subTasks.map(st => {
+        {subTasks.map((st, idx) => {
           return (
             <SubTaskItem
+              index={idx + 1}
               onSubmit={() => undefined}
               onBlur={() => undefined}
               {...st}
@@ -570,6 +571,7 @@ interface SubTaskItemProps extends Pick<SubTask, "completed"> {
   autoFocus?: boolean
   deleteTask: () => void
   onBlur: () => void
+  index?: number
 }
 
 function SubTaskItem({
@@ -582,6 +584,7 @@ function SubTaskItem({
   autoFocus = false,
   onBlur,
   onSubmit,
+  index,
 }: SubTaskItemProps) {
   const modalRef = React.useRef<HTMLDivElement>(null)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
@@ -602,17 +605,24 @@ function SubTaskItem({
 
   return (
     <>
-      <form className="flex items-center" onSubmit={onFormSubmit}>
+      <form className="relative flex items-center" onSubmit={onFormSubmit}>
         <TaskToggleIcon completed={completed} onClick={onToggle} />
-        <input
-          ref={inputRef}
-          className="w-full bg-inherit ml-2 outline-none"
-          onChange={e => onChange(e.target.value, resetInput)}
-          defaultValue={name}
-          autoFocus={autoFocus}
-          onBlur={onBlur}
-        />
-        <button type="button" onClick={() => setShowDeleteModal(true)} className="ml-2">
+        <div className="ml-2 w-full flex items-center">
+          <FeatureFlag feature="SubTasksOrderListIndex">
+            <FeatureFlag.Feature>
+              <span className="text-zinc-300 text-sm">{index}. </span>
+            </FeatureFlag.Feature>
+          </FeatureFlag>
+          <input
+            ref={inputRef}
+            className="w-full bg-inherit outline-none ml-2"
+            onChange={e => onChange(e.target.value, resetInput)}
+            defaultValue={name}
+            autoFocus={autoFocus}
+            onBlur={onBlur}
+          />
+        </div>
+        <button type="button" onClick={() => setShowDeleteModal(true)} className="ml-1">
           <MdDelete size={22} />
         </button>
       </form>
