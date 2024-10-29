@@ -237,7 +237,7 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
         </FeatureFlag.Feature>
       </FeatureFlag>
 
-      <div className="w-full h-[50vh]" />
+      <div className="w-full h-[70vh]" />
 
       <div className="z-10 bg-inherit p-3 border-t border-border sticky bottom-0 left-0 right-0 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">

@@ -1,7 +1,7 @@
 import {Link} from "@tanstack/react-router"
 import type {List} from "~/@types"
 import {timeAgo} from "~/utils/date"
-import Divider from "./Divider"
+import {Divider} from ".."
 
 interface ListsProps extends List {}
 

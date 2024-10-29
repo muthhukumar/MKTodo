@@ -35,7 +35,6 @@ const allFeatures = [
   {id: "PullToRefresh", title: "Enable pull to refresh", category: "Feature"},
   {id: "SwipeNavigation", title: "Swipe to navigate between screens", category: "Feature"},
   {id: "UpdateTaskListInput", title: "Enable Task List Change input", category: "Feature"},
-  {id: "SwipeMobileSidebar", title: "Swipe to show mobile sidebar", category: "Feature"},
 ] as const
 
 // TODO: fix the type for this
