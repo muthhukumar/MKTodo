@@ -1,8 +1,10 @@
-import {createFileRoute, redirect} from "@tanstack/react-router"
+import {createFileRoute, redirect, useRouter} from "@tanstack/react-router"
 import {List, MobileOnly} from "~/components"
 import MobileCreateListInput from "~/components/Lists/MobileCreateListInput"
 import {ErrorMessage, LoadingScreen} from "~/components/screens"
 import {API} from "~/service"
+import {useOnSwipe} from "~/utils/hooks"
+import {notifier} from "~/utils/ui"
 
 export const Route = createFileRoute("/_auth/lists")({
   loader: async () => {
@@ -27,6 +29,28 @@ export const Route = createFileRoute("/_auth/lists")({
 
 function ListsPage() {
   const {lists} = Route.useLoaderData()
+
+  const router = useRouter()
+
+  useOnSwipe(
+    {
+      enable: window.featureManager.isEnabled("PullToRefresh"),
+      ranges: [
+        {
+          id: "pull-to-refresh-lists",
+          minDistancePercentage: 35,
+          range: [10, 90],
+          callback: () => {
+            router.invalidate()
+            notifier.show("Refreshing")
+          },
+          axis: "y",
+          reverse: false,
+        },
+      ],
+    },
+    [],
+  )
 
   return (
     <div className="px-3">
