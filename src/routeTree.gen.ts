@@ -18,6 +18,7 @@ import { Route as AuthIndexImport } from './routes/_auth.index'
 import { Route as StandaloneSettingsImport } from './routes/_standalone.settings'
 import { Route as StandaloneSearchImport } from './routes/_standalone.search'
 import { Route as StandaloneLogsImport } from './routes/_standalone.logs'
+import { Route as AuthListsImport } from './routes/_auth.lists'
 import { Route as StandaloneSearchTaskIdImport } from './routes/_standalone.search.$taskId'
 import { Route as AuthTasksTaskTypeImport } from './routes/_auth.tasks.$taskType'
 import { Route as AuthTasksTaskTypeTaskIdImport } from './routes/_auth.tasks.$taskType.$taskId'
@@ -59,6 +60,11 @@ const StandaloneSearchRoute = StandaloneSearchImport.update({
 const StandaloneLogsRoute = StandaloneLogsImport.update({
   path: '/logs',
   getParentRoute: () => StandaloneRoute,
+} as any)
+
+const AuthListsRoute = AuthListsImport.update({
+  path: '/lists',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const StandaloneSearchTaskIdRoute = StandaloneSearchTaskIdImport.update({
@@ -110,6 +116,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
+    }
+    '/_auth/lists': {
+      id: '/_auth/lists'
+      path: '/lists'
+      fullPath: '/lists'
+      preLoaderRoute: typeof AuthListsImport
+      parentRoute: typeof AuthImport
     }
     '/_standalone/logs': {
       id: '/_standalone/logs'
@@ -181,6 +194,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   AuthRoute: AuthRoute.addChildren({
+    AuthListsRoute,
     AuthIndexRoute,
     AuthTasksTaskTypeRoute: AuthTasksTaskTypeRoute.addChildren({
       AuthTasksTaskTypeTaskIdRoute,
@@ -215,6 +229,7 @@ export const routeTree = rootRoute.addChildren({
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
+        "/_auth/lists",
         "/_auth/",
         "/_auth/tasks/$taskType",
         "/_auth/list/$listId/tasks"
@@ -230,6 +245,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/_auth/lists": {
+      "filePath": "_auth.lists.tsx",
+      "parent": "/_auth"
     },
     "/_standalone/logs": {
       "filePath": "_standalone.logs.tsx",

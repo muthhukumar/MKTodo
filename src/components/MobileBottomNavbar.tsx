@@ -1,6 +1,6 @@
 import {Link} from "@tanstack/react-router"
 
-import {MdOutlineWbSunny} from "react-icons/md"
+import {MdOutlineChecklist, MdOutlineWbSunny} from "react-icons/md"
 import {CiStar} from "react-icons/ci"
 import {TbHomeCheck} from "react-icons/tb"
 import {CiCalendarDate} from "react-icons/ci"
@@ -36,6 +36,7 @@ export default function MobileBottomNavbar() {
       </FeatureFlag>
       <NavItem Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />
       <NavItem Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
+      <NavItem Icon={MdOutlineChecklist} title="Lists" path="/lists" />
     </div>
   )
 }

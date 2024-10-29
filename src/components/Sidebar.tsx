@@ -64,6 +64,7 @@ export default function Sidebar({className}: {className?: string}) {
           </FeatureFlag>
           <IconLink Icon={CiCalendarDate} title="Planned" path="/tasks/planned" />
           <IconLink Icon={TbHomeCheck} title="Tasks" path="/tasks/all" />
+          <IconLink Icon={MdOutlineChecklist} title="Lists" path="/lists" />
           <IconLink Icon={TbSettings} title="Settings" path="/settings" />
         </div>
         <p className="mt-4">{location.href}</p>
@@ -80,6 +81,7 @@ export default function Sidebar({className}: {className?: string}) {
             >
               <MdOutlineChecklist />
               <span className="text-sm">{l.name}</span>
+              <p className="ml-auto text-xs text-zinc-400">{l.tasks_count}</p>
             </Link>
           )
         })}

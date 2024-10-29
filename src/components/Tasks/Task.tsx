@@ -212,7 +212,7 @@ function Task(props: TaskProps) {
   )
 }
 
-function SubTaskInfo({
+export function SubTaskInfo({
   totalSubTasks,
   totalCompletedSubTasks,
 }: {

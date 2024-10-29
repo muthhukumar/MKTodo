@@ -16,7 +16,7 @@ import {List, SubTask, TTask} from "~/@types"
 import {timeAgo, isDateSameAsToday, getTodayDate, isDateInPast} from "~/utils/date"
 import {useDelay, useOnKeyPress} from "~/utils/hooks"
 import DueDateInput from "./DueDateInput"
-import {TaskToggleIcon} from "./Task"
+import {SubTaskInfo, TaskToggleIcon} from "./Task"
 import {API} from "~/service"
 import {useRouter} from "@tanstack/react-router"
 import {AutoResizeTextarea, CopyToClipboardButton, Divider, FeatureFlag, Select} from ".."
@@ -482,6 +482,15 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
     updateSubTaskName(subTaskId, value)
   }, 3000)
 
+  const totalCompletedSubTasks = React.useMemo(
+    () =>
+      subTasks.reduce((prev, curr) => {
+        if (curr.completed) return prev + 1
+        return prev
+      }, 0),
+    [subTasks],
+  )
+
   return (
     <div className="my-5 px-2">
       <div className="max-h-[30vh] hide-scrollbar flex flex-col gap-3">
@@ -505,9 +514,17 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
           />
         )}
       </div>
+      {subTasks.length > 0 && (
+        <div className="flex items-center justify-center mt-2">
+          <SubTaskInfo
+            totalSubTasks={subTasks.length}
+            totalCompletedSubTasks={totalCompletedSubTasks}
+          />
+        </div>
+      )}
       <button
         className={clsx("flex items-center gap-4 text-sm text-zinc-400", {
-          "mt-7": subTasks.length !== 0 || showCreateSubTaskInput,
+          "mt-5": subTasks.length !== 0 || showCreateSubTaskInput,
         })}
         onClick={() => setShowCreateSubTaskInput(true)}
       >

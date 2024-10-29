@@ -23,6 +23,7 @@ export type List = {
   id: number
   name: string
   created_at: string
+  tasks_count: number
 }
 
 export type SubTask = {
