@@ -9,6 +9,7 @@ export const options = [
   "idea",
   "thought",
   "stale",
+  "chore",
 ]
 
 export const tagColors = {
