@@ -167,7 +167,7 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
 
   return (
     <div
-      className="w-full border-l border-zinc-700 slide-in fixed right-0 h-screen md:max-w-xs z-[100] min-w-72 max-h-[100vh] hide-scrollbar px-3 bg-background"
+      className="min-h-[100vh] w-full border-l border-zinc-700 slide-in fixed right-0 md:max-w-xs z-[100] min-w-72 h-[100vh] hide-scrollbar px-3 bg-background"
       ref={ref}
     >
       <div className="flex items-center w-full mb-3 pt-3 sticky top-0 right-0 left-0 bg-inherit">
@@ -237,9 +237,9 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
         </FeatureFlag.Feature>
       </FeatureFlag>
 
-      <div className="w-full h-[20vh]" />
+      <div className="w-full h-[50vh]" />
 
-      <div className="z-10 bg-inherit py-3 border-t border-border sticky bottom-0 left-0 right-0 flex items-center justify-between gap-3">
+      <div className="z-10 bg-inherit p-3 border-t border-border sticky bottom-0 left-0 right-0 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <button onClick={goBack}>
             <MdOutlineArrowForwardIos size={18} />
@@ -488,6 +488,7 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
         {subTasks.map(st => {
           return (
             <SubTaskItem
+              onSubmit={() => undefined}
               onBlur={() => undefined}
               {...st}
               key={st.id}
@@ -523,18 +524,20 @@ function CreateSubTaskInput({
   onCreate: (name: string) => void
   onCancel: () => void
 }) {
-  const [onChange] = useDelay(onCreate, 3000)
+  const [onChange] = useDelay(({name, reset}: {name: string; reset: () => void}) => {
+    onCreate(name)
+    reset()
+  }, 3000)
 
   return (
     <SubTaskItem
+      onSubmit={onCreate}
       onBlur={onCancel}
       autoFocus={true}
       onToggle={() => undefined}
       completed={false}
-      onChange={(name: string, submit?: boolean) => {
-        if (submit) return onCreate(name)
-
-        onChange(name)
+      onChange={(name: string, reset) => {
+        onChange({name, reset})
       }}
       deleteTask={onCancel}
     />
@@ -544,7 +547,8 @@ function CreateSubTaskInput({
 interface SubTaskItemProps extends Pick<SubTask, "completed"> {
   onToggle: () => void
   id?: number
-  onChange: (name: string, submit?: boolean) => void
+  onChange: (name: string, reset: () => void) => void
+  onSubmit: (name: string) => void
   name?: string
   autoFocus?: boolean
   deleteTask: () => void
@@ -560,26 +564,33 @@ function SubTaskItem({
   deleteTask,
   autoFocus = false,
   onBlur,
+  onSubmit,
 }: SubTaskItemProps) {
   const modalRef = React.useRef<HTMLDivElement>(null)
   const [showDeleteModal, setShowDeleteModal] = React.useState(false)
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onChange(inputRef.current?.value ?? "", true)
+  const resetInput = () => {
+    /* Note: If there is default value, then there is not need to reset the value */
+    if (inputRef.current && !name) inputRef.current.value = ""
+  }
 
-    if (inputRef.current) inputRef.current.value = ""
+  const onFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSubmit(inputRef.current?.value ?? "")
+
+    resetInput()
   }
 
   return (
     <>
-      <form className="flex items-center" onSubmit={onSubmit}>
+      <form className="flex items-center" onSubmit={onFormSubmit}>
         <TaskToggleIcon completed={completed} onClick={onToggle} />
         <input
           ref={inputRef}
           className="w-full bg-inherit ml-2 outline-none"
+          onChange={e => onChange(e.target.value, resetInput)}
           defaultValue={name}
           autoFocus={autoFocus}
           onBlur={onBlur}
