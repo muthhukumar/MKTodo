@@ -170,12 +170,12 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       className="min-h-[100vh] w-full border-l border-zinc-700 slide-in fixed right-0 md:max-w-xs z-[100] min-w-72 h-[100vh] hide-scrollbar px-3 bg-background"
       ref={ref}
     >
-      <div className="flex items-center w-full mb-3 pt-3 sticky top-0 right-0 left-0 bg-inherit">
+      <div className="bg-background flex items-center w-full mb-3 pt-3 sticky top-0 right-0 left-0 z-[200]">
         <div className="mt-3 flex items-start w-full">
           <div className="flex-[0.1] flex items-center">
             <TaskToggleIcon completed={completed} onClick={() => toggleTask(id)} />
           </div>
-          <div className="flex-[0.9] w-full max-h-[30vh] overflow-y-auto no-scrollbar">
+          <div className="flex-[0.9] w-full max-h-[30vh] overflow-y-auto no-scrollbar bg-background">
             <AutoResizeTextarea
               ref={inputRef}
               className="w-full rounded-md bg-background outline-none"
