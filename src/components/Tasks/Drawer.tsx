@@ -510,6 +510,7 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
         })}
         {showCreateSubTaskInput && (
           <CreateSubTaskInput
+            index={(sub_tasks?.length || 0) + 1}
             onCancel={() => setShowCreateSubTaskInput(false)}
             onCreate={createSubTask}
           />
@@ -538,24 +539,30 @@ function SubTasks({sub_tasks = [], task_id}: {task_id: number; sub_tasks: TTask[
 function CreateSubTaskInput({
   onCreate,
   onCancel,
+  index,
 }: {
   onCreate: (name: string) => void
   onCancel: () => void
+  index: number
 }) {
-  const [onChange] = useDelay(({name, reset}: {name: string; reset: () => void}) => {
+  const [onChange, cancel] = useDelay(({name, reset}: {name: string; reset: () => void}) => {
     onCreate(name)
     reset()
   }, 3000)
 
   return (
     <SubTaskItem
-      onSubmit={onCreate}
+      onSubmit={(name: string) => {
+        onCreate(name)
+        cancel()
+      }}
       onBlur={onCancel}
+      index={index}
       autoFocus={true}
       onToggle={() => undefined}
       completed={false}
       onChange={(name: string, reset) => {
-        onChange({name, reset})
+        if (name.length >= 3) onChange({name, reset})
       }}
       deleteTask={onCancel}
     />
