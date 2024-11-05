@@ -6,7 +6,7 @@ import {API} from "~/service"
 import {getCancelTokenSource} from "~/service/axios"
 import {taskQueue} from "~/utils/task-queue"
 
-export const Route = createFileRoute("/_auth/list/$listId/tasks")({
+export const Route = createFileRoute("/_auth/lists/$listId/tasks")({
   loader: async ({params: {listId}}) => {
     const cancelToken = getCancelTokenSource()
     const metadataCancelToken = getCancelTokenSource()

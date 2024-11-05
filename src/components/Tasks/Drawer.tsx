@@ -29,11 +29,11 @@ import {taskQueue} from "~/utils/task-queue"
 import {useGoBack} from "~/utils/navigation"
 import {isValidNumber} from "~/utils/validate"
 import toast from "react-hot-toast"
-import {useLists} from "~/utils/list/hooks"
 
 interface DrawerProps extends TTask {
   onDismiss: () => void
   ignoreRef?: React.RefObject<HTMLDivElement>
+  lists: Array<List>
 }
 
 const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
@@ -51,6 +51,7 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
     recurrence_interval,
     start_date,
     list_id,
+    lists,
   },
   ref,
 ) {
@@ -61,8 +62,6 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
   const links = React.useMemo(() => extractLinks(name), [name])
 
   const router = useRouter()
-
-  const {lists, invalidate} = useLists()
 
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
 
@@ -130,7 +129,6 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
       await API.updateTaskListId(id, listId)
 
       router.invalidate()
-      invalidate()
     } catch (error) {
       handleError({error, defaultMessage: "Deleting task failed"})
     }

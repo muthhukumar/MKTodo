@@ -10,7 +10,7 @@ export default function List(props: ListsProps) {
 
   return (
     <Link
-      to="/list/$listId/tasks"
+      to="/lists/$listId/tasks"
       params={{listId: String(id)}}
       className="bg-item-background px-3 py-2 rounded-md"
     >

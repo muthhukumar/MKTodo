@@ -3,9 +3,10 @@ import Drawer from "~/components/Tasks/Drawer"
 import {ErrorMessage} from "~/components/screens"
 import {API} from "~/service"
 
-export const Route = createFileRoute("/_auth/list/$listId/tasks/$taskId")({
+export const Route = createFileRoute("/_auth/lists/$listId/tasks/$taskId")({
   loader: async ({params: {taskId}}) => {
     return {
+      lists: await API.getLists(),
       ...(await API.getTask(Number(taskId))),
     }
   },

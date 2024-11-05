@@ -6,10 +6,9 @@ import {TbHomeCheck, TbSettings} from "react-icons/tb"
 import {CiCalendarDate} from "react-icons/ci"
 import {Link, useLocation} from "@tanstack/react-router"
 import {twMerge} from "tailwind-merge"
-import {CreateListInput, Divider, FeatureFlag, SearchBar} from "."
+import {Divider, FeatureFlag, SearchBar} from "."
 import {usePing} from "~/utils/hooks"
 import {MdOutlineChecklist} from "react-icons/md"
-import {useLists} from "~/utils/list/hooks"
 
 function IconLink({Icon, title, path}: {Icon: IconType; title: string; path: string}) {
   const isActivePath = window.location.pathname.includes(path)
@@ -42,8 +41,6 @@ export default function Sidebar({className}: {className?: string}) {
   const location = useLocation()
   const online = usePing()
 
-  const {lists} = useLists()
-
   return (
     <div
       className={twMerge(
@@ -69,24 +66,6 @@ export default function Sidebar({className}: {className?: string}) {
         </div>
         <p className="mt-4">{location.href}</p>
       </div>
-      <Divider />
-      <div className="flex flex-col gap-2 px-4">
-        {lists.map(l => {
-          return (
-            <Link
-              key={l.id}
-              to="/list/$listId/tasks"
-              params={{listId: String(l.id)}}
-              className="flex items-center gap-3"
-            >
-              <MdOutlineChecklist />
-              <span className="text-sm">{l.name}</span>
-              <p className="ml-auto text-xs text-zinc-400">{l.tasks_count}</p>
-            </Link>
-          )
-        })}
-      </div>
-      <CreateListInput />
       <Divider />
       {online !== null && !online && (
         <p

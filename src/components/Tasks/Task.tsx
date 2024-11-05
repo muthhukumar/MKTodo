@@ -68,14 +68,14 @@ function Task(props: TaskProps) {
     props.type === "search"
       ? "/search"
       : props.type === "list"
-        ? `/list/${props.list_id}`
+        ? `/lists/${props.list_id}`
         : `/tasks/${props.type || "all"}`
 
   const to =
     props.type === "search"
       ? "/search/$taskId"
       : props.type === "list"
-        ? `/list/${props.list_id}/tasks/${props.id}`
+        ? `/lists/${props.list_id}/tasks/${props.id}`
         : (`/tasks/${props.type}/$taskId` as const)
 
   const metatags = React.useMemo(() => getMetaTags(props.metadata), [props.metadata])

@@ -6,6 +6,7 @@ import {API} from "~/service"
 export const Route = createFileRoute("/_auth/tasks/$taskType/$taskId")({
   loader: async ({params: {taskId}}) => {
     return {
+      lists: await API.getLists(),
       ...(await API.getTask(Number(taskId))),
     }
   },
