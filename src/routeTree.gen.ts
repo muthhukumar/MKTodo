@@ -22,8 +22,8 @@ import { Route as AuthListsImport } from './routes/_auth.lists'
 import { Route as StandaloneSearchTaskIdImport } from './routes/_standalone.search.$taskId'
 import { Route as AuthTasksTaskTypeImport } from './routes/_auth.tasks.$taskType'
 import { Route as AuthTasksTaskTypeTaskIdImport } from './routes/_auth.tasks.$taskType.$taskId'
-import { Route as AuthListListIdTasksImport } from './routes/_auth.list.$listId.tasks'
-import { Route as AuthListListIdTasksTaskIdImport } from './routes/_auth.list.$listId.tasks.$taskId'
+import { Route as AuthListsListIdTasksImport } from './routes/_auth.lists.$listId.tasks'
+import { Route as AuthListsListIdTasksTaskIdImport } from './routes/_auth.lists.$listId.tasks.$taskId'
 
 // Create/Update Routes
 
@@ -82,15 +82,17 @@ const AuthTasksTaskTypeTaskIdRoute = AuthTasksTaskTypeTaskIdImport.update({
   getParentRoute: () => AuthTasksTaskTypeRoute,
 } as any)
 
-const AuthListListIdTasksRoute = AuthListListIdTasksImport.update({
-  path: '/list/$listId/tasks',
-  getParentRoute: () => AuthRoute,
+const AuthListsListIdTasksRoute = AuthListsListIdTasksImport.update({
+  path: '/$listId/tasks',
+  getParentRoute: () => AuthListsRoute,
 } as any)
 
-const AuthListListIdTasksTaskIdRoute = AuthListListIdTasksTaskIdImport.update({
-  path: '/$taskId',
-  getParentRoute: () => AuthListListIdTasksRoute,
-} as any)
+const AuthListsListIdTasksTaskIdRoute = AuthListsListIdTasksTaskIdImport.update(
+  {
+    path: '/$taskId',
+    getParentRoute: () => AuthListsListIdTasksRoute,
+  } as any,
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -166,12 +168,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StandaloneSearchTaskIdImport
       parentRoute: typeof StandaloneSearchImport
     }
-    '/_auth/list/$listId/tasks': {
-      id: '/_auth/list/$listId/tasks'
-      path: '/list/$listId/tasks'
-      fullPath: '/list/$listId/tasks'
-      preLoaderRoute: typeof AuthListListIdTasksImport
-      parentRoute: typeof AuthImport
+    '/_auth/lists/$listId/tasks': {
+      id: '/_auth/lists/$listId/tasks'
+      path: '/$listId/tasks'
+      fullPath: '/lists/$listId/tasks'
+      preLoaderRoute: typeof AuthListsListIdTasksImport
+      parentRoute: typeof AuthListsImport
     }
     '/_auth/tasks/$taskType/$taskId': {
       id: '/_auth/tasks/$taskType/$taskId'
@@ -180,12 +182,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthTasksTaskTypeTaskIdImport
       parentRoute: typeof AuthTasksTaskTypeImport
     }
-    '/_auth/list/$listId/tasks/$taskId': {
-      id: '/_auth/list/$listId/tasks/$taskId'
+    '/_auth/lists/$listId/tasks/$taskId': {
+      id: '/_auth/lists/$listId/tasks/$taskId'
       path: '/$taskId'
-      fullPath: '/list/$listId/tasks/$taskId'
-      preLoaderRoute: typeof AuthListListIdTasksTaskIdImport
-      parentRoute: typeof AuthListListIdTasksImport
+      fullPath: '/lists/$listId/tasks/$taskId'
+      preLoaderRoute: typeof AuthListsListIdTasksTaskIdImport
+      parentRoute: typeof AuthListsListIdTasksImport
     }
   }
 }
@@ -194,13 +196,14 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   AuthRoute: AuthRoute.addChildren({
-    AuthListsRoute,
+    AuthListsRoute: AuthListsRoute.addChildren({
+      AuthListsListIdTasksRoute: AuthListsListIdTasksRoute.addChildren({
+        AuthListsListIdTasksTaskIdRoute,
+      }),
+    }),
     AuthIndexRoute,
     AuthTasksTaskTypeRoute: AuthTasksTaskTypeRoute.addChildren({
       AuthTasksTaskTypeTaskIdRoute,
-    }),
-    AuthListListIdTasksRoute: AuthListListIdTasksRoute.addChildren({
-      AuthListListIdTasksTaskIdRoute,
     }),
   }),
   StandaloneRoute: StandaloneRoute.addChildren({
@@ -231,8 +234,7 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/_auth/lists",
         "/_auth/",
-        "/_auth/tasks/$taskType",
-        "/_auth/list/$listId/tasks"
+        "/_auth/tasks/$taskType"
       ]
     },
     "/_standalone": {
@@ -248,7 +250,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/_auth/lists": {
       "filePath": "_auth.lists.tsx",
-      "parent": "/_auth"
+      "parent": "/_auth",
+      "children": [
+        "/_auth/lists/$listId/tasks"
+      ]
     },
     "/_standalone/logs": {
       "filePath": "_standalone.logs.tsx",
@@ -280,20 +285,20 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_standalone.search.$taskId.tsx",
       "parent": "/_standalone/search"
     },
-    "/_auth/list/$listId/tasks": {
-      "filePath": "_auth.list.$listId.tasks.tsx",
-      "parent": "/_auth",
+    "/_auth/lists/$listId/tasks": {
+      "filePath": "_auth.lists.$listId.tasks.tsx",
+      "parent": "/_auth/lists",
       "children": [
-        "/_auth/list/$listId/tasks/$taskId"
+        "/_auth/lists/$listId/tasks/$taskId"
       ]
     },
     "/_auth/tasks/$taskType/$taskId": {
       "filePath": "_auth.tasks.$taskType.$taskId.tsx",
       "parent": "/_auth/tasks/$taskType"
     },
-    "/_auth/list/$listId/tasks/$taskId": {
-      "filePath": "_auth.list.$listId.tasks.$taskId.tsx",
-      "parent": "/_auth/list/$listId/tasks"
+    "/_auth/lists/$listId/tasks/$taskId": {
+      "filePath": "_auth.lists.$listId.tasks.$taskId.tsx",
+      "parent": "/_auth/lists/$listId/tasks"
     }
   }
 }

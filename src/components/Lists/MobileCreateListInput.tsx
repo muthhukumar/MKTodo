@@ -4,15 +4,12 @@ import {FaPlus} from "react-icons/fa6"
 import {useOutsideAlerter} from "~/utils/hooks"
 import {BsFillFileArrowUpFill} from "react-icons/bs"
 import {handleError} from "~/utils/error"
-import {useLists} from "~/utils/list/hooks"
 import {useNavigate} from "@tanstack/react-router"
 import {API} from "~/service"
 
 const MobileCreateListInput = React.forwardRef(function MobileCreateTaskInput(_, ref) {
   const [showInput, setShowInput] = React.useState(false)
   const [listName, setListName] = React.useState("")
-
-  const lists = useLists()
 
   const formRef = React.useRef<HTMLFormElement>(null)
 
@@ -38,9 +35,8 @@ const MobileCreateListInput = React.forwardRef(function MobileCreateTaskInput(_,
     try {
       const {id} = await API.createList(listName)
 
-      navigate({to: "/list/$listId/tasks", params: {listId: String(id)}})
+      navigate({to: "/lists/$listId/tasks", params: {listId: String(id)}})
 
-      lists.invalidate()
       setShowInput(false)
     } catch (error) {
       handleError({error, defaultMessage: "Failed to create list"})

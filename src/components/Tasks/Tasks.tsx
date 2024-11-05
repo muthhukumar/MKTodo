@@ -15,7 +15,6 @@ import {options} from "../Select/data"
 import {getMetaTags, removeDuplicates} from "./Drawer"
 import {CompletedTasks, Header} from "."
 import {invariant} from "~/utils/invariants"
-import {useLists} from "~/utils/list/hooks"
 
 interface TasksProps {
   showFilters?: boolean
@@ -53,7 +52,6 @@ export default function Tasks(props: TasksProps) {
 
   const router = useRouter()
   const navigate = useNavigate()
-  const lists = useLists()
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -144,7 +142,6 @@ export default function Tasks(props: TasksProps) {
       await API.updateList(listId, name)
 
       router.invalidate()
-      lists.invalidate()
     } catch (error) {
       handleError({error, defaultMessage: "Failed to update list name"})
     }
@@ -155,7 +152,6 @@ export default function Tasks(props: TasksProps) {
       await API.deleteListById(listId)
 
       router.invalidate()
-      lists.invalidate()
 
       navigate({to: "/tasks/$taskType", params: {taskType: "all"}, search: {filter: "none"}})
     } catch (error) {

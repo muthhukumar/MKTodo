@@ -9,6 +9,7 @@ export const Route = createFileRoute("/_standalone/search/$taskId")({
   loaderDeps: ({search: {from}}) => ({from}),
   loader: async ({params: {taskId}, deps: {from}}) => {
     return {
+      lists: await API.getLists(),
       task: await API.getTask(Number(taskId)),
       from,
     }
@@ -18,11 +19,11 @@ export const Route = createFileRoute("/_standalone/search/$taskId")({
 })
 
 function TaskDetail() {
-  const {task, from} = Route.useLoaderData()
+  const {task, from, lists} = Route.useLoaderData()
 
   const navigate = useNavigate()
 
   const goBack = () => navigate({to: from, search: {query: ""}})
 
-  return <Drawer {...task} onDismiss={goBack} />
+  return <Drawer {...task} onDismiss={goBack} lists={lists} />
 }
